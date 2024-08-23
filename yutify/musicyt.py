@@ -3,15 +3,15 @@ from pprint import pprint
 from ytmusicapi import YTMusic
 
 
-def musicyt(artist: str, song: str) -> list[dict] | None:
-    """Return list of dictionary containing YouTube Music ID and URL for a song or None.
+def musicyt(artist: str, song: str) -> dict | None:
+    """Return a dictionary containing YouTube Music ID and URL for a song or None.
 
     Args:
         artist (str): Artist Name of the song
         song (str): Song Name
 
     Returns:
-        list[dict] | None: If successful, list of dictionary containing music ID and URL, else None
+        dict | None: If successful, a dictionary containing music ID and URL, else None
     """
     music_info = []
 
@@ -43,35 +43,46 @@ def musicyt(artist: str, song: str) -> list[dict] | None:
             break
 
         search = ytmusic.search(query=query)
-        get_music_info(search, music_info, categories_skip)
+        for result in search:
+            if music_info:
+                return music_info[0]
 
-    if music_info:
-        return music_info
-    else:
-        return None
-
-
-def get_music_info(search: dict, music_info: list, categories_skip: list):
-    for result in search:
-        if (
-            result["category"].lower() in categories_skip
-            or result["title"].lower() != song.lower()
-        ):
-            continue
-
-        for artists in result["artists"]:
-            if artists["name"].lower() != artist.lower():
+            elif (
+                result["category"].lower() in categories_skip
+                and result["title"].lower() != song.lower()
+                and song.lower() not in result["title"].lower()
+            ):
                 continue
 
-            elif result["resultType"] == "song" or result["resultType"] == "video":
-                video_id = result["videoId"]
-                song_url = f"https://music.youtube.com/watch?v={video_id}"
-                music_info.append({"id": video_id, "url": song_url})
+            for artists in result["artists"]:
+                if (
+                    artists["name"].lower() != artist.lower()
+                    and artists["name"].lower() not in artist.lower()
+                ):
+                    continue
 
-            else:
-                browse_id = result["browseId"]
-                album_url = f"https://music.youtube.com/browse/{browse_id}"
-                music_info.append({"id": browse_id, "url": album_url})
+                elif result["resultType"] == "song" or result["resultType"] == "video":
+                    title = result["title"]
+                    artist_name = " ".join([artists["name"] for artists in result["artists"]])
+                    video_id = result["videoId"]
+                    song_url = f"https://music.youtube.com/watch?v={video_id}"
+                    song_result = ytmusic.get_song(video_id)
+                    album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1]["url"]
+                    music_info.append({"artists": artist_name, "album_art": album_art, "id": video_id, "title": title, "url": song_url})
+
+                else:
+                    title = result["title"]
+                    artist_name = " ".join([artists["name"] for artists in result["artists"]])
+                    browse_id = result["browseId"]
+                    album_url = f"https://music.youtube.com/browse/{browse_id}"
+                    album_result = ytmusic.get_album(browse_id)
+                    album_art = album_result["thumbnails"][-1]["url"]
+                    music_info.append({"artists": artist_name, "album_art": album_art, "id": browse_id, "title": title, "url": album_url})
+
+    if music_info:
+        return music_info[0]
+    else:
+        return None
 
 
 if __name__ == "__main__":

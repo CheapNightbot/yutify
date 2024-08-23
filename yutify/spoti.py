@@ -2,6 +2,7 @@ import base64
 import json
 import os
 from pprint import pprint
+from urllib.parse import quote
 
 import requests
 from dotenv import load_dotenv
@@ -13,67 +14,114 @@ client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
 
-def spotipy(artist: str, song: str) -> list[dict] | None:
+def spotipy(artist: str, song: str) -> dict | None:
+    """Return a dictionary containing Spotify music URL or None
+
+    Args:
+        artist (str): Artist Name of the song
+        song (str): Song Name
+
+    Returns:
+        dict | None: If successful, a dictionary containing music URL, else None
+    """
     music_info = []
+
     url = "https://api.spotify.com/v1/search"
     token = get_spotify_token()
     headers = get_auth_header(token)
 
-    artist_ = requests.utils.quote(artist)
-    song_ = requests.utils.quote(song)
+    query = f"?q={artist} - {song}&type=track,album"
+    query_url = url + query
 
-    query = f"?q=remaster%2520track%3A{song_}%2520artist%3A{artist_}&type=track%2Calbum&limit=10"
-    query_backup = f"?q={song_}%20{artist_}&type=track%2Calbum&limit=5"
-    query_urls = [url + query, url + query_backup]
+    response = requests.get(query_url, headers=headers)
 
-    for query_url in query_urls:
-        if music_info:
-            return music_info
+    if response.status_code != 200:
+        return None
 
-        response = requests.get(url=query_url, headers=headers)
-        if response.status_code != 200:
-            return None
+    response_json = response.json()
 
-        response_json = json.loads(response.content)
-
-        # Search `type` being "track" & "album", api will return two dictionaries,
-        # one dictionary for "tracks" and one for "albums"
-
+    # Search `type` being "track" & "album", api will return two dictionaries,
+    # one dictionary for "tracks" and one for "albums"
+    try:
         for track in response_json["tracks"]["items"]:
             if music_info:
-                return music_info
-            get_track_info(track, music_info)
+                return music_info[0]
 
+            if (
+                track["name"].lower() != song.lower()
+                and track["name"].lower() not in song.lower()
+                and song.lower() not in track["name"].lower()
+            ):
+                continue
+
+            for artists in track["artists"]:
+                artist_ids = search_artist(artist, token, headers)
+
+                if (
+                    artists["name"].lower() != artist.lower()
+                    and artists["name"].lower() not in artist.lower()
+                    and artists["id"] not in artist_ids
+                ):
+                    continue
+
+                track_url = track["external_urls"]["spotify"]
+                album_art = track["album"]["images"][0]["url"]
+                music_info.append({"url": track_url, "album_art": album_art})
+
+    except KeyError:
+        pass
+
+    try:
         for album in response_json["albums"]["items"]:
             if music_info:
-                return music_info
-            get_album_info(album, music_info)
+                return music_info[0]
+            if (
+                album["name"].lower() != song.lower()
+                and album["name"].lower() not in song.lower()
+                and song.lower() not in album["name"].lower()
+                ):
+                continue
+
+            for artists in album["artists"]:
+                artist_ids = search_artist(artist, token, headers)
+
+                if (
+                    artists["name"].lower() != artist.lower()
+                    and artists["name"].lower() not in artist.lower()
+                    and artists["id"] not in artist_ids
+                ):
+                    continue
+
+                album_url = album["external_urls"]["spotify"]
+                album_art = album["images"][0]["url"]
+                music_info.append({"url": album_url, "album_art": album_art})
+
+    except KeyError:
+        pass
+
+    if music_info:
+        return music_info[0]
+    else:
+        return None
 
 
-def get_track_info(track: dict, music_info: list):
-    if track["name"].lower() != song.lower():
-        return
+def search_artist(artist, token, headers):
+    url = "https://api.spotify.com/v1/search"
+    query = f"?q={artist}&type=artist"
 
-    for artists in track["artists"]:
-        if artists["name"].lower() != artist.lower():
-            continue
+    query_url = url + query
 
-        track_url = track["external_urls"]["spotify"]
-        album_art = track["album"]["images"][0]["url"]
-        music_info.append({"url": track_url, "album_art": album_art})
+    response = requests.get(query_url, headers=headers)
+    response_json = response.json()["artists"]["items"]
 
+    if len(response_json) == 0:
+        return None
 
-def get_album_info(album: dict, music_info: list):
-    if album["name"].lower() != song.lower():
-        return
+    artist_ids = []
+    for artist in response_json:
+        artist_ids.append(artist["id"])
 
-    for artists in album["artists"]:
-        if artists["name"].lower() != artist.lower():
-            continue
-
-        album_url = album["external_urls"]["spotify"]
-        album_art = album["images"][0]["url"]
-        music_info.append({"url": album_url, "album_art": album_art})
+    return artist_ids
 
 
 def get_spotify_token() -> str:
