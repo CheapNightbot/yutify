@@ -1,5 +1,4 @@
 from pprint import pprint
-from urllib.parse import unquote
 
 from ytmusicapi import YTMusic
 
@@ -14,9 +13,6 @@ def search_musicyt(artist: str, song: str) -> dict | None:
     Returns:
         dict | None: If successful, a dictionary containing music ID and URL, else None
     """
-    artist = unquote(artist)
-    song = unquote(song)
-
     music_info = []
 
     # Skip these search categories in search results.
@@ -65,6 +61,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                 video_id = result["videoId"]
                 song_url = f"https://music.youtube.com/watch?v={video_id}"
                 song_result = ytmusic.get_song(video_id)
+                print(song_result)
                 album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1][
                     "url"
                 ]

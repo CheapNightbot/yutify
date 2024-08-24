@@ -2,7 +2,6 @@ import base64
 import json
 import os
 from pprint import pprint
-from urllib.parse import unquote
 
 import requests
 from dotenv import load_dotenv
@@ -66,9 +65,6 @@ class Spotipy:
         Returns:
             dict | None: If successful, a dictionary containing music URL, else None
         """
-        artist = unquote(artist)
-        song = unquote(song)
-
         music_info = []
 
         url = "https://api.spotify.com/v1/search"
