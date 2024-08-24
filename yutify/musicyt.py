@@ -61,10 +61,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                 video_id = result["videoId"]
                 song_url = f"https://music.youtube.com/watch?v={video_id}"
                 song_result = ytmusic.get_song(video_id)
-                print(song_result)
-                album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1][
-                    "url"
-                ]
+                album_art = song_result
                 music_info.append(
                     {
                         "artists": artist_name,
