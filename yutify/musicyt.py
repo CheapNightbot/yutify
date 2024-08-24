@@ -1,4 +1,5 @@
 from pprint import pprint
+from urllib.parse import unquote
 
 from ytmusicapi import YTMusic
 
@@ -13,6 +14,9 @@ def search_musicyt(artist: str, song: str) -> dict | None:
     Returns:
         dict | None: If successful, a dictionary containing music ID and URL, else None
     """
+    artist = unquote(artist)
+    song = unquote(song)
+
     music_info = []
 
     # Skip these search categories in search results.
@@ -55,21 +59,43 @@ def search_musicyt(artist: str, song: str) -> dict | None:
 
             elif result["resultType"] == "song" or result["resultType"] == "video":
                 title = result["title"]
-                artist_name = " ".join([artists["name"] for artists in result["artists"]])
+                artist_name = " ".join(
+                    [artists["name"] for artists in result["artists"]]
+                )
                 video_id = result["videoId"]
                 song_url = f"https://music.youtube.com/watch?v={video_id}"
                 song_result = ytmusic.get_song(video_id)
-                album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1]["url"]
-                music_info.append({"artists": artist_name, "album_art": album_art, "id": video_id, "title": title, "url": song_url})
+                album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1][
+                    "url"
+                ]
+                music_info.append(
+                    {
+                        "artists": artist_name,
+                        "album_art": album_art,
+                        "id": video_id,
+                        "title": title,
+                        "url": song_url,
+                    }
+                )
 
             else:
                 title = result["title"]
-                artist_name = " ".join([artists["name"] for artists in result["artists"]])
+                artist_name = " ".join(
+                    [artists["name"] for artists in result["artists"]]
+                )
                 browse_id = result["browseId"]
                 album_url = f"https://music.youtube.com/browse/{browse_id}"
                 album_result = ytmusic.get_album(browse_id)
                 album_art = album_result["thumbnails"][-1]["url"]
-                music_info.append({"artists": artist_name, "album_art": album_art, "id": browse_id, "title": title, "url": album_url})
+                music_info.append(
+                    {
+                        "artists": artist_name,
+                        "album_art": album_art,
+                        "id": browse_id,
+                        "title": title,
+                        "url": album_url,
+                    }
+                )
 
     if music_info:
         return music_info[0]
