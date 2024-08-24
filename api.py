@@ -10,7 +10,7 @@ from waitress import serve
 from yutify import musicyt
 from yutify.spoti import spotipy
 
-redis_uri = os.environ.get(["REDIS_URI"])
+redis_uri = os.environ.get("REDIS_URI")
 
 app = Flask(__name__)
 api = Api(app)
