@@ -170,6 +170,9 @@ class Spotipy:
         return artist_ids
 
 
+spotipy = Spotipy(client_id, client_secret)
+
+
 if __name__ == "__main__":
 
     spotipy = Spotipy(client_id, client_secret)
