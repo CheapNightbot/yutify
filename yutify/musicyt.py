@@ -3,7 +3,7 @@ from pprint import pprint
 from ytmusicapi import YTMusic
 
 
-def musicyt(artist: str, song: str) -> dict | None:
+def search_musicyt(artist: str, song: str) -> dict | None:
     """Return a dictionary containing YouTube Music ID and URL for a song or None.
 
     Args:
@@ -26,58 +26,48 @@ def musicyt(artist: str, song: str) -> dict | None:
         "uploads",
     ]
 
-    # Search query patterns
-    patterns = [
-        f"{artist} - {song}",
-        f"{artist} {song}",
-        f"{song} {artist}",
-        f'"{artist}" "{song}"',
-    ]
-
     ytmusic = YTMusic()
 
-    for query in patterns:
-        # If we couldn't find song with first query pattern,
-        # use the second one and so on.. otherwise break
+    query = f"{artist} - {song}"
+    search = ytmusic.search(query=query)
+
+    for result in search:
         if music_info:
-            break
+            return music_info[0]
 
-        search = ytmusic.search(query=query)
-        for result in search:
-            if music_info:
-                return music_info[0]
+        elif (
+            result["category"].lower() in categories_skip
+            and result["title"].lower() != song.lower()
+            and result["title"].lower() not in song.lower()
+            and song.lower() not in result["title"].lower()
+        ):
+            continue
 
-            elif (
-                result["category"].lower() in categories_skip
-                and result["title"].lower() != song.lower()
-                and song.lower() not in result["title"].lower()
+        for artists in result["artists"]:
+            if (
+                artists["name"].lower() != artist.lower()
+                and artists["name"].lower() not in artist.lower()
+                and artist.lower() not in artists["name"].lower()
             ):
                 continue
 
-            for artists in result["artists"]:
-                if (
-                    artists["name"].lower() != artist.lower()
-                    and artists["name"].lower() not in artist.lower()
-                ):
-                    continue
+            elif result["resultType"] == "song" or result["resultType"] == "video":
+                title = result["title"]
+                artist_name = " ".join([artists["name"] for artists in result["artists"]])
+                video_id = result["videoId"]
+                song_url = f"https://music.youtube.com/watch?v={video_id}"
+                song_result = ytmusic.get_song(video_id)
+                album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1]["url"]
+                music_info.append({"artists": artist_name, "album_art": album_art, "id": video_id, "title": title, "url": song_url})
 
-                elif result["resultType"] == "song" or result["resultType"] == "video":
-                    title = result["title"]
-                    artist_name = " ".join([artists["name"] for artists in result["artists"]])
-                    video_id = result["videoId"]
-                    song_url = f"https://music.youtube.com/watch?v={video_id}"
-                    song_result = ytmusic.get_song(video_id)
-                    album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1]["url"]
-                    music_info.append({"artists": artist_name, "album_art": album_art, "id": video_id, "title": title, "url": song_url})
-
-                else:
-                    title = result["title"]
-                    artist_name = " ".join([artists["name"] for artists in result["artists"]])
-                    browse_id = result["browseId"]
-                    album_url = f"https://music.youtube.com/browse/{browse_id}"
-                    album_result = ytmusic.get_album(browse_id)
-                    album_art = album_result["thumbnails"][-1]["url"]
-                    music_info.append({"artists": artist_name, "album_art": album_art, "id": browse_id, "title": title, "url": album_url})
+            else:
+                title = result["title"]
+                artist_name = " ".join([artists["name"] for artists in result["artists"]])
+                browse_id = result["browseId"]
+                album_url = f"https://music.youtube.com/browse/{browse_id}"
+                album_result = ytmusic.get_album(browse_id)
+                album_art = album_result["thumbnails"][-1]["url"]
+                music_info.append({"artists": artist_name, "album_art": album_art, "id": browse_id, "title": title, "url": album_url})
 
     if music_info:
         return music_info[0]
@@ -86,6 +76,7 @@ def musicyt(artist: str, song: str) -> dict | None:
 
 
 if __name__ == "__main__":
+
     artist = input("Artist Name: ")
     song = input("Song Name: ")
-    pprint(musicyt(artist, song))
+    pprint(search_musicyt(artist, song))
