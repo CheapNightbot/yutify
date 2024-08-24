@@ -1,6 +1,12 @@
+import os
 from pprint import pprint
 
+from dotenv import load_dotenv
 from ytmusicapi import YTMusic
+
+load_dotenv()
+
+b_id = os.getenv("B_ID")
 
 
 def search_musicyt(artist: str, song: str) -> dict | None:
@@ -26,7 +32,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
         "uploads",
     ]
 
-    ytmusic = YTMusic()
+    ytmusic = YTMusic("oauth.json", b_id)
 
     query = f"{artist} - {song}"
     search = ytmusic.search(query=query)
