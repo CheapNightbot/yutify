@@ -67,10 +67,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                 video_id = result["videoId"]
                 song_url = f"https://music.youtube.com/watch?v={video_id}"
                 song_result = ytmusic.get_song(video_id)
-                try:
-                    album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1]["url"]
-                except KeyError:
-                    album_art = None
+                album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1]["url"]
                 music_info.append(
                     {
                         "artists": artist_name,
@@ -89,10 +86,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                 browse_id = result["browseId"]
                 album_url = f"https://music.youtube.com/browse/{browse_id}"
                 album_result = ytmusic.get_album(browse_id)
-                try:
-                    album_art = album_result["thumbnails"][-1]["url"]
-                except KeyError:
-                    album_art = None
+                album_art = album_result["thumbnails"][-1]["url"]
                 music_info.append(
                     {
                         "artists": artist_name,
