@@ -10,7 +10,7 @@ from waitress import serve
 from yutify import musicyt
 from yutify.spoti import spotipy
 
-redis_uri = os.environ["REDIS_URI"]
+redis_uri = os.environ.get(["REDIS_URI"])
 
 app = Flask(__name__)
 api = Api(app)
@@ -26,7 +26,6 @@ limiter = Limiter(
     key_func=get_remote_address,
     app=app,
     storage_uri=redis_uri,
-    storage_options={"socket_connect_timeout": 30},
     strategy="fixed-window-elastic-expiry",
     on_breach=default_error_responder,
 )
