@@ -26,7 +26,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     app=app,
     storage_uri=redis_uri,
-    strategy="fixed-window-elastic-expiry",
+    strategy="fixed-window",
     on_breach=default_error_responder,
 )
 
