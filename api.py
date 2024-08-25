@@ -45,11 +45,11 @@ class Yutify(Resource):
         result = {
             "album_art": spotify["album_art"] if spotify else ytmusic["album_art"],
             "spotify": spotify["url"] if spotify else None,
-            "title": spotify["title"] if spotify.get("title") else ytmusic["title"],
-            "album_title": spotify["album_title"] if spotify.get("album_title") else ytmusic["album_title"],
-            "album_type": spotify["album_type"] if spotify.get("album_type") else ytmusic["album_type"],
+            "title": spotify["title"] if spotify else ytmusic["title"],
+            "album_title": spotify["album_title"] if spotify else ytmusic["album_title"],
+            "album_type": spotify["album_type"] if spotify else ytmusic["album_type"],
             "artists": (
-                spotify["artists"] if spotify.get("title") else ytmusic["artists"]
+                spotify["artists"] if spotify else ytmusic["artists"]
             ),
             "ytmusic": {
                 "id": ytmusic["id"],
