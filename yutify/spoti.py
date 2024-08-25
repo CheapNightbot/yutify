@@ -100,6 +100,9 @@ class Spotipy:
 
             for artists in track["artists"]:
 
+                artists_name = []
+                artists_name.append(artists["name"])
+
                 if (
                     artists["name"].lower() != artist.lower()
                     and artists["name"].lower() not in artist.lower()
@@ -109,7 +112,11 @@ class Spotipy:
 
                 track_url = track["external_urls"]["spotify"]
                 album_art = track["album"]["images"][0]["url"]
-                music_info.append({"url": track_url, "album_art": album_art})
+                title = track["name"]
+                artists_ = ", ".join(artists_name)
+                album_type = track["album_type"]
+                album_title = None
+                music_info.append({"album_art": album_art, "artists": artists_, "title": title, "album_type": album_type, "album_title": album_title, "url": track_url})
 
         for album in response_json["albums"]["items"]:
             if music_info:
@@ -126,6 +133,9 @@ class Spotipy:
 
             for artists in album["artists"]:
 
+                artists_name = []
+                artists_name.append(artists["name"])
+
                 if (
                     artists["name"].lower() != artist.lower()
                     and artists["name"].lower() not in artist.lower()
@@ -135,7 +145,11 @@ class Spotipy:
 
                 album_url = album["external_urls"]["spotify"]
                 album_art = album["images"][0]["url"]
-                music_info.append({"url": album_url, "album_art": album_art})
+                title = album["name"]
+                artists_ = ", ".join(artists_name)
+                album_type = album["album_type"]
+                album_title = album["name"]
+                music_info.append({"album_art": album_art, "artists": artists_ ,"title": title, "album_type": album_type, "album_title": album_title, "url": album_url})
 
         if music_info:
             return music_info[0]

@@ -19,6 +19,12 @@ api = Api(app)
 CORS = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
+@app.after_request
+def after_request(response):
+    response.headers["Access-Control-Allow-Private-Network"] = "false"
+    return response
+
+
 def default_error_responder(request_limit: RequestLimit):
     limit = str(request_limit.limit)
     limit = re.sub(r"(\d+)\s+per", r"\1 request(s) per", limit)
@@ -49,6 +55,12 @@ class Yutify(Resource):
         result = {
             "album_art": spotify["album_art"] if spotify else ytmusic["album_art"],
             "spotify": spotify["url"] if spotify else None,
+            "title": spotify["title"] if spotify.get("title") else ytmusic["title"],
+            "album_title": spotify["album_title"] if spotify.get("album_title") else ytmusic["album_title"],
+            "album_type": spotify["album_type"] if spotify.get("album_type") else ytmusic["album_type"],
+            "artists": (
+                spotify["artists"] if spotify.get("title") else ytmusic["artists"]
+            ),
             "ytmusic": {
                 "id": ytmusic["id"],
                 "url": ytmusic["url"],

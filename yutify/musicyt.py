@@ -72,6 +72,8 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                     {
                         "artists": artist_name,
                         "album_art": album_art,
+                        "album_type": "Single",
+                        "album_title": None,
                         "id": video_id,
                         "title": title,
                         "url": song_url,
@@ -86,11 +88,14 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                 browse_id = result["browseId"]
                 album_url = f"https://music.youtube.com/browse/{browse_id}"
                 album_result = ytmusic.get_album(browse_id)
+                album_title = album_result["title"]
                 album_art = album_result["thumbnails"][-1]["url"]
                 music_info.append(
                     {
                         "artists": artist_name,
                         "album_art": album_art,
+                        "album_type": "Album",
+                        "album_title": album_title,
                         "id": browse_id,
                         "title": title,
                         "url": album_url,
