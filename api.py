@@ -2,6 +2,7 @@ import os
 import re
 
 from flask import Flask, jsonify, make_response, render_template
+from flask_cors import CORS
 from flask_limiter import Limiter, RequestLimit
 from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
@@ -14,6 +15,8 @@ redis_uri = os.environ["REDIS_URI"]
 
 app = Flask(__name__)
 api = Api(app)
+
+CORS = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 def default_error_responder(request_limit: RequestLimit):
@@ -55,7 +58,7 @@ class Yutify(Resource):
         return jsonify(result)
 
 
-api.add_resource(Yutify, "/api/<string:artist>:<string:song>")
+api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 
 
 @app.route("/")
