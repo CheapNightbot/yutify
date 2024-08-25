@@ -15,15 +15,7 @@ redis_uri = os.environ["REDIS_URI"]
 
 app = Flask(__name__)
 api = Api(app)
-
-CORS = CORS(app, resources={r"/api/*": {"origins": "*"}})
-
-
-@app.after_request
-def after_request(response):
-    response.headers["Access-Control-Allow-Private-Network"] = "false"
-    return response
-
+CORS(app, resources=r'/api/*')
 
 def default_error_responder(request_limit: RequestLimit):
     limit = str(request_limit.limit)
