@@ -114,7 +114,7 @@ class Spotipy:
                 album_art = track["album"]["images"][0]["url"]
                 title = track["name"]
                 artists_ = ", ".join(artists_name)
-                album_type = track["album_type"]
+                album_type = track["album"]["album_type"]
                 album_title = None
                 music_info.append({"album_art": album_art, "artists": artists_, "title": title, "album_type": album_type, "album_title": album_title, "url": track_url})
 
