@@ -7,6 +7,8 @@ from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
 from waitress import serve
 
+from flask_cors import cross_origin
+
 from yutify import musicyt
 from yutify.spoti import spotipy
 
@@ -32,6 +34,7 @@ limiter = Limiter(
 
 class Yutify(Resource):
     @limiter.limit("100 per minute")
+    @cross_origin()
     def get(self, artist, song):
         ytmusic = musicyt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
