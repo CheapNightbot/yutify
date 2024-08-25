@@ -2,12 +2,11 @@ import os
 import re
 
 from flask import Flask, jsonify, make_response, render_template
+from flask_cors import CORS
 from flask_limiter import Limiter, RequestLimit
 from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
 from waitress import serve
-
-from flask_cors import cross_origin
 
 from yutify import musicyt
 from yutify.spoti import spotipy
@@ -16,6 +15,8 @@ redis_uri = os.environ["REDIS_URI"]
 
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 def default_error_responder(request_limit: RequestLimit):
     limit = str(request_limit.limit)
@@ -34,7 +35,6 @@ limiter = Limiter(
 
 class Yutify(Resource):
     @limiter.limit("100 per minute")
-    @cross_origin()
     def get(self, artist, song):
         ytmusic = musicyt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
@@ -52,11 +52,11 @@ class Yutify(Resource):
             "album_art": spotify["album_art"] if spotify else ytmusic["album_art"],
             "spotify": spotify["url"] if spotify else None,
             "title": spotify["title"] if spotify else ytmusic["title"],
-            "album_title": spotify["album_title"] if spotify else ytmusic["album_title"],
-            "album_type": spotify["album_type"] if spotify else ytmusic["album_type"],
-            "artists": (
-                spotify["artists"] if spotify else ytmusic["artists"]
+            "album_title": (
+                spotify["album_title"] if spotify else ytmusic["album_title"]
             ),
+            "album_type": spotify["album_type"] if spotify else ytmusic["album_type"],
+            "artists": (spotify["artists"] if spotify else ytmusic["artists"]),
             "ytmusic": {
                 "id": ytmusic["id"] if ytmusic else None,
                 "url": ytmusic["url"] if ytmusic else None,
