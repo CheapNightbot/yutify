@@ -42,6 +42,9 @@ class Yutify(Resource):
         elif ytmusic and not spotify:
             spotify = spotipy.search_music(ytmusic["artists"], ytmusic["title"])
 
+        elif not ytmusic or spotify:
+            abort(404, error=f"Couldn't find '{song}' by '{artist}'")
+
         result = {
             "album_art": spotify["album_art"] if spotify else ytmusic["album_art"],
             "spotify": spotify["url"] if spotify else None,
@@ -52,8 +55,8 @@ class Yutify(Resource):
                 spotify["artists"] if spotify else ytmusic["artists"]
             ),
             "ytmusic": {
-                "id": ytmusic["id"],
-                "url": ytmusic["url"],
+                "id": ytmusic["id"] if ytmusic else None,
+                "url": ytmusic["url"] if ytmusic else None,
             },
         }
 
