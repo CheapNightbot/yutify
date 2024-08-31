@@ -34,7 +34,7 @@ limiter = Limiter(
 
 
 class Yutify(Resource):
-    @limiter.limit("100 per minute")
+    @limiter.limit("60 per minute")
     def get(self, artist, song):
         ytmusic = musicyt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
