@@ -1,3 +1,3 @@
 # yutify
 
-Simple API (wrapper) for retrieving music link for various streaming platforms.
+Simple RESTful API (wrapper) for retrieving music info for various steaming platforms.
