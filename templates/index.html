@@ -1,24 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
-    <title>yutify</title>
-</head>
-
-<body>
-    <h1>yutify</h1>
-    <p style="color:red">THIS PAGE IS IN UNDER CONSTRUCTION, BUT THE API ENDPOINT IS AVAILABLE AND WORKING.</p>
-
-    VISIT THIS PATH: <code>https://yutify.onrender.com/api/&lt;artist_name&gt;:&lt;song_name&gt;</code>
-
-    <ul>
-        <li>Replace "&lt;artist_name&gt;" with an actual artist name.</li>
-        <li>Replace "&lt;song_name&gt;" with an actual song name.</li>
-        <li>Don't forget the colon (:) in between the artist and song name.</li>
-    </ul>
-</body>
-
-</html>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<form action="/yutify">
+    <input autofocus type="text" name="artist" id="artist" placeholder="Enter artist name">
+    <section id="second-row">
+        <input type="text" name="song" id="song" placeholder="Enter song name">
+        <button type="submit" id="search">Search</button>
+    </section>
+    <section id="result">
+        <p>Do you like potatoes ... ?</p>
+    </section>
+</form>
+{% endblock %}

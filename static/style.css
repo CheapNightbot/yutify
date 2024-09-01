@@ -1,0 +1,154 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #222831;
+    color: #dfebfc;
+    font-family: "yrsa", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.2rem;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+h1 {
+    font-family: "yrsa", serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 6rem;
+    background: linear-gradient(45deg, #a7caff 0%, #eeeeee 100%);
+    background-clip: text;
+    color: transparent;
+}
+
+.nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+
+#nav-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+a,
+a:visited {
+    text-decoration: none;
+    color: inherit;
+    border: 1px #a7caff solid;
+    padding: 12px 20px;
+    border-radius: .369rem;
+}
+
+a:hover {
+    background-color: #a7caff;
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 0 16px #a7caff;
+}
+
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 30%;
+    padding-right: 30%;
+    margin-bottom: 1rem;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+input {
+    color: inherit;
+    border: 1px #a7caff solid;
+    padding: 0.5rem 1rem;
+    border-radius: .369rem;
+    font-size: 1rem;
+    width: 100%;
+    background: transparent;
+}
+
+#second-row {
+    width: inherit;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+
+button {
+    color: inherit;
+    border: 1px #a7caff solid;
+    padding: 0.6rem 1.6rem;
+    border-radius: .369rem;
+    margin-left: 0.2rem;
+    background: transparent;
+}
+
+#github {
+    padding: 0.46rem 1rem;
+}
+
+button:hover {
+    background-color: #a7caff;
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 0 16px #a7caff;
+    cursor: pointer;
+}
+
+#result {
+    width: 100%;
+    height: 40vh;
+    border: 1px #a7caff solid;
+    padding: 0.6rem 1rem;
+    border-radius: .369rem;
+    margin-left: 0.2rem;
+    background: transparent;
+}
+
+@media (max-width: 1260px) {
+    main {
+        padding-left: 20%;
+        padding-right: 20%;
+    }
+}
+
+@media (max-width: 768px) {
+    main {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+}
+
+footer {
+    position: absolute;
+    bottom: 2%;
+}

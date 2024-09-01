@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yutify: {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://use.typekit.net/mgf5eji.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.svg') }}">
+</head>
+
+<body>
+    <header>
+        <div id="nav-bar">
+            <section class="nav">
+                <a href="/">Home</a>
+                <a href="/docs">Docs</a>
+            </section>
+            <section class="nav">
+                <a id="github" href="https://github.com/CheapNightbot/yutify/" target="_blank">
+                    <img src="{{ url_for('static', filename='github.svg') }}" alt="" style="height:26px;">
+                </a>
+            </section>
+        </div>
+        <section id="head">
+            <h1>yutify</h1>
+            <p>Simple RESTful API (wrapper) for retrieving music info for various steaming platforms.</p>
+        </section>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Cheap Nightbot | All Rights Reserved | &lpar;〃￣ω￣〃ゞ</p>
+    </footer>
+</body>
+
+</html>
