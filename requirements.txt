@@ -1,11 +1,13 @@
 aniso8601==9.0.1
 async-timeout==4.0.3
 blinker==1.8.2
+cachelib==0.9.0
 certifi==2024.8.30
 charset-normalizer==3.3.2
 click==8.1.7
 Deprecated==1.2.14
 Flask==3.0.3
+Flask-Caching==2.3.0
 Flask-Cors==5.0.0
 Flask-Limiter==3.8.0
 Flask-RESTful==0.3.10
