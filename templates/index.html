@@ -15,12 +15,39 @@
         {% endif %}
         <button type="submit" id="search">Search</button>
     </section>
-    <section class="result scroll-me">
-        {% if yutify %}
-        {{ yutify }}
-        {% else %}
-        <p>Do you like potatoes ... ?</p>
-        {% endif %}
+    <section class="result result-container">
+        <img src="{{ album_art }}" alt="{{ title }} - Album Art" class="album-art result">
+        <div class=" result-container" style="flex-direction:column;">
+            <h2>
+                {% if title %}
+                {{ title }}
+                {% else %}
+                Song Title/Name Here
+                {% endif %}
+            </h2>
+            <span>
+                {% if album_type %}
+                <p>{{ album_type }} : {{ album_title }}</p>
+                {% else %}
+                Album Type : Album Title
+                {% endif %}
+            </span>
+            <h3>
+                {% if artists %}
+                {{ artists }}
+                {% else %}
+                Artist(s)
+                {% endif %}
+            </h3>
+            <div class="result-container" style="flex-direction:row;">
+                <a class="music-link" href="{{ spotify }}" target="_blank">
+                    <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo"">
+                </a>
+                <a class="music-link" href="{{ yt_music }}" target="_blank">
+                    <img src="{{ url_for('static', filename='youtube-music.svg') }}" alt="youtube music logo"">
+                </a>
+            </div>
+        </div>
     </section>
 </form>
 {% endblock %}

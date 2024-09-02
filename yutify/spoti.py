@@ -115,8 +115,17 @@ class Spotipy:
                 title = track["name"]
                 artists_ = ", ".join(artists_name)
                 album_type = track["album"]["album_type"]
-                album_title = None
-                music_info.append({"album_art": album_art, "artists": artists_, "title": title, "album_type": album_type, "album_title": album_title, "url": track_url})
+                album_title = track["album"]["name"]
+                music_info.append(
+                    {
+                        "album_art": album_art,
+                        "artists": artists_,
+                        "title": title,
+                        "album_type": album_type,
+                        "album_title": album_title,
+                        "url": track_url,
+                    }
+                )
 
         for album in response_json["albums"]["items"]:
             if music_info:
@@ -149,7 +158,16 @@ class Spotipy:
                 artists_ = ", ".join(artists_name)
                 album_type = album["album_type"]
                 album_title = album["name"]
-                music_info.append({"album_art": album_art, "artists": artists_ ,"title": title, "album_type": album_type, "album_title": album_title, "url": album_url})
+                music_info.append(
+                    {
+                        "album_art": album_art,
+                        "artists": artists_,
+                        "title": title,
+                        "album_type": album_type,
+                        "album_title": album_title,
+                        "url": album_url,
+                    }
+                )
 
         if music_info:
             return music_info[0]

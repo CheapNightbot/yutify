@@ -46,7 +46,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
         elif (
             result["category"].lower() in categories_skip
             or result["resultType"].lower() in categories_skip
-            ):
+        ):
             continue
 
         elif (
