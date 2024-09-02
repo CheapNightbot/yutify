@@ -30,6 +30,8 @@ def search_musicyt(artist: str, song: str) -> dict | None:
         "podcasts",
         "profiles",
         "uploads",
+        "episode",
+        "episodes",
     ]
 
     ytmusic = YTMusic("oauth.json", b_id)
@@ -41,7 +43,10 @@ def search_musicyt(artist: str, song: str) -> dict | None:
         if music_info:
             return music_info[0]
 
-        elif result["category"].lower() in categories_skip:
+        elif (
+            result["category"].lower() in categories_skip
+            or result["resultType"].lower() in categories_skip
+            ):
             continue
 
         elif (
