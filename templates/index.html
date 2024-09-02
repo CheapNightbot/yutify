@@ -2,13 +2,25 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <form action="/yutify">
-    <input autofocus type="text" name="artist" id="artist" placeholder="Enter artist name">
+    {% if artist %}
+    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name", value="{{ artist }}">
+    {% else %}
+    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name">
+    {% endif %}
     <section id="second-row">
-        <input type="text" name="song" id="song" placeholder="Enter song name">
+        {% if song %}
+        <input type="search" name="song" id="song" placeholder="Enter song name" value="{{ song }}">
+        {% else %}
+        <input type="search" name="song" id="song" placeholder="Enter song name">
+        {% endif %}
         <button type="submit" id="search">Search</button>
     </section>
     <section id="result">
+        {% if yutify %}
+        {{ yutify }}
+        {% else %}
         <p>Do you like potatoes ... ?</p>
+        {% endif %}
     </section>
 </form>
 {% endblock %}

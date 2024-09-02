@@ -49,6 +49,20 @@ h1 {
     gap: 1rem;
 }
 
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+img {
+    animation: rotate 4s ease-in-out infinite;
+}
+
 a,
 a:visited {
     text-decoration: none;
