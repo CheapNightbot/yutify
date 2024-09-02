@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block metadata %}{% endblock %}
     <title>yutify: {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://use.typekit.net/mgf5eji.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">

@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block metadata %}
+<meta property="og:title" content="yutify: Home">
+<meta property="og:description" content="Simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="{{ url_for('static', filename='favicon.svg') }}">
+{% endblock %}
 {% block title %}Home{% endblock %}
 {% block content %}
 <form action="/yutify" class="content">

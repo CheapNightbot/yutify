@@ -183,6 +183,7 @@ button:hover {
     align-items: center;
     gap: 1rem;
     justify-content: space-evenly;
+    overflow: hidden;
 }
 
 .scroll-me {
