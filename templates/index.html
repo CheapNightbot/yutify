@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<form action="/yutify">
+<form action="/yutify" class="content">
     {% if artist %}
     <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name", value="{{ artist }}">
     {% else %}
@@ -15,7 +15,7 @@
         {% endif %}
         <button type="submit" id="search">Search</button>
     </section>
-    <section id="result">
+    <section class="result scroll-me">
         {% if yutify %}
         {{ yutify }}
         {% else %}
