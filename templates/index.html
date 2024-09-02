@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 {% block metadata %}
+    <meta name="description" content="Simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
+    <meta property="og:url" content="https://yutify.onrender.com/">
+    <meta property="og:type" content="website">
     <meta property="og:title" content="yutify: Home">
     <meta property="og:description" content="Simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
-    <meta property="og:image" content="{{ url_for('static', filename='music.png') }}">
+    <meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="yutify.onrender.com">
+    <meta property="twitter:url" content="https://yutify.onrender.com/">
+    <meta name="twitter:title" content="yutify: Home">
+    <meta name="twitter:description" content="Simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
+    <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 {% block title %}Home{% endblock %}
 {% block content %}
