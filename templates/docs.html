@@ -2,7 +2,7 @@
 {% block title %}Docs{% endblock %}
 {% block content %}
 <section class="content" id="docs">
-    <h2>API Endpoint:</h2>
+    <h2>&sext; API Endpoint:</h2>
     <section class="result" id="endpoint" style="font-size: large;">
         <code>
             /api/<span class="var">artist</span>:<span class="var">song</span>
@@ -11,25 +11,34 @@
     <p style="font-size:medium;">&rbarr; Check example usage using Python & JavaScritp on <a
             href="https://github.com/CheapNightbot/yutify/tree/main/examples" id="example" target="_blank">GitHub</a>.
     </p>
-    <h2>Response Example:</h2>
+    <h2>&sext; Response Examples:</h2>
     <code style="font-size: large;">
         /api/<span class="var">Rick Astley</span>:<span class="var">Never Gonna Give You Up</span>
     </code>
+    <p><b>Status Code</b>: <span style="color: lightgreen;">200 OK</span>:</p>
     <section class="result scroll-me">
-        <pre style="font-size: large;">
+<pre style="font-size: large;">
 {
-    'album_art': 'https://i.scdn.co/image/ab67616d0000b27315ebbedaacef61af244262a8',
-    'album_title': None,
-    'album_type': 'album',
-    'artists': 'Rick Astley',
-    'spotify': 'https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8',
-    'title': 'Never Gonna Give You Up',
-    'ytmusic': {
-        'id': 'dQw4w9WgXcQ',
-        'url': 'https://music.youtube.com/watch?v=dQw4w9WgXcQ'
+    '<b class="var">album_art</b>': 'https://i.scdn.co/image/ab67616d0000b27315ebbedaacef61af244262a8',
+    '<b class="var">album_title</b>': None,
+    '<b class="var">album_type</b>': 'album',
+    '<b class="var">artists</b>': 'Rick Astley',
+    '<b class="var">spotify</b>': 'https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8',
+    '<b class="var">title</b>': 'Never Gonna Give You Up',
+    '<b class="var">ytmusic</b>': {
+        '<b class="var">id</b>': 'dQw4w9WgXcQ',
+        '<b class="var">url</b>': 'https://music.youtube.com/watch?v=dQw4w9WgXcQ'
     }
 }
-        </pre>
+</pre>
+    </section>
+    <p><b>Status Code</b>: <span style="color: lightcoral;">404 NOT FOUND</span>:</p>
+    <section class="result scroll-me" id="not-found">
+<pre style="font-size: large;">
+{
+    '<b class="var">error</b>': "Couldn't find 'Song' by 'Artist'"
+}
+</pre>
     </section>
 </section>
 {% endblock %}
