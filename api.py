@@ -92,7 +92,7 @@ def yutify_me():
             "index.html",
             artist=artist,
             song=song,
-            album_art="{{ url_for('static', filename='favicon.svg') }}",
+            album_art="static/favicon.svg",
             title=f"{yutify['error']}",
         )
 
@@ -113,7 +113,7 @@ def yutify_me():
         album_type=f"{album_type}",
         album_title=f"{album_title}",
         artists=f"{artists}",
-        spotipy=f"{spotify}",
+        spotify=f"{spotify}",
         yt_music=f"{yt_music}",
     )
 
