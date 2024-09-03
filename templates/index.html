@@ -29,7 +29,11 @@
         <button type="submit" id="search">Search</button>
     </section>
     <section class="result result-container">
+        {% if album_art %}
         <img src="{{ album_art }}" alt="{{ title }} - Album Art" class="album-art result">
+        {% else %}
+        <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ title }} - Album Art" class="album-art result">
+        {% endif %}
         <div class=" result-container" style="flex-direction:column;">
             <h2>
                 {% if title %}
