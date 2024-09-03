@@ -30,9 +30,9 @@
     </section>
     <section class="result result-container">
         {% if album_art %}
-        <img src="{{ album_art }}" alt="{{ title }} - Album Art" class="album-art result">
+        <img src="{{ album_art }}" alt="{{ title }} - Album Art" class="album-art result" style="height:33vh;width:28vh;">
         {% else %}
-        <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ title }} - Album Art" class="album-art result">
+        <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ title }} - Album Art" class="album-art result" style="height:33vh;width:28vh;">
         {% endif %}
         <div class=" result-container" style="flex-direction:column;">
             <h2>
