@@ -223,10 +223,23 @@ button:hover {
     align-items: flex-start;
 }
 
+.album-art {
+    height: 33vh;
+    width: 28vh;
+    padding: 0%;
+}
+
 @media (max-width: 1260px) {
     main {
         padding-left: 20%;
         padding-right: 20%;
+    }
+}
+
+@media (max-width: 960px) {
+    .result-container {
+        flex-direction: column;
+        height: auto;
     }
 }
 
@@ -237,10 +250,10 @@ button:hover {
     }
 }
 
-.album-art {
-    height: 33vh;
-    width: 28vh;
-    padding: 0%;
+@media (max-width: 600px) {
+    body {
+        font-size: 1rem;
+    }
 }
 
 footer {
