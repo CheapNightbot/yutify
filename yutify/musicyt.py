@@ -77,7 +77,7 @@ def search_musicyt(artist: str, song: str) -> dict | None:
                     {
                         "artists": artist_name,
                         "album_art": album_art,
-                        "album_type": "Single",
+                        "album_type": "single",
                         "album_title": None,
                         "id": video_id,
                         "title": title,
