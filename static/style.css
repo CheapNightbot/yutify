@@ -155,7 +155,7 @@ button {
 .music-link:hover {
     transform: scale(1.1);
     transition: transform 0.3s ease-in-out;
-    box-shadow: 0 0 16px #a7caff;
+    box-shadow: 0 0 10px 3px #a7caff;
     cursor: pointer;
 }
 
