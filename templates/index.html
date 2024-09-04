@@ -56,11 +56,23 @@
                 Artist(s)
                 {% endif %}
             </h3>
-            <div class="result-container" style="flex-direction:row;padding: 1rem;">
+            <div class="result-container" style="flex-direction:row; padding:1rem;">
+                {% if spotify == "#" %}
+                <a class="music-link" href="{{ spotify }}">
+                {% elif spotify %}
                 <a class="music-link" href="{{ spotify }}" target="_blank">
+                {% else %}
+                <a class="music-link" href="#">
+                {% endif %}
                     <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo">
                 </a>
+                {% if yt_music == "#" %}
+                <a class="music-link" href="{{ yt_music }}">
+                {% elif yt_music %}
                 <a class="music-link" href="{{ yt_music }}" target="_blank">
+                {% else %}
+                <a class="music-link" href="#">
+                {% endif %}
                     <img src="{{ url_for('static', filename='youtube-music.svg') }}" alt="youtube music logo">
                 </a>
             </div>

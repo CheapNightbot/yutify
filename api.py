@@ -101,8 +101,8 @@ def yutify_me():
     album_type = yutify["album_type"]
     album_title = yutify["album_title"]
     artists = yutify["artists"]
-    spotify = yutify["spotify"]
-    yt_music = yutify["ytmusic"]["url"]
+    spotify = yutify["spotify"] if yutify["spotify"] != None else "#"
+    yt_music = yutify["ytmusic"]["url"]  if yutify["ytmusic"]["url"] != None else "#"
 
     return render_template(
         "index.html",
