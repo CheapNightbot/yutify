@@ -21,7 +21,10 @@ from waitress import serve
 from yutify import musicyt
 from yutify.spoti import spotipy
 
-redis_uri = os.environ["REDIS_URI"]
+try:
+    redis_uri = os.environ["REDIS_URI"]
+except KeyError:
+    redis_uri = "memory:///"
 
 app = Flask(__name__)
 api = Api(app)
@@ -89,6 +92,7 @@ api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 
 
 @app.route("/")
+@cache.cached(timeout=60)
 def index():
     return render_template("index.html")
 
@@ -137,6 +141,7 @@ def yutify_me():
 
 
 @app.route("/docs")
+@cache.cached(timeout=60)
 def docs():
     return render_template("docs.html")
 
