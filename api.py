@@ -2,7 +2,15 @@ import os
 import re
 
 import requests
-from flask import Flask, jsonify, make_response, render_template, request
+from flask import (
+    Flask,
+    jsonify,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_caching import Cache
 from flask_cors import CORS
 from flask_limiter import Limiter, RequestLimit
@@ -27,6 +35,10 @@ def default_error_responder(request_limit: RequestLimit):
     return make_response(jsonify(error=f"ratelimit exceeded {limit}"), 429)
 
 
+def is_valid_sting(string):
+    return bool(string and (string.isalnum() or not string.isspace()))
+
+
 limiter = Limiter(
     key_func=get_remote_address,
     app=app,
@@ -40,6 +52,9 @@ class Yutify(Resource):
     @limiter.limit("60 per minute")
     @cache.cached(timeout=3600)
     def get(self, artist, song):
+        artist = artist.strip()
+        song = song.strip()
+
         ytmusic = musicyt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
 
@@ -80,8 +95,11 @@ def index():
 
 @app.route("/yutify")
 def yutify_me():
-    artist = request.args.get("artist")
-    song = request.args.get("song")
+    artist = request.args.get("artist").strip()
+    song = request.args.get("song").strip()
+
+    if not is_valid_sting(artist) and not is_valid_sting(song):
+        return redirect(url_for(".index"))
 
     url = f"https://yutify.onrender.com/api/{artist}:{song}"
     response = requests.get(url)
@@ -102,7 +120,7 @@ def yutify_me():
     album_title = yutify["album_title"]
     artists = yutify["artists"]
     spotify = yutify["spotify"] if yutify["spotify"] != None else "#"
-    yt_music = yutify["ytmusic"]["url"]  if yutify["ytmusic"]["url"] != None else "#"
+    yt_music = yutify["ytmusic"]["url"] if yutify["ytmusic"]["url"] != None else "#"
 
     return render_template(
         "index.html",

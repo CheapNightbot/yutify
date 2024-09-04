@@ -16,15 +16,15 @@
 {% block content %}
 <form action="/yutify" class="content">
     {% if artist %}
-    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name", value="{{ artist }}">
+    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name", value="{{ artist }}" required>
     {% else %}
-    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name">
+    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name" required>
     {% endif %}
     <section id="second-row">
         {% if song %}
-        <input type="search" name="song" id="song" placeholder="Enter song name" value="{{ song }}">
+        <input type="search" name="song" id="song" placeholder="Enter song name" value="{{ song }}" required>
         {% else %}
-        <input type="search" name="song" id="song" placeholder="Enter song name">
+        <input type="search" name="song" id="song" placeholder="Enter song name" required>
         {% endif %}
         <button type="submit" id="search">Search</button>
     </section>
