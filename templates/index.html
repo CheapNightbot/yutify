@@ -64,7 +64,7 @@
                 {% else %}
                 <a class="music-link" href="#">
                 {% endif %}
-                    <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo">
+                    <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
                 </a>
                 {% if yt_music == "#" %}
                 <a class="music-link" href="{{ yt_music }}">
@@ -73,7 +73,7 @@
                 {% else %}
                 <a class="music-link" href="#">
                 {% endif %}
-                    <img src="{{ url_for('static', filename='youtube-music.svg') }}" alt="youtube music logo">
+                    <img src="{{ url_for('static', filename='youtube-music.svg') }}" alt="youtube music logo" style="width:30px; height:30px;">
                 </a>
             </div>
         </div>
