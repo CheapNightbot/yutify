@@ -66,6 +66,10 @@ h1 {
     animation: rotate 4s ease-in-out infinite;
 }
 
+#github:hover .rotate {
+    animation: none;
+}
+
 .button,
 .button:visited {
     text-decoration: none;
@@ -115,6 +119,10 @@ input {
     font-size: 1rem;
     width: 100%;
     background: transparent;
+}
+
+input:focus {
+    box-shadow: 0px 0px 6px 0px #a7caff;
 }
 
 #second-row {
