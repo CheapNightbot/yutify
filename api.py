@@ -18,7 +18,7 @@ from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
 from waitress import serve
 
-from yutify import musicyt
+from yutify.musicyt import music_yt
 from yutify.spoti import spotipy
 
 try:
@@ -58,7 +58,7 @@ class Yutify(Resource):
         artist = artist.strip()
         song = song.strip()
 
-        ytmusic = musicyt.search_musicyt(artist, song)
+        ytmusic = music_yt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
 
         if not ytmusic and not spotify:

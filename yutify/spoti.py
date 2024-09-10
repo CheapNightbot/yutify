@@ -4,6 +4,7 @@ import os
 from pprint import pprint
 
 import requests
+from yutify.cheap_utils import is_kinda_same
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -84,90 +85,20 @@ class Spotipy:
 
         # Search `type` being "track" & "album", api will return two dictionaries,
         # one dictionary for "tracks" and one for "albums"
+        tracks = response_json["tracks"]["items"]
+        albums = response_json["albums"]["items"]
 
-        for track in response_json["tracks"]["items"]:
+        for track in tracks:
             if music_info:
                 return music_info[0]
 
-            # Skip current track if it's name doesn't
-            # match with `song` in any way..
-            if (
-                track["name"].lower() != song.lower()
-                and track["name"].lower() not in song.lower()
-                and song.lower() not in track["name"].lower()
-            ):
-                continue
+            self.find_tracks(song, artist, track, artist_ids, music_info)
 
-            for artists in track["artists"]:
-
-                artists_name = []
-                artists_name.append(artists["name"])
-
-                if (
-                    artists["name"].lower() != artist.lower()
-                    and artists["name"].lower() not in artist.lower()
-                    and artists["id"] not in artist_ids
-                ):
-                    continue
-
-                track_url = track["external_urls"]["spotify"]
-                album_art = track["album"]["images"][0]["url"]
-                title = track["name"]
-                artists_ = ", ".join(artists_name)
-                album_type = track["album"]["album_type"]
-                album_title = track["album"]["name"]
-                music_info.append(
-                    {
-                        "album_art": album_art,
-                        "artists": artists_,
-                        "title": title,
-                        "album_type": album_type,
-                        "album_title": album_title,
-                        "url": track_url,
-                    }
-                )
-
-        for album in response_json["albums"]["items"]:
+        for album in albums:
             if music_info:
                 return music_info[0]
 
-            # Skip current album if it's name doesn't
-            # match with `song` in any way..
-            if (
-                album["name"].lower() != song.lower()
-                and album["name"].lower() not in song.lower()
-                and song.lower() not in album["name"].lower()
-            ):
-                continue
-
-            for artists in album["artists"]:
-
-                artists_name = []
-                artists_name.append(artists["name"])
-
-                if (
-                    artists["name"].lower() != artist.lower()
-                    and artists["name"].lower() not in artist.lower()
-                    and artists["id"] not in artist_ids
-                ):
-                    continue
-
-                album_url = album["external_urls"]["spotify"]
-                album_art = album["images"][0]["url"]
-                title = album["name"]
-                artists_ = ", ".join(artists_name)
-                album_type = album["album_type"]
-                album_title = album["name"]
-                music_info.append(
-                    {
-                        "album_art": album_art,
-                        "artists": artists_,
-                        "title": title,
-                        "album_type": album_type,
-                        "album_title": album_title,
-                        "url": album_url,
-                    }
-                )
+            self.find_album(song, artist, album, artist_ids, music_info)
 
         if music_info:
             return music_info[0]
@@ -200,13 +131,99 @@ class Spotipy:
 
         return artist_ids
 
+    def find_tracks(self, song, artist, track, artist_ids, music_info) -> None:
+        """Helper function to find and add song info to `music_info` list if found.
+
+        Args:
+            song (str): Song name provided by the user.
+            artist (str): Artist name provided by the user.
+            track (dict): Single track, returned by Spotify search endpoint.
+            artist_ids (list): List of artist ids, return by `get_artists_ids()` function.
+            music_info (list): List to add music info to, if found.
+        """
+        # Skip current track if it's name doesn't
+        # match with `song` in any way..
+
+        if not is_kinda_same(track["name"], song):
+            return
+
+        for artists in track["artists"]:
+
+            artists_name = []
+            artists_name.append(artists["name"])
+
+            if (
+                not is_kinda_same(artists["name"], artist)
+                and artists["id"] not in artist_ids
+            ):
+                continue
+
+            track_url = track["external_urls"]["spotify"]
+            album_art = track["album"]["images"][0]["url"]
+            title = track["name"]
+            artists_ = ", ".join(artists_name)
+            album_type = track["album"]["album_type"]
+            album_title = track["album"]["name"]
+            music_info.append(
+                {
+                    "album_art": album_art,
+                    "artists": artists_,
+                    "title": title,
+                    "album_type": album_type,
+                    "album_title": album_title,
+                    "url": track_url,
+                }
+            )
+
+    def find_album(self, song, artist, album, artist_ids, music_info) -> None:
+        """Helper function to find and add album info to `music_info` list if found.
+
+        Args:
+            song (str): Song name provided by the user.
+            artist (str): Artist name provided by the user.
+            album (dict): Single album, returned by Spotify search endpoint.
+            artist_ids (list): List of artist ids, return by `get_artists_ids()` function.
+            music_info (list): List to add music info to, if found.
+        """
+        # Skip current album if it's name doesn't
+        # match with `song` in any way..
+
+        if not is_kinda_same(album["name"], song):
+            return
+
+        for artists in album["artists"]:
+
+            artists_name = []
+            artists_name.append(artists["name"])
+
+            if (
+                not is_kinda_same(artists["name"], artist)
+                and artists["id"] not in artist_ids
+            ):
+                continue
+
+            album_url = album["external_urls"]["spotify"]
+            album_art = album["images"][0]["url"]
+            title = album["name"]
+            artists_ = ", ".join(artists_name)
+            album_type = album["album_type"]
+            album_title = album["name"]
+            music_info.append(
+                {
+                    "album_art": album_art,
+                    "artists": artists_,
+                    "title": title,
+                    "album_type": album_type,
+                    "album_title": album_title,
+                    "url": album_url,
+                }
+            )
+
 
 spotipy = Spotipy(client_id, client_secret)
 
 
 if __name__ == "__main__":
-
-    spotipy = Spotipy(client_id, client_secret)
 
     artist = input("Artist Name: ")
     song = input("Song Name: ")
