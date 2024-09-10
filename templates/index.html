@@ -62,7 +62,7 @@
                 {% elif spotify %}
                 <a class="music-link" href="{{ spotify }}" target="_blank">
                 {% else %}
-                <a class="music-link" href="#">
+                <a class="music-link" href="#spotify">
                 {% endif %}
                     <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
                 </a>
@@ -71,7 +71,7 @@
                 {% elif yt_music %}
                 <a class="music-link" href="{{ yt_music }}" target="_blank">
                 {% else %}
-                <a class="music-link" href="#">
+                <a class="music-link" href="#ytmusic">
                 {% endif %}
                     <img src="{{ url_for('static', filename='youtube-music.svg') }}" alt="youtube music logo" style="width:30px; height:30px;">
                 </a>
