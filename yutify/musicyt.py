@@ -26,6 +26,7 @@ class MusicYT:
         Returns:
             dict | None: If successful, a dictionary containing music ID and URL, else None
         """
+        self.music_info = []
 
         query = f"{artist} - {song}"
         search = self.ytmusic.search(query=query)
