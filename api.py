@@ -11,6 +11,7 @@ from flask import (
     request,
     url_for,
 )
+from flask_caching import Cache
 from flask_cors import CORS
 from flask_limiter import Limiter, RequestLimit
 from flask_limiter.util import get_remote_address
@@ -27,6 +28,7 @@ except KeyError:
 
 app = Flask(__name__)
 api = Api(app)
+cache = Cache(app, config={"CACHE_TYPE": "simple"})
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
@@ -51,6 +53,7 @@ limiter = Limiter(
 
 class Yutify(Resource):
     @limiter.limit("60 per minute")
+    @cache.cached(timeout=3600)
     def get(self, artist, song):
         artist = artist.strip()
         song = song.strip()
@@ -89,11 +92,13 @@ api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 
 
 @app.route("/")
+@cache.cached(timeout=60)
 def index():
     return render_template("index.html")
 
 
 @app.route("/yutify")
+@cache.cached(timeout=60)
 def yutify_me():
     artist = request.args.get("artist").strip()
     song = request.args.get("song").strip()
@@ -137,6 +142,7 @@ def yutify_me():
 
 
 @app.route("/docs")
+@cache.cached(timeout=60)
 def docs():
     return render_template("docs.html")
 
