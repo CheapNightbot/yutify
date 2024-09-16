@@ -21,7 +21,7 @@ ordered-set==4.1.0
 packaging==24.1
 Pygments==2.18.0
 python-dotenv==1.0.1
-pytz==2024.1
+pytz==2024.2
 redis==5.0.8
 requests==2.32.3
 rich==13.8.0
