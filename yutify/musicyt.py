@@ -50,9 +50,13 @@ class MusicYT:
                     continue
 
                 elif result["resultType"] == "song" or result["resultType"] == "video":
+                    if self.music_info:
+                        return self.music_info[0]
                     self.get_song(result)
 
                 else:
+                    if self.music_info:
+                        return self.music_info[0]
                     self.get_album(result)
 
         if self.music_info:
@@ -97,7 +101,7 @@ class MusicYT:
             result (dict): Returned by `musicyt.search()`.
         """
         title = result["title"]
-        artist_name = " ".join([artists["name"] for artists in result["artists"]])
+        artist_name = ", ".join([artists["name"] for artists in result["artists"]])
         video_id = result["videoId"]
         song_url = f"https://music.youtube.com/watch?v={video_id}"
         try:
@@ -126,7 +130,7 @@ class MusicYT:
             result (dict): Returned by the `musicyt.search()`.
         """
         title = result["title"]
-        artist_name = " ".join([artists["name"] for artists in result["artists"]])
+        artist_name = ", ".join([artists["name"] for artists in result["artists"]])
         browse_id = result["browseId"]
         album_url = f"https://music.youtube.com/browse/{browse_id}"
         try:

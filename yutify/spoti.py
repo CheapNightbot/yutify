@@ -154,17 +154,23 @@ class Spotipy:
         if not is_kinda_same(track["name"], song):
             return
 
+        temp = []
+        for x in track["artists"]:
+            temp.append(x["name"])
+
+        artists_name = []
         for artists in track["artists"]:
-
-            artists_name = []
-            artists_name.append(artists["name"])
-
             if (
                 not is_kinda_same(artists["name"], artist)
                 and artists["id"] not in artist_ids
+                and artists["name"] not in temp
+                and not artists_name
             ):
                 continue
 
+            artists_name.append(artists["name"])
+
+        if artist in artists_name:
             track_url = track["external_urls"]["spotify"]
             album_art = track["album"]["images"][0]["url"]
             title = track["name"]
@@ -198,17 +204,23 @@ class Spotipy:
         if not is_kinda_same(album["name"], song):
             return
 
+        temp = []
+        for x in album["artists"]:
+            temp.append(x["name"])
+
+        artists_name = []
         for artists in album["artists"]:
-
-            artists_name = []
-            artists_name.append(artists["name"])
-
             if (
                 not is_kinda_same(artists["name"], artist)
                 and artists["id"] not in artist_ids
+                and artists["name"] not in temp
+                and not artists_name
             ):
                 continue
 
+            artists_name.append(artists["name"])
+
+        if artist in artists_name:
             album_url = album["external_urls"]["spotify"]
             album_art = album["images"][0]["url"]
             title = album["name"]
