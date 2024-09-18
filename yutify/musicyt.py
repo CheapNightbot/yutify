@@ -46,17 +46,16 @@ class MusicYT:
                 continue
 
             for artists in result["artists"]:
+                if self.music_info:
+                    return self.music_info[0]
+
                 if not is_kinda_same(artists["name"], artist):
                     continue
 
                 elif result["resultType"] == "song" or result["resultType"] == "video":
-                    if self.music_info:
-                        return self.music_info[0]
                     self.get_song(result)
 
                 else:
-                    if self.music_info:
-                        return self.music_info[0]
                     self.get_album(result)
 
         if self.music_info:
