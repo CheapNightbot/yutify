@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import requests
 from dotenv import load_dotenv
 
-from utils.cheap_utils import is_kinda_same
+from utils.cheap_utils import is_kinda_same, sep_artists
 
 load_dotenv()
 
@@ -118,20 +118,23 @@ class Spotipy:
         Returns:
             list | None: List containg artists's IDs or None if couldn't find any.
         """
-        url = "https://api.spotify.com/v1/search"
-        query = f"?q={artist}&type=artist&limit=10"
-        query_url = url + query
-        headers = self.__header
-
-        response = requests.get(query_url, headers=headers)
-        response_json = response.json()["artists"]["items"]
-
-        if len(response_json) == 0:
-            return None
-
         artist_ids = []
-        for artist in response_json:
-            artist_ids.append(artist["id"])
+        artists = sep_artists(artist)
+
+        for name in artists:
+            url = "https://api.spotify.com/v1/search"
+            query = f"?q={name}&type=artist&limit=5"
+            query_url = url + query
+            headers = self.__header
+
+            response = requests.get(query_url, headers=headers)
+            response_json = response.json()["artists"]["items"]
+
+            if len(response_json) == 0:
+                return None
+
+            for artist in response_json:
+                artist_ids.append(artist["id"])
 
         return artist_ids
 
