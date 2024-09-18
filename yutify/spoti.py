@@ -83,6 +83,8 @@ class Spotipy:
         query_url = url + query
         headers = self.__header
 
+        logger.info(f"Spotify Search Query: `{query}`")
+
         response = requests.get(query_url, headers=headers)
 
         if response.status_code != 200:
@@ -136,6 +138,8 @@ class Spotipy:
             query = f"?q={name}&type=artist&limit=5"
             query_url = url + query
             headers = self.__header
+
+            logger.info(f"Spotify Search [@get_artists_id()] Query: `{query}`")
 
             response = requests.get(query_url, headers=headers)
 

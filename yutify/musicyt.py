@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from ytmusicapi import YTMusic
 
 from utils.cheap_utils import is_kinda_same
+from utils.logger import logger
 
 load_dotenv()
 
@@ -34,6 +35,8 @@ class MusicYT:
 
         query = f"{artist} - {song}"
         search = self.ytmusic.search(query=query)
+
+        logger.info(f"YouTube Music Search Query: `{query}`")
 
         for result in search:
             if self.music_info:
