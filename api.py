@@ -18,6 +18,7 @@ from flask_restful import Api, Resource, abort
 from waitress import serve
 
 from utils.logger import logger
+from utils.replace import replace_after_half
 from yutify.musicyt import music_yt
 from yutify.spoti import spotipy
 
@@ -56,12 +57,16 @@ class Yutify(Resource):
         artist = artist.strip()
         song = song.strip()
 
+        logger.info(f"Request came from: `{replace_after_half(get_remote_address())}`") # Only for debugging !!
+        logger.info(f"Artist: `{artist}` & Song: `{song}`")
+
         ytmusic = music_yt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
 
         if ytmusic and not spotify:
             logger.info("YouTube Music contains result, but Spotify is None.")
             logger.info("Searching Spotify again with the info from YouTube Music.")
+            logger.info(f"From YTMusic ==> Artist: `{ytmusic['artists']}` & Song: `{ytmusic['title']}`")
             spotify = spotipy.search_music(ytmusic["artists"], ytmusic["title"])
 
         elif not ytmusic and not spotify:
