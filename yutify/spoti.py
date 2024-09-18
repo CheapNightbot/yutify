@@ -137,10 +137,11 @@ class Spotipy:
             headers = self.__header
 
             response = requests.get(query_url, headers=headers)
-            response_json = response.json()["artists"]["items"]
 
-            if len(response_json) == 0:
+            if response.status_code != 200:
                 return None
+
+            response_json = response.json()["artists"]["items"]
 
             for artist in response_json:
                 artist_ids.append(artist["id"])
