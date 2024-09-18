@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import sys
+import time
 from pprint import pprint
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -24,6 +25,7 @@ class Spotipy:
     def __init__(self, client_id: str, client_secret: str) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
+        self.__start_time = time.time()
         self.__token = self.__get_spotify_token()
         self.__header = self.__get_auth_header(self.__token)
 
@@ -76,6 +78,13 @@ class Spotipy:
         Returns:
             dict | None: If successful, a dictionary containing music URL, else None
         """
+        # If it's been 1 hour, the Spotify access token has expired..
+        # Check and request new access token
+        elapsed_time = time.time() - self.__start_time
+        if elapsed_time >= 3600:
+            self.__token = self.__get_spotify_token()
+            self.__header = self.__get_auth_header(self.__token)
+
         music_info = []
 
         url = "https://api.spotify.com/v1/search"
