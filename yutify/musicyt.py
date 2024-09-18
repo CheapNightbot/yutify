@@ -1,9 +1,13 @@
 import os
+import sys
 from pprint import pprint
 
-from yutify.cheap_utils import is_kinda_same
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from dotenv import load_dotenv
 from ytmusicapi import YTMusic
+
+from utils.cheap_utils import is_kinda_same
 
 load_dotenv()
 
