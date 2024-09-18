@@ -82,6 +82,7 @@ class Spotipy:
         # Check and request new access token
         elapsed_time = time.time() - self.__start_time
         if elapsed_time >= 3600:
+            logger.info("Requesting new Spotify access token.")
             self.__token = self.__get_spotify_token()
             self.__header = self.__get_auth_header(self.__token)
 
