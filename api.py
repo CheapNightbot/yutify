@@ -17,6 +17,7 @@ from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
 from waitress import serve
 
+from utils.logger import logger
 from yutify.musicyt import music_yt
 from yutify.spoti import spotipy
 
@@ -58,14 +59,14 @@ class Yutify(Resource):
         ytmusic = music_yt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
 
-        if not ytmusic and not spotify:
-            abort(404, error=f"Couldn't find '{song}' by '{artist}'")
-
-        elif ytmusic and not spotify:
+        if ytmusic and not spotify:
+            logger.info("YouTube Music contains result, but Spotify is None.")
+            logger.info("Searching Spotify again with the info from YouTube Music.")
             spotify = spotipy.search_music(ytmusic["artists"], ytmusic["title"])
 
-        elif not ytmusic or not spotify:
+        elif not ytmusic and not spotify:
             abort(404, error=f"Couldn't find '{song}' by '{artist}'")
+
 
         result = {
             "album_art": spotify["album_art"] if spotify else ytmusic["album_art"],

@@ -10,6 +10,7 @@ import requests
 from dotenv import load_dotenv
 
 from utils.cheap_utils import is_kinda_same, sep_artists
+from utils.logger import logger
 
 load_dotenv()
 
@@ -46,6 +47,11 @@ class Spotipy:
         json_result = json.loads(result.content)
         token = json_result["access_token"]
 
+        if token:
+            logger.info("Spotify access token request successful.")
+        else:
+            logger.warning("Spotify access token request unsuccessful!")
+
         return token
 
     def __get_auth_header(self, token: str) -> dict:
@@ -80,6 +86,7 @@ class Spotipy:
         response = requests.get(query_url, headers=headers)
 
         if response.status_code != 200:
+            logger.error(f"Spotify returned with status code: {response.status_code}")
             return None
 
         response_json = response.json()
@@ -91,6 +98,9 @@ class Spotipy:
         # one dictionary for "tracks" and one for "albums"
         tracks = response_json["tracks"]["items"]
         albums = response_json["albums"]["items"]
+
+        if not tracks and not albums:
+            logger.warning(f"Spotify returned with status code: {response.status_code}, BUT it's empty!")
 
         for track in tracks:
             if music_info:
@@ -128,10 +138,15 @@ class Spotipy:
             headers = self.__header
 
             response = requests.get(query_url, headers=headers)
+
+            if response.status_code != 200:
+                logger.error(f"Spotify [@get_artists_id()] returned with status code: {response.status_code}")
+                return None
+
             response_json = response.json()["artists"]["items"]
 
-            if len(response_json) == 0:
-                return None
+            if not response_json:
+                logger.warning(f"Spotify [@get_artists_id()] returned with status code: {response.status_code}, BUT it's empty!")
 
             for artist in response_json:
                 artist_ids.append(artist["id"])
