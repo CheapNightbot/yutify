@@ -196,7 +196,8 @@ button:hover {
 
 .scroll-me {
     overflow: auto;
-    height: 33vh;
+    height: 36vh;
+    padding-top: 1em;
 }
 
 .scroll-me::-webkit-scrollbar {
@@ -224,7 +225,7 @@ button:hover {
 }
 
 #not-found {
-    height: 10vh;
+    height: 12vh;
 }
 
 #docs {

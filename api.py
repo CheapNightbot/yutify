@@ -21,6 +21,7 @@ from utils.logger import logger
 from utils.replace import replace_after_half
 from yutify.musicyt import music_yt
 from yutify.spoti import spotipy
+from yutify.deezer import deezer
 
 try:
     redis_uri = os.environ["REDIS_URI"]
@@ -62,6 +63,7 @@ class Yutify(Resource):
 
         ytmusic = music_yt.search_musicyt(artist, song)
         spotify = spotipy.search_music(artist, song)
+        deezzer = deezer.search_deez_songs(artist, song)
 
         if ytmusic and not spotify:
             logger.info("YouTube Music contains result, but Spotify is None.")
@@ -69,19 +71,24 @@ class Yutify(Resource):
             logger.info(f"From YTMusic ==> Artist: `{ytmusic['artists']}` & Song: `{ytmusic['title']}`")
             spotify = spotipy.search_music(ytmusic["artists"], ytmusic["title"])
 
-        elif not ytmusic and not spotify:
+        elif ytmusic and not deezzer:
+            logger.info("YouTube Music contains result, but Deezer is None.")
+            logger.info("Searching Deezer again with the info from YouTube Music.")
+            logger.info(f"From YTMusic ==> Artist: `{ytmusic['artists']}` & Song: `{ytmusic['title']}`")
+            deezzer = deezer.search_deez_songs(ytmusic["artists"], ytmusic["title"])
+
+        elif not ytmusic and not spotify and not deezzer:
             abort(404, error=f"Couldn't find '{song}' by '{artist}'")
 
 
         result = {
-            "album_art": spotify["album_art"] if spotify else ytmusic["album_art"],
+            "album_art": spotify["album_art"] if spotify else deezzer["album_art"] if deezzer else ytmusic["album_art"],
+            "album_type": spotify["album_type"] if spotify else deezzer["album_type"] if deezzer else ytmusic["album_type"],
+            "album_title": spotify["album_title"] if spotify else ytmusic["album_title"],
+            "artists": spotify["artists"] if spotify else ytmusic["artists"],
+            "deezer": deezzer["url"] if deezzer else None,
             "spotify": spotify["url"] if spotify else None,
             "title": spotify["title"] if spotify else ytmusic["title"],
-            "album_title": (
-                spotify["album_title"] if spotify else ytmusic["album_title"]
-            ),
-            "album_type": spotify["album_type"] if spotify else ytmusic["album_type"],
-            "artists": (spotify["artists"] if spotify else ytmusic["artists"]),
             "ytmusic": {
                 "id": ytmusic["id"] if ytmusic else None,
                 "url": ytmusic["url"] if ytmusic else None,
@@ -121,23 +128,25 @@ def yutify_me():
         )
 
     album_art = yutify["album_art"]
-    title = yutify["title"]
-    album_type = yutify["album_type"]
     album_title = yutify["album_title"]
+    album_type = yutify["album_type"]
     artists = yutify["artists"]
+    deezer = yutify["deezer"] if yutify["deezer"] != None else "#"
     spotify = yutify["spotify"] if yutify["spotify"] != None else "#"
+    title = yutify["title"]
     yt_music = yutify["ytmusic"]["url"] if yutify["ytmusic"]["url"] != None else "#"
 
     return render_template(
         "index.html",
-        artist=artist,
-        song=song,
         album_art=f"{album_art}",
-        title=f"{title}",
-        album_type=f"{album_type}",
         album_title=f"{album_title}",
+        album_type=f"{album_type}",
+        artist=artist,
         artists=f"{artists}",
+        deezer=f"{deezer}",
+        song=song,
         spotify=f"{spotify}",
+        title=f"{title}",
         yt_music=f"{yt_music}",
     )
 
