@@ -5,11 +5,10 @@ import sys
 import time
 from pprint import pprint
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import requests
 from dotenv import load_dotenv
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.cheap_utils import is_kinda_same, sep_artists
 from utils.logger import logger
 
@@ -83,6 +82,7 @@ class Spotipy:
         elapsed_time = time.time() - self.__start_time
         if elapsed_time >= 3600:
             logger.info("Requesting new Spotify access token.")
+            self.__start_time = time.time()
             self.__token = self.__get_spotify_token()
             self.__header = self.__get_auth_header(self.__token)
 
