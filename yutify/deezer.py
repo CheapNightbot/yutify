@@ -43,25 +43,84 @@ class Deezer:
                 logger.error(f"Deezer returned with status code: {response.status_code}")
                 return None
 
-            response_json = response.json()["data"]
+            try:
+                result = response.json()["data"][0]
+            except IndexError:
+                return None
 
-            for result in response_json:
+            match result["type"]:
+                case "track":
+                    isrc = self.get_upc_isrc(result["id"], result["type"])
+                    upc = None
 
-                self.music_info.append(
-                    {
-                        "album_art": result["album"]["cover_xl"] if search_type == "track" else result["cover_xl"],
-                        "artists": result["artist"]["name"],
-                        "title": result["title"],
-                        "album_type": result["type"] if search_type == "track" else result["record_type"],
-                        "album_title": result["album"]["title"] if search_type == "track" else result["title"],
-                        "url": result["link"],
-                    }
-                )
+                case "album":
+                    upc = self.get_upc_isrc(result["id"], result["type"])
+                    isrc = None
+
+            self.music_info.append(
+                {
+                    "album_art": result["album"]["cover_xl"] if result["type"] == "track" else result["cover_xl"],
+                    "album_title": result["album"]["title"] if result["type"] == "track" else result["title"],
+                    "album_type": result["type"] if result["type"] == "track" else result["record_type"],
+                    "artists": result["artist"]["name"],
+                    "id": result["id"],
+                    "isrc": isrc,
+                    "title": result["title"],
+                    "type": result["type"],
+                    "upc": upc,
+                    "url": result["link"],
+                }
+            )
 
         if self.music_info:
             return self.music_info[0]
         else:
             return None
+
+    def get_upc_isrc(self, id: int, type: str) -> str | None:
+        """Return ISRC or UPC for a track or album respectively.
+
+        Args:
+            id (int): Deezer track or album ID.
+            type (str): Whether it's a `track` or an `album`.
+
+        Returns:
+            str | None: Return ISRC or UPC if found, otherwise return None.
+        """
+        url = "https://api.deezer.com/"
+
+        match type:
+            case "track":
+                query_url = url + f"track/{id}"
+                logger.info("Get ISRC from Deezer.")
+
+                response = requests.get(query_url)
+
+                if response.status_code != 200:
+                    logger.error(f"Failed to get ISRC. Deezer retuned with status code: {response.status_code}")
+                    return None
+
+                result = response.json()
+                return result["isrc"]
+
+        match type:
+            case "album":
+                query_url = url + f"album/{id}"
+                logger.info("Get UPC from Deezer.")
+
+                response = requests.get(query_url)
+
+                if response.status_code != 200:
+                    logger.error(f"Failed to get UPC. Deezer retuned with status code: {response.status_code}")
+                    return None
+
+                result = response.json()
+                return result["upc"]
+
+        match type:
+            case _:
+                return None
+
 
 
 deezer = Deezer()
