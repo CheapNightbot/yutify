@@ -19,9 +19,7 @@ from waitress import serve
 
 from utils.logger import logger
 from utils.replace import replace_after_half
-from yutify.musicyt import music_yt
-from yutify.spoti import spotipy
-from yutify.deezer import deezer
+from yutify.yutify import yutify_it
 
 try:
     redis_uri = os.environ["REDIS_URI"]
@@ -61,39 +59,10 @@ class Yutify(Resource):
         logger.info(f"Request came from: `{replace_after_half(get_remote_address())}`") # Only for debugging !!
         logger.info(f"Artist: `{artist}` & Song: `{song}`")
 
-        ytmusic = music_yt.search_musicyt(artist, song)
-        spotify = spotipy.search_music(artist, song)
-        deezzer = deezer.search_deez_songs(artist, song)
+        result = yutify_it(artist, song)
 
-        if ytmusic and not spotify:
-            logger.info("YouTube Music contains result, but Spotify is None.")
-            logger.info("Searching Spotify again with the info from YouTube Music.")
-            logger.info(f"From YTMusic ==> Artist: `{ytmusic['artists']}` & Song: `{ytmusic['title']}`")
-            spotify = spotipy.search_music(ytmusic["artists"], ytmusic["title"])
-
-        elif ytmusic and not deezzer:
-            logger.info("YouTube Music contains result, but Deezer is None.")
-            logger.info("Searching Deezer again with the info from YouTube Music.")
-            logger.info(f"From YTMusic ==> Artist: `{ytmusic['artists']}` & Song: `{ytmusic['title']}`")
-            deezzer = deezer.search_deez_songs(ytmusic["artists"], ytmusic["title"])
-
-        elif not ytmusic and not spotify and not deezzer:
+        if not result:
             abort(404, error=f"Couldn't find '{song}' by '{artist}'")
-
-
-        result = {
-            "album_art": spotify["album_art"] if spotify else deezzer["album_art"] if deezzer else ytmusic["album_art"],
-            "album_type": spotify["album_type"] if spotify else deezzer["album_type"] if deezzer else ytmusic["album_type"],
-            "album_title": spotify["album_title"] if spotify else ytmusic["album_title"],
-            "artists": spotify["artists"] if spotify else ytmusic["artists"],
-            "deezer": deezzer["url"] if deezzer else None,
-            "spotify": spotify["url"] if spotify else None,
-            "title": spotify["title"] if spotify else ytmusic["title"],
-            "ytmusic": {
-                "id": ytmusic["id"] if ytmusic else None,
-                "url": ytmusic["url"] if ytmusic else None,
-            },
-        }
 
         return jsonify(result)
 

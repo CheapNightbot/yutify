@@ -155,10 +155,9 @@ class MusicYT:
         )
 
 
-music_yt = MusicYT()
-
-
 if __name__ == "__main__":
+
+    music_yt = MusicYT()
 
     artist = input("Artist Name: ")
     song = input("Song Name: ")

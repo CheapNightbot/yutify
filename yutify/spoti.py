@@ -67,8 +67,8 @@ class Spotipy:
         """
         return {"Authorization": f"Bearer {token}"}
 
-    def search_music(self, artist: str, song: str) -> dict | None:
-        """Return a dictionary containing Spotify music URL or None
+    def search_music(self, artist: str, song: str, isrc: str = None, upc: str = None) -> dict | None:
+        """Return a dictionary containing Spotify music URL and other info or None
 
         Args:
             artist (str): Artist Name of the song
@@ -89,7 +89,12 @@ class Spotipy:
         music_info = []
 
         url = "https://api.spotify.com/v1/search"
-        query = f"?q={artist} {song}&type=track,album&limit=10"
+        if isrc:
+            query = f"?q={artist} {song} isrc:{isrc}&type=track&limit=1"
+        elif upc:
+            query = f"?q={artist} {song} upc:{upc}&type=album&limit=1"
+        else:
+            query = f"?q={artist} {song}&type=track,album&limit=10"
         query_url = url + query
         headers = self.__header
 
@@ -108,17 +113,28 @@ class Spotipy:
 
         # Search `type` being "track" & "album", api will return two dictionaries,
         # one dictionary for "tracks" and one for "albums"
-        tracks = response_json["tracks"]["items"]
-        albums = response_json["albums"]["items"]
+        try:
+            tracks = response_json["tracks"]["items"]
+        except KeyError:
+            pass
+
+        try:
+            albums = response_json["albums"]["items"]
+        except KeyError:
+            pass
 
         if not tracks and not albums:
             logger.warning(f"Spotify returned with status code: {response.status_code}, BUT it's empty!")
+            return None
 
         for track in tracks:
             if music_info:
                 return music_info[0]
 
             self.find_tracks(song, artist, track, artist_ids, music_info)
+
+        if music_info:
+            return music_info[0]
 
         for album in albums:
             if music_info:
@@ -268,10 +284,9 @@ class Spotipy:
             )
 
 
-spotipy = Spotipy(client_id, client_secret)
-
-
 if __name__ == "__main__":
+
+    spotipy = Spotipy(client_id, client_secret)
 
     artist = input("Artist Name: ")
     song = input("Song Name: ")

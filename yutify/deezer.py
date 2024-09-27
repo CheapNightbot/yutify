@@ -46,7 +46,10 @@ class Deezer:
             try:
                 result = response.json()["data"][0]
             except IndexError:
+                logger.error("No result found in Deezer.")
                 return None
+
+            logger.info("Found result in Deezer.")
 
             match result["type"]:
                 case "track":
@@ -122,10 +125,9 @@ class Deezer:
                 return None
 
 
-
-deezer = Deezer()
-
 if __name__ == "__main__":
+
+    deezer = Deezer()
 
     artist = input("Artist Name: ")
     song = input("Song Name: ")
