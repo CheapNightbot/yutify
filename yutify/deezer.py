@@ -1,6 +1,7 @@
 import os
 import sys
 from pprint import pprint
+from datetime import datetime
 
 import requests
 
@@ -46,17 +47,23 @@ class Deezer:
             try:
                 result = response.json()["data"][0]
             except IndexError:
-                logger.error("No result found in Deezer.")
-                return None
+                logger.error(f"No result found in Deezer for search type: {search_type}.")
+                continue
 
             match result["type"]:
                 case "track":
-                    isrc = self.get_upc_isrc(result["id"], result["type"])
+                    track_info = self.get_upc_isrc(result["id"], result["type"])
+                    isrc = track_info["isrc"]
+                    release_date = track_info["release_date"]
                     upc = None
 
                 case "album":
-                    upc = self.get_upc_isrc(result["id"], result["type"])
+                    album_info = self.get_upc_isrc(result["id"], result["type"])
+                    upc = album_info["upc"]
+                    release_date = album_info["release_date"]
                     isrc = None
+
+            release_date = datetime.strptime(release_date, "%Y-%m-%d").strftime("%Y, %B %d")
 
             self.music_info.append(
                 {
@@ -66,6 +73,7 @@ class Deezer:
                     "artists": result["artist"]["name"],
                     "id": result["id"],
                     "isrc": isrc,
+                    "release_date": release_date,
                     "title": result["title"],
                     "type": result["type"],
                     "upc": upc,
@@ -78,8 +86,8 @@ class Deezer:
         else:
             return None
 
-    def get_upc_isrc(self, id: int, type: str) -> str | None:
-        """Return ISRC or UPC for a track or album respectively.
+    def get_upc_isrc(self, id: int, type: str) -> dict | None:
+        """Return ISRC or UPC for a track or album respectively. Also date!
 
         Args:
             id (int): Deezer track or album ID.
@@ -102,7 +110,7 @@ class Deezer:
                     return None
 
                 result = response.json()
-                return result["isrc"]
+                return {"isrc": result["isrc"], "release_date": result["release_date"]}
 
         match type:
             case "album":
@@ -116,7 +124,7 @@ class Deezer:
                     return None
 
                 result = response.json()
-                return result["upc"]
+                return {"upc": result["upc"], "release_date": result["release_date"]}
 
         match type:
             case _:
