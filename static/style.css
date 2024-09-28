@@ -177,7 +177,7 @@ button:hover {
 
 .result {
     width: 100%;
-    height: 40vh;
+    height: fit-content;
     border: 1px #a7caff solid;
     padding: 0.6rem 1rem;
     border-radius: .369rem;
@@ -196,8 +196,7 @@ button:hover {
 
 .scroll-me {
     overflow: auto;
-    height: 36vh;
-    padding-top: 1em;
+    height: fit-content;
 }
 
 .scroll-me::-webkit-scrollbar {
@@ -218,14 +217,6 @@ button:hover {
 
 .var {
     color: #a7caff;
-}
-
-#endpoint {
-    height: 5.5vh;
-}
-
-#not-found {
-    height: 12vh;
 }
 
 #docs {
