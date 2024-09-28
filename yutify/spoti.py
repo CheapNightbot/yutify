@@ -189,7 +189,7 @@ class Spotipy:
 
             music_info.append(
                 {
-                    "album_art": result["external_urls"]["spotify"],
+                    "album_art": result["album"]["images"][0]["url"],
                     "artists": ", ".join(artists),
                     "title": result["name"],
                     "album_type": result["album"]["album_type"],
