@@ -49,8 +49,6 @@ class Deezer:
                 logger.error("No result found in Deezer.")
                 return None
 
-            logger.info("Found result in Deezer.")
-
             match result["type"]:
                 case "track":
                     isrc = self.get_upc_isrc(result["id"], result["type"])
