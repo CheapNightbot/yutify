@@ -7,11 +7,11 @@ from yutify.deezer import Deezer
 from yutify.musicyt import MusicYT
 from yutify.spoti import Spotipy, client_id, client_secret
 
+deezer = Deezer()
+spotipy = Spotipy(client_id, client_secret)
+yt_music = MusicYT()
 
 def yutify_it(artist: str, song: str):
-    deezer = Deezer()
-    spotipy = Spotipy(client_id, client_secret)
-    yt_music = MusicYT()
 
     deez_result = deezer.search_deez_songs(artist, song)
     ytmusic_result = yt_music.search_musicyt(artist, song)
