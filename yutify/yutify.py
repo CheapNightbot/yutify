@@ -18,6 +18,14 @@ def yutify_it(artist: str, song: str):
     spotify_result = None
     ytmusic_result = yt_music.search_musicyt(artist, song)
 
+    # YES!
+    album_art = None
+    album_type = None
+    album_title = None
+    artists = None
+    release_date = None
+    title = None
+
     if ytmusic_result:
         logger.info("Got result from YouTube Music.")
     else:
@@ -45,12 +53,12 @@ def yutify_it(artist: str, song: str):
 
     if spotify_result:
         logger.info("Got result from Spotify.")
-        artists = spotify_result["artists"]
         album_art = spotify_result["album_art"]
         album_type = spotify_result["album_type"]
         album_title = spotify_result["album_title"]
-        title = spotify_result["title"]
+        artists = spotify_result["artists"]
         release_date = spotify_result["release_date"]
+        title = spotify_result["title"]
 
     if (
         not deez_result
