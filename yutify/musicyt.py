@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dotenv import load_dotenv
 from ytmusicapi import YTMusic
 
-from utils.cheap_utils import is_kinda_same
+from utils.cheap_utils import cheap_compare
 from utils.logger import logger
 
 load_dotenv()
@@ -45,14 +45,14 @@ class MusicYT:
             elif self.skip_categories(result):
                 continue
 
-            elif not is_kinda_same(result["title"], song):
+            elif not cheap_compare(result["title"], song):
                 continue
 
             for artists in result["artists"]:
                 if self.music_info:
                     return self.music_info[0]
 
-                if not is_kinda_same(artists["name"], artist):
+                if not cheap_compare(artists["name"], artist):
                     continue
 
                 elif result["resultType"] == "song" or result["resultType"] == "video":

@@ -58,7 +58,7 @@
             </h3>
             <div class="result-container" style="flex-direction:row; padding:1rem;">
                 {% if deezer == "#" %}
-                <a class="music-link" href="{{ deezer }}">
+                <a class="music-link" href="#deezer">
                 {% elif spotify %}
                 <a class="music-link" href="{{ deezer }}" target="_blank">
                 {% else %}
@@ -67,7 +67,7 @@
                     <img src="{{ url_for('static', filename='deezer.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
                 </a>
                 {% if spotify == "#" %}
-                <a class="music-link" href="{{ spotify }}">
+                <a class="music-link" href="#spotify">
                 {% elif spotify %}
                 <a class="music-link" href="{{ spotify }}" target="_blank">
                 {% else %}
@@ -76,7 +76,7 @@
                     <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
                 </a>
                 {% if yt_music == "#" %}
-                <a class="music-link" href="{{ yt_music }}">
+                <a class="music-link" href="#ytmusic">
                 {% elif yt_music %}
                 <a class="music-link" href="{{ yt_music }}" target="_blank">
                 {% else %}

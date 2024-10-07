@@ -21,26 +21,71 @@ from utils.logger import logger
 from utils.replace import replace_after_half
 from yutify.yutify import yutify_it
 
-try:
-    redis_uri = os.environ["REDIS_URI"]
-except KeyError:
-    redis_uri = "memory:///"
+# Configuring Redis URI
+redis_uri = os.getenv("REDIS_URI", "memory:///")
 
+# Initialize Flask app and extensions
 app = Flask(__name__)
 api = Api(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
+# Helper Functions
 def default_error_responder(request_limit: RequestLimit):
-    limit = str(request_limit.limit)
-    limit = re.sub(r"(\d+)\s+per", r"\1 request(s) per", limit)
+    """
+    Default response for rate-limited requests.
+    """
+    limit = re.sub(r"(\d+)\s+per", r"\1 request(s) per", str(request_limit.limit))
     return make_response(jsonify(error=f"ratelimit exceeded {limit}"), 429)
 
 
-def is_valid_sting(string):
+def is_valid_string(string: str) -> bool:
+    """
+    Validate if a string is non-empty, alphanumeric, or contains non-whitespace characters.
+    """
     return bool(string and (string.isalnum() or not string.isspace()))
 
 
+def fetch_yutify_data(artist: str, song: str):
+    """
+    Fetch song details using the yutify_it function.
+    """
+    result = yutify_it(artist, song)
+    if not result:
+        abort(404, error=f"Couldn't find '{song}' by '{artist}'")
+    return result
+
+
+def build_response_template(response, artist, song):
+    """
+    Construct the response for rendering the HTML template.
+    """
+    if response.status_code == 404:
+        return render_template(
+            "index.html",
+            artist=artist,
+            song=song,
+            album_art="static/favicon.svg",
+            title=response.json().get("error"),
+        )
+
+    yutify_data = response.json()
+    return render_template(
+        "index.html",
+        album_art=yutify_data.get("album_art", "static/favicon.svg"),
+        album_title=yutify_data.get("album_title", ""),
+        album_type=yutify_data.get("album_type", ""),
+        artist=artist,
+        artists=yutify_data.get("artists", ""),
+        deezer=yutify_data.get("deezer", "#"),
+        song=song,
+        spotify=yutify_data.get("spotify", "#"),
+        title=yutify_data.get("title", ""),
+        yt_music=yutify_data["ytmusic"].get("url", "#"),
+    )
+
+
+# Flask Limiter Setup
 limiter = Limiter(
     key_func=get_remote_address,
     app=app,
@@ -50,20 +95,20 @@ limiter = Limiter(
 )
 
 
+# API Resource for Yutify
 class Yutify(Resource):
     @limiter.limit("60 per minute")
     def get(self, artist, song):
+        """
+        GET method to fetch song details from Deezer, Spotify, and YouTube Music.
+        """
         artist = artist.strip()
         song = song.strip()
 
-        logger.info(f"Request came from: `{replace_after_half(get_remote_address())}`") # Only for debugging !!
+        logger.info(f"Request came from: `{replace_after_half(get_remote_address())}`")
         logger.info(f"Artist: `{artist}` & Song: `{song}`")
 
-        result = yutify_it(artist, song)
-
-        if not result:
-            abort(404, error=f"Couldn't find '{song}' by '{artist}'")
-
+        result = fetch_yutify_data(artist, song)
         return jsonify(result)
 
 
@@ -72,56 +117,36 @@ api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 
 @app.route("/")
 def index():
+    """
+    Render the main index/home page.
+    """
     return render_template("index.html")
 
 
 @app.route("/yutify")
 def yutify_me():
-    artist = request.args.get("artist").strip()
-    song = request.args.get("song").strip()
+    """
+    Handle the yutify search from the web form (@index.html).
+    """
+    artist = request.args.get("artist", "").strip()
+    song = request.args.get("song", "").strip()
 
-    if not is_valid_sting(artist) and not is_valid_sting(song):
+    # Check for invalid input
+    if not is_valid_string(artist) or not is_valid_string(song):
         return redirect(url_for(".index"))
 
     url = f"https://yutify.onrender.com/api/{artist}:{song}"
     response = requests.get(url)
-    yutify = response.json()
 
-    if response.status_code == 404:
-        return render_template(
-            "index.html",
-            artist=artist,
-            song=song,
-            album_art="static/favicon.svg",
-            title=f"{yutify['error']}",
-        )
-
-    album_art = yutify["album_art"]
-    album_title = yutify["album_title"]
-    album_type = yutify["album_type"]
-    artists = yutify["artists"]
-    deezer = yutify["deezer"] if yutify["deezer"] != None else "#"
-    spotify = yutify["spotify"] if yutify["spotify"] != None else "#"
-    title = yutify["title"]
-    yt_music = yutify["ytmusic"]["url"] if yutify["ytmusic"]["url"] != None else "#"
-
-    return render_template(
-        "index.html",
-        album_art=f"{album_art}",
-        album_title=f"{album_title}",
-        album_type=f"{album_type}",
-        artist=artist,
-        artists=f"{artists}",
-        deezer=f"{deezer}",
-        song=song,
-        spotify=f"{spotify}",
-        title=f"{title}",
-        yt_music=f"{yt_music}",
-    )
+    # Render the appropriate response based on the status code
+    return build_response_template(response, artist, song)
 
 
 @app.route("/docs")
 def docs():
+    """
+    Render the API documentation page.
+    """
     return render_template("docs.html")
 
 

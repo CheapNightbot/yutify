@@ -1,61 +1,35 @@
-def is_kinda_same(a: str, b: str) -> bool:
-    """Helper function to losely compare two strings.
+def cheap_compare(a: str, b: str) -> bool:
+    """
+    Loosely compare two strings.
 
     Args:
-        a (str): Any valid string
-        b (str): Any valid string
+        a (str): Any valid string.
+        b (str): Any valid string.
 
     Returns:
-        bool: Return `True` or `False` based on if two strings are (kinda) same.
+        bool: True if the strings are similar, otherwise False.
     """
-    if (
-        a.lower() != b.lower()
-        and a.lower() not in b.lower()
-        and b.lower() not in a.lower()
-    ):
-        return False
+    a_lower, b_lower = a.lower(), b.lower()
+    return a_lower == b_lower or a_lower in b_lower or b_lower in a_lower
 
+
+def sep_artists(artists: str, separator: str = None) -> list:
+    """
+    Separate artist names of a song or album into a list.
+
+    Args:
+        artists (str): Artists string (e.g., artistA & artistB, artistA ft. artistB).
+        separator (str, optional): A specific separator to use. Defaults to None.
+
+    Returns:
+        list: List of individual artists.
+    """
+    separators = [";", "/", "ft", "ft.", "feat", "feat.", "with", "&", "and"]
+
+    if not separator:
+        for sep in separators:
+            artists = artists.replace(sep, ",")
     else:
-        return True
+        artists = artists.replace(separator, ",")
 
-
-def sep_artists(artists: str, separater: str = None) -> list:
-    """Separate artist names of a song or album.
-
-    Args:
-        artists (str): Artists (e.g. artistA & artistB, artistA ft. artistB, etc.)
-        separater (str, optional): The separater or artist names used (if you already know). Defaults to None.
-
-    Returns:
-        list: List of artists.
-    """
-    separaters = [
-        (";", ","),
-        ("/", ","),
-        ("ft", ","),
-        ("ft.", ","),
-        ("feat", ","),
-        ("feat.", ","),
-        ("with", ","),
-        ("&", ","),
-        ("and", ","),
-    ]
-
-    if not separater:
-        for old, new in separaters:
-            artists = artists.replace(old, new)
-
-        temp = artists.split(sep=",")
-        artists = []
-        for i in temp:
-            artists.append(i.strip())
-
-        return artists
-
-    artists = artists.replace(separater, ",")
-    temp = artists.split(sep=",")
-    artists = []
-    for i in temp:
-        artists.append(i.strip())
-
-    return artists
+    return [artist.strip() for artist in artists.split(",")]
