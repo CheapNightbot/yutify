@@ -234,7 +234,7 @@ class Spotipy:
             "album_art": result["album"]["images"][0]["url"],
             "artists": artists,
             "title": result["name"],
-            "album_type": result.get("type", ""),
+            "album_type": result.get("album", {}).get("type", result["type"]),
             "album_title": result.get("album", {}).get("name", result["name"]),
             "release_date": release_date,
             "url": result["external_urls"]["spotify"],
