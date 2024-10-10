@@ -79,6 +79,9 @@ class Spotipy:
         response_json = response.json()
         artist_ids = self.get_artists_ids(artist)
 
+        if not artist_ids:
+            artist_ids = []
+
         # Try finding track and album information
         music_info = self.find_music_info(song, artist, response_json, artist_ids)
         return music_info[0] if music_info else None
