@@ -59,41 +59,41 @@
             <div class="result-container" style="flex-direction:row; padding:1rem;">
                 <!-- Deezer Music -->
                 {% if deezer == None %}
-                <a class="music-link" href="#deezer">
+                <a class="music-link" href="#deezer" title="Deezer">
                 {% elif spotify %}
-                <a class="music-link" href="{{ deezer }}" target="_blank">
+                <a class="music-link" href="{{ deezer }}" target="_blank" title="Deezer">
                 {% else %}
-                <a class="music-link" href="#deezer">
+                <a class="music-link" href="#deezer" title="Deezer">
                 {% endif %}
                     <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="deezer logo" style="width:30px; height:30px;">
                 </a>
                 <!-- iTunes Store -->
                 {% if itunes == None %}
-                <a class="music-link" href="#itunes">
+                <a class="music-link" href="#itunes" title="iTunes">
                 {% elif spotify %}
-                <a class="music-link" href="{{ itunes }}" target="_blank">
+                <a class="music-link" href="{{ itunes }}" target="_blank" title="iTunes">
                 {% else %}
-                <a class="music-link" href="#itunes">
+                <a class="music-link" href="#itunes" title="iTunes">
                 {% endif %}
                     <img src="{{ url_for('static', filename='logos/itunes.svg') }}" alt="itunes logo" style="width:30px; height:30px;">
                 </a>
                 <!-- Spotify Music -->
                 {% if spotify == None %}
-                <a class="music-link" href="#spotify">
+                <a class="music-link" href="#spotify" title="Spotify">
                 {% elif spotify %}
-                <a class="music-link" href="{{ spotify }}" target="_blank">
+                <a class="music-link" href="{{ spotify }}" target="_blank" title="Spotify">
                 {% else %}
-                <a class="music-link" href="#spotify">
+                <a class="music-link" href="#spotify" title="Spotify">
                 {% endif %}
                     <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
                 </a>
                 <!-- YouTube Music -->
                 {% if yt_music == None %}
-                <a class="music-link" href="#ytmusic">
+                <a class="music-link" href="#ytmusic" title="YouTube Music">
                 {% elif yt_music %}
-                <a class="music-link" href="{{ yt_music }}" target="_blank">
+                <a class="music-link" href="{{ yt_music }}" target="_blank" title="YouTube Music">
                 {% else %}
-                <a class="music-link" href="#ytmusic">
+                <a class="music-link" href="#ytmusic" title="YouTube Music">
                 {% endif %}
                     <img src="{{ url_for('static', filename='logos/youtube-music.svg') }}" alt="youtube music logo" style="width:30px; height:30px;">
                 </a>
