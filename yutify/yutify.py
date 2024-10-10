@@ -93,7 +93,7 @@ def get_spotify_result(
         logger.info("Search Spotify with iTunes results.")
         result = spotipy.search_music(itunes_data["artists"], itunes_data["title"])
 
-    else:
+    elif ytmusic_data and cheap_compare(ytmusic_data["title"], song):
         priority = "ytmusic"
         logger.info("Search Spotify with YouTube Music results.")
         result = spotipy.search_music(ytmusic_data["title"], ytmusic_data["artists"])
