@@ -8,12 +8,11 @@
 
 </div>
 
-<hr>
+# yutify <img src="static/favicon.svg" width="50px">
+
 <details>
   <summary>TABLE OF CONTENTS</summary>
-  <br/>
 
-- [yutify <img src="static/favicon.svg" width="20px">](#yutify)
 - [Run Locally 🧑‍💻](#run-locally-)
   - [Additional Notes On Running yutify 📝](#additional-notes-on-running-yutify-)
 - [Contributing 🤝](#contributing-)
@@ -21,16 +20,19 @@
   - [Developers](#developers)
 - [Acknowledgement // End Note 🙃](#acknowledgement--end-note-)
 
-<br/>
 </details>
-<hr>
-
-# yutify <img src="static/favicon.svg" width="50px">
 
 <details>
   <summary>SCREENSHOTS</summary>
 
-  ![image](https://github.com/user-attachments/assets/b8d09c15-1ed5-48d2-b03d-4cb54bffa98a)
+  <span align="center">
+
+  |                                       SCREENSHOTS                                         |
+  | ----------------------------------------------------------------------------------------- |
+  | ![image](https://github.com/user-attachments/assets/979f0f62-9b49-459c-bf0c-7ecc419935e4) |
+  | ![image](https://github.com/user-attachments/assets/87b66089-41f9-477f-bcd8-0cb623a16e26) |
+
+  </span>
 
 </details>
 
