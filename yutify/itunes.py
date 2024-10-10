@@ -43,8 +43,11 @@ class Itunes:
                 logger.error(f"iTunes returned with status code: {response.status_code}")
                 return None
 
-
-            result = response.json()["results"][0]
+            try:
+                result = response.json()["results"][0]
+            except IndexError:
+                logger.error("iTunes returned with empty result.")
+                return None
             release_date = datetime.strptime(result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y, %B %d")
 
             match entity:
