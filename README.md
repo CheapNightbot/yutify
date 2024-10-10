@@ -8,6 +8,23 @@
 
 </div>
 
+<hr>
+<details>
+  <summary>TABLE OF CONTENTS</summary>
+  <br/>
+
+- [yutify <img src="static/favicon.svg" width="20px">](#yutify)
+- [Run Locally 🧑‍💻](#run-locally-)
+  - [Additional Notes On Running yutify 📝](#additional-notes-on-running-yutify-)
+- [Contributing 🤝](#contributing-)
+  - [Users](#users)
+  - [Developers](#developers)
+- [Acknowledgement // End Note 🙃](#acknowledgement--end-note-)
+
+<br/>
+</details>
+<hr>
+
 # yutify <img src="static/favicon.svg" width="50px">
 
 <details>
@@ -132,7 +149,7 @@ If you don't know programming, you can still contribute to this project by openi
 - Create a new branch for your changes and make changes in that (separate) branch.
 - Open a pull request.
 
-# Acknowledgement // End Note
+# Acknowledgement // End Note 🙃
 
 - Powered by [Render](https://render.com/register). 🚀
 - Logos/Icons provided by [SVG REPO](https://www.svgrepo.com/). 🧑‍🎨
