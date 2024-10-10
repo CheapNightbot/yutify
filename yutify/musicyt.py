@@ -34,9 +34,8 @@ class MusicYT:
         self.music_info = []
 
         query = f"{artist} - {song}"
-        search = self.ytmusic.search(query=query)
-
         logger.info(f"YouTube Music Search Query: `{query}`")
+        search = self.ytmusic.search(query=query)
 
         for result in search:
             if self.music_info:
