@@ -18,6 +18,7 @@ itunes = Itunes()
 # Global Variable
 priority = None
 
+
 def build_result(
     ytmusic_data=None, deezer_data=None, spotify_data=None, itunes_result=None
 ):
@@ -73,27 +74,29 @@ def get_itunes_result(artist: str, song: str):
     return result
 
 
-def get_spotify_result(artist: str, song: str, deezer_data=None, itunes_data=None, ytmusic_data=None):
+def get_spotify_result(
+    artist: str, song: str, deezer_data=None, itunes_data=None, ytmusic_data=None
+):
     global priority
     result = None
-    if deezer_data or itunes_data or ytmusic_data:
-        if cheap_compare(deezer_data["title"], song):
-            priority = "deezer"
-            logger.info("Search Spotify with Deezer results.")
-            result = spotipy.search_advance(
-                deezer_data["artists"],
-                deezer_data["title"],
-                isrc=deezer_data.get("isrc"),
-                upc=deezer_data.get("upc"),
-            )
-        elif cheap_compare(itunes_data["title"], song):
-            logger.info("Search Spotify with iTunes results.")
-            result = spotipy.search_music(itunes_data["artists"], itunes_data["title"])
+    if deezer_data and cheap_compare(deezer_data["title"], song):
+        priority = "deezer"
+        logger.info("Search Spotify with Deezer results.")
+        result = spotipy.search_advance(
+            deezer_data["artists"],
+            deezer_data["title"],
+            isrc=deezer_data.get("isrc"),
+            upc=deezer_data.get("upc"),
+        )
 
-        else:
-            priority = "ytmusic"
-            logger.info("Search Spotify with YouTube Music results.")
-            result = spotipy.search_music(ytmusic_data["title"], ytmusic_data["artists"])
+    elif itunes_data and cheap_compare(itunes_data["title"], song):
+        logger.info("Search Spotify with iTunes results.")
+        result = spotipy.search_music(itunes_data["artists"], itunes_data["title"])
+
+    else:
+        priority = "ytmusic"
+        logger.info("Search Spotify with YouTube Music results.")
+        result = spotipy.search_music(ytmusic_data["title"], ytmusic_data["artists"])
 
     if result:
         priority = "spotify"
