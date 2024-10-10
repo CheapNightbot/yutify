@@ -58,7 +58,7 @@ def build_result(ytmusic_data, deezer_data=None, spotify_data=None):
     """Construct the final result using available data from YouTube Music, Deezer, and Spotify."""
     return {
         "album_art": (spotify_data or deezer_data or ytmusic_data).get("album_art"),
-        "album_type": (spotify_data or deezer_data or ytmusic_data).get("album_type"),
+        "album_type": (ytmusic_data or spotify_data or deezer_data).get("album_type"),
         "album_title": (spotify_data or deezer_data or ytmusic_data).get("album_title"),
         "artists": (spotify_data or deezer_data or ytmusic_data).get("artists"),
         "release_date": (spotify_data or deezer_data or {}).get("release_date"),
