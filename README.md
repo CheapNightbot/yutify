@@ -27,10 +27,11 @@
 
   <span align="center">
 
-  |                                       SCREENSHOTS                                         |
+  |                                           OwO                                             |
   | ----------------------------------------------------------------------------------------- |
-  | ![image](https://github.com/user-attachments/assets/979f0f62-9b49-459c-bf0c-7ecc419935e4) |
-  | ![image](https://github.com/user-attachments/assets/87b66089-41f9-477f-bcd8-0cb623a16e26) |
+  | ![image](https://github.com/user-attachments/assets/9e208386-9247-4a08-bf95-295ad90fe2f1) |
+  | ![image](https://github.com/user-attachments/assets/614d1281-7f0b-4d05-bb53-afd5a218a984) |
+  | ![image](https://github.com/user-attachments/assets/889afef7-db53-409b-a461-d5dfafe783b7) |
 
   </span>
 
