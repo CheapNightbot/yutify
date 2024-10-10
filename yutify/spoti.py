@@ -224,17 +224,19 @@ class Spotipy:
             release_date = self.format_release_date(
                 result["release_date"], result["release_date_precision"]
             )
+            album_type = result.get("type")
         except KeyError:
             release_date = self.format_release_date(
                 result["album"]["release_date"],
                 result["album"]["release_date_precision"],
             )
+            album_type = result.get("album", {}).get("type")
 
         return {
             "album_art": result["album"]["images"][0]["url"],
             "artists": artists,
             "title": result["name"],
-            "album_type": result.get("type") or result.get("album", {}).get("type", result["type"]),
+            "album_type": album_type,
             "album_title": result.get("album", {}).get("name", result["name"]),
             "release_date": release_date,
             "url": result["external_urls"]["spotify"],
