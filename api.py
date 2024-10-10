@@ -132,6 +132,8 @@ def yutify_me():
     artist = request.args.get("artist", "").strip()
     song = request.args.get("song", "").strip()
 
+    logger.info("Request came from website / UI.")
+
     # Check for invalid input
     if not is_valid_string(artist) or not is_valid_string(song):
         return redirect(url_for(".index"))
