@@ -72,15 +72,16 @@ def build_response_template(response, artist, song):
     yutify_data = response.json()
     return render_template(
         "index.html",
-        album_art=yutify_data.get("album_art", "static/favicon.svg"),
-        album_title=yutify_data.get("album_title", ""),
-        album_type=yutify_data.get("album_type", ""),
+        album_art=yutify_data.get("album_art"),
+        album_title=yutify_data.get("album_title"),
+        album_type=yutify_data.get("album_type"),
         artist=artist,
-        artists=yutify_data.get("artists", ""),
-        deezer=yutify_data.get("deezer", "#"),
+        artists=yutify_data.get("artists"),
+        deezer=yutify_data.get("deezer"),
+        itunes=yutify_data.get("itunes"),
         song=song,
-        spotify=yutify_data.get("spotify", "#"),
-        title=yutify_data.get("title", ""),
+        spotify=yutify_data.get("spotify"),
+        title=yutify_data.get("title"),
         yt_music=yutify_data["ytmusic"].get("url") if yutify_data["ytmusic"] else None,
     )
 

@@ -57,6 +57,7 @@
                 {% endif %}
             </h3>
             <div class="result-container" style="flex-direction:row; padding:1rem;">
+                <!-- Deezer Music -->
                 {% if deezer == None %}
                 <a class="music-link" href="#deezer">
                 {% elif spotify %}
@@ -64,8 +65,19 @@
                 {% else %}
                 <a class="music-link" href="#deezer">
                 {% endif %}
-                    <img src="{{ url_for('static', filename='deezer.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
+                    <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="deezer logo" style="width:30px; height:30px;">
                 </a>
+                <!-- iTunes Store -->
+                {% if itunes == None %}
+                <a class="music-link" href="#itunes">
+                {% elif spotify %}
+                <a class="music-link" href="{{ itunes }}" target="_blank">
+                {% else %}
+                <a class="music-link" href="#itunes">
+                {% endif %}
+                    <img src="{{ url_for('static', filename='logos/itunes.svg') }}" alt="itunes logo" style="width:30px; height:30px;">
+                </a>
+                <!-- Spotify Music -->
                 {% if spotify == None %}
                 <a class="music-link" href="#spotify">
                 {% elif spotify %}
@@ -73,8 +85,9 @@
                 {% else %}
                 <a class="music-link" href="#spotify">
                 {% endif %}
-                    <img src="{{ url_for('static', filename='spotify.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
+                    <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="spotify logo" style="width:30px; height:30px;">
                 </a>
+                <!-- YouTube Music -->
                 {% if yt_music == None %}
                 <a class="music-link" href="#ytmusic">
                 {% elif yt_music %}
@@ -82,7 +95,7 @@
                 {% else %}
                 <a class="music-link" href="#ytmusic">
                 {% endif %}
-                    <img src="{{ url_for('static', filename='youtube-music.svg') }}" alt="youtube music logo" style="width:30px; height:30px;">
+                    <img src="{{ url_for('static', filename='logos/youtube-music.svg') }}" alt="youtube music logo" style="width:30px; height:30px;">
                 </a>
             </div>
         </div>
