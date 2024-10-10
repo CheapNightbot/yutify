@@ -13,6 +13,9 @@
 <details>
   <summary>TABLE OF CONTENTS</summary>
 
+- [yutify <img src="static/favicon.svg" width="20px">](#yutify) ← you're here..
+  - [Features ™️](#features-️)
+  - [Available Music Platforms](#available-music-platforms-)
 - [Run Locally 🧑‍💻](#run-locally-)
   - [Additional Notes On Running yutify 📝](#additional-notes-on-running-yutify-)
 - [Contributing 🤝](#contributing-)
@@ -36,10 +39,26 @@
   </span>
 
 </details>
-
+<br/>
 **yutifiy** is a simple RESTful API (wrapper) for retrieving music info for various steaming platforms written in Flask (Python). Using the artist name and song name, you can get various information about the song including the streaming link(s) for various music streaming platforms. To prevent the abuse of the API, there is a ratelimit of 60 requests per minute for every user.
 
 Right now, it only retrieves streaming links for Spotify & YouTube Music. If you would like me to add any other streaming platforms or more metadata about the song(s), feel free to open an issue. You can visit the website to playaround [here](https://yutify.onrender.com/) or maybe check simple [examples](/examples) on how get started and make sure to read [docs](https://yutify.onrender.com/docs).
+
+### Features ™️
+
+- Retrieve information about music like album title, release date, etc. OwO
+- Get streaming link for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
+- Use API endpoint to search for music in code or play around directly on website. ヾ(⌐■_■)ノ♪
+- It's FREE. \_(:з)∠)\_
+
+### Available Music Platforms 📻
+
+> Alphabetically sorted
+
+- [x] [Apple Music](https://music.apple.com/)
+- [x] [Deezer](https://www.deezer.com/)
+- [x] [Spotify](https://spotify.com/)
+- [x] [YouTube Music](https://music.youtube.com/)
 
 # Run Locally 🧑‍💻
 
