@@ -35,7 +35,7 @@ def build_result(
             result = ytmusic_data
     return {
         "album_art": result.get("album_art"),
-        "album_type": result.get("album_type"),
+        "album_type": result.get("album_type").replace("track", "single"),
         "album_title": result.get("album_title"),
         "artists": result.get("artists"),
         "deezer": deezer_data.get("url") if deezer_data else None,
@@ -79,7 +79,7 @@ def get_spotify_result(
 ):
     global priority
     result = None
-    if deezer_data and cheap_compare(deezer_data["title"], song):
+    if deezer_data:
         priority = "deezer"
         logger.info("Search Spotify with Deezer results.")
         result = spotipy.search_advance(
@@ -89,11 +89,11 @@ def get_spotify_result(
             upc=deezer_data.get("upc"),
         )
 
-    elif itunes_data and cheap_compare(itunes_data["title"], song):
+    elif itunes_data:
         logger.info("Search Spotify with iTunes results.")
         result = spotipy.search_music(itunes_data["artists"], itunes_data["title"])
 
-    elif ytmusic_data and cheap_compare(ytmusic_data["title"], song):
+    elif ytmusic_data:
         priority = "ytmusic"
         logger.info("Search Spotify with YouTube Music results.")
         result = spotipy.search_music(ytmusic_data["title"], ytmusic_data["artists"])
