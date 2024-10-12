@@ -33,12 +33,15 @@ def build_result(
             result = ytmusic_data
         case _:
             result = ytmusic_data
+
+    album_type = (deezer_data or itunes_result or spotify_data)
     return {
         "album_art": result.get("album_art"),
-        "album_type": result.get("album_type").replace("track", "single"),
+        "album_type": album_type.get("album_type").replace("track", "single"),
         "album_title": result.get("album_title"),
         "artists": result.get("artists"),
         "deezer": deezer_data.get("url") if deezer_data else None,
+        "genre": itunes_result.get("genre"),
         "itunes": itunes_result.get("url") if itunes_result else None,
         "release_date": (spotify_data or deezer_data or {}).get("release_date"),
         "spotify": spotify_data.get("url") if spotify_data else None,
