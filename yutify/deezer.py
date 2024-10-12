@@ -6,6 +6,7 @@ from datetime import datetime
 import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.cheap_utils import cheap_compare
 from utils.logger import logger
 
 
@@ -33,7 +34,7 @@ class Deezer:
                 return self.music_info[0]
 
             url = f"https://api.deezer.com/search/{search_type}"
-            query = f"?q=artist:\"{artist}\" {search_type}:\"{song}\"&limit=1"
+            query = f"?q=artist:\"{artist}\" {search_type}:\"{song}\"&limit=10"
             query_url = url + query
 
             logger.info(f"Deezer Search Query: `{query}`")
@@ -45,9 +46,25 @@ class Deezer:
                 return None
 
             try:
-                result = response.json()["data"][0]
+                result = response.json()["data"]
             except IndexError:
                 logger.error(f"No result found in Deezer for search type: {search_type}.")
+                continue
+
+            self.parse_deez_results(artist, song, result)
+
+        if self.music_info:
+            return self.music_info[0]
+        else:
+            return None
+
+
+    def parse_deez_results(self, artist: str, song: str, results: list[dict]):
+        for result in results:
+            if self.music_info:
+                return self.music_info[0]
+
+            if not (cheap_compare(result["title"], song) and cheap_compare(result["artists"], artist)):
                 continue
 
             match result["type"]:
@@ -81,10 +98,6 @@ class Deezer:
                 }
             )
 
-        if self.music_info:
-            return self.music_info[0]
-        else:
-            return None
 
     def get_upc_isrc(self, id: int, type: str) -> dict | None:
         """Return ISRC or UPC for a track or album respectively. Also date!
