@@ -32,7 +32,7 @@ class Itunes:
             if self.music_info:
                 return self.music_info[0]
 
-            query = f"?term={artist} - {song}&media=music&entity={entity}&limit=1"
+            query = f"?term={artist} - {song}&media=music&entity={entity}&limit=10"
             query_url = self.endpoint + query
 
             logger.info(f"iTunes Search Query: `{query}")
@@ -46,21 +46,31 @@ class Itunes:
                 return None
 
             try:
-                result = response.json()["results"][0]
+                result = response.json()["results"]
             except IndexError:
                 logger.error("iTunes returned with empty result.")
                 return None
-            release_date = datetime.strptime(
-                result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
-            ).strftime("%Y, %B %d")
 
-            match entity:
-                case "song":
-                    if not cheap_compare(result["trackName"], song):
-                        logger.error(
-                            f"No result found in iTunes for search type: {entity}."
-                        )
-                        continue
+            self.parse_result(artist, song, entity, result)
+
+        if self.music_info:
+            return self.music_info[0]
+        else:
+            return None
+
+    def parse_result(
+        self, artist: str, song: str, entity: str, response_json: dict
+    ) -> None:
+        for result in response_json:
+            if self.music_info:
+                return
+
+            if not (
+                cheap_compare(result.get("trackName", result["collectionName"]), song)
+                and cheap_compare(result["artistName"], artist)
+            ):
+                logger.error(f"No result found in iTunes for search type: {entity}.")
+                continue
 
             try:
                 album_title, album_type = result["collectionName"].split("-")
@@ -73,6 +83,10 @@ class Itunes:
                     if result.get("trackName", "") == result["collectionName"]
                     else result.get("kind", result.get("collectionType", ""))
                 )
+
+            release_date = datetime.strptime(
+                result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
+            ).strftime("%Y, %B %d")
 
             self.music_info.append(
                 {
@@ -87,11 +101,6 @@ class Itunes:
                     "url": result.get("trackViewUrl", result["collectionViewUrl"]),
                 }
             )
-
-        if self.music_info:
-            return self.music_info[0]
-        else:
-            return None
 
 
 if __name__ == "__main__":
