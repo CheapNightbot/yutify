@@ -13,6 +13,16 @@
     <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 {% block title %}Home{% endblock %}
+{% block style %}
+    {% if album_art %}
+    <style>
+        .background-image {
+            background-image: url("{{ album_art }}");
+            filter: blur(3px);
+        }
+    </style>
+    {% endif %}
+{% endblock %}
 {% block content %}
 <form action="/yutify" class="content">
     {% if artist %}

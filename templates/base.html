@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://use.typekit.net/mgf5eji.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    {% block style %}{% endblock %}
 </head>
 
 <body>
