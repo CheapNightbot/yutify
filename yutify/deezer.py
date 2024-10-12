@@ -64,7 +64,7 @@ class Deezer:
             if self.music_info:
                 return self.music_info[0]
 
-            if not (cheap_compare(result["title"], song) and cheap_compare(result["artists"], artist)):
+            if not (cheap_compare(result["title"], song) and cheap_compare(result["artist"]["name"], artist)):
                 continue
 
             match result["type"]:
@@ -82,11 +82,16 @@ class Deezer:
 
             release_date = datetime.strptime(release_date, "%Y-%m-%d").strftime("%Y, %B %d")
 
+            try:
+                album_type = result["type"] if result["title"] == result["album"]["title"] else result["album"]["type"]
+            except KeyError:
+                album_type = result["record_type"]
+
             self.music_info.append(
                 {
                     "album_art": result["album"]["cover_xl"] if result["type"] == "track" else result["cover_xl"],
                     "album_title": result["album"]["title"] if result["type"] == "track" else result["title"],
-                    "album_type": result["type"] if result["type"] == "track" else result["record_type"],
+                    "album_type": album_type,
                     "artists": result["artist"]["name"],
                     "id": result["id"],
                     "isrc": isrc,
