@@ -34,11 +34,18 @@ def build_result(
         case _:
             result = ytmusic_data
 
+    deezer_data = {} if not deezer_data else deezer_data
+    itunes_result = {} if not itunes_result else itunes_result
     album_type = (
         (deezer_data or itunes_result)
         if deezer_data.get("album_type") == itunes_result.get("album_type")
         else spotify_data
     )
+
+    if not album_type:
+        album_type = ytmusic_data
+
+    print(album_type)
     return {
         "album_art": result.get("album_art"),
         "album_type": album_type.get("album_type").replace("track", "single"),
