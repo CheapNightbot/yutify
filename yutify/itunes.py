@@ -40,7 +40,9 @@ class Itunes:
             response = requests.get(query_url)
 
             if response.status_code != 200:
-                logger.error(f"iTunes returned with status code: {response.status_code}")
+                logger.error(
+                    f"iTunes returned with status code: {response.status_code}"
+                )
                 return None
 
             try:
@@ -48,12 +50,16 @@ class Itunes:
             except IndexError:
                 logger.error("iTunes returned with empty result.")
                 return None
-            release_date = datetime.strptime(result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y, %B %d")
+            release_date = datetime.strptime(
+                result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
+            ).strftime("%Y, %B %d")
 
             match entity:
                 case "song":
                     if not cheap_compare(result["trackName"], song):
-                        logger.error(f"No result found in iTunes for search type: {entity}.")
+                        logger.error(
+                            f"No result found in iTunes for search type: {entity}."
+                        )
                         continue
 
             try:
@@ -62,17 +68,21 @@ class Itunes:
                 album_type = album_type.strip().lower()
             except ValueError:
                 album_title = result["collectionName"]
-                album_type = result.get("collectionType", result["wrapperType"]).lower()
+                album_type = (
+                    result["wrapperType"]
+                    if result.get("trackName", "") == result["collectionName"]
+                    else result.get("kind", result.get("collectionType", ""))
+                )
 
             self.music_info.append(
                 {
                     "album_art": result["artworkUrl100"],
                     "album_title": album_title,
-                    "album_type": album_type,
+                    "album_type": album_type.lower(),
                     "artists": result["artistName"],
                     "genre": result["primaryGenreName"],
                     "release_date": release_date,
-                    "title": result.get("trackName", result["collectionName"]),
+                    "title": result.get("trackName", album_title),
                     "type": result["wrapperType"],
                     "url": result.get("trackViewUrl", result["collectionViewUrl"]),
                 }
