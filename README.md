@@ -34,7 +34,7 @@
   | ----------------------------------------------------------------------------------------- |
   | ![image](https://github.com/user-attachments/assets/fd99a964-5fbc-4335-84e9-38f4010298a4) |
   | ![image](https://github.com/user-attachments/assets/686eaea4-7178-48b9-83f8-0029c4c65606) |
-  | ![image](https://github.com/user-attachments/assets/e020940d-bffc-43a1-b210-11e675223464) |
+  | ![image](https://github.com/user-attachments/assets/1dca5b8b-b83b-46e1-a0d3-ccff22740a3f) |
 
   </span>
 
@@ -46,7 +46,7 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 
 ### Features ™️
 
-- Retrieve information about music like album title, release date, etc. OwO
+- Retrieve information about music like album title, release date, genre, etc. OwO
 - Get streaming link for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
 - Use API endpoint to search for music in code or play around directly on website. ヾ(⌐■_■)ノ♪
 - It's FREE. \_(:з)∠)\_
