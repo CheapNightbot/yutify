@@ -233,15 +233,20 @@ class Spotipy:
                 result["album"]["release_date_precision"],
             )
 
-        album_type = (
-            result.get("type")
-            if result["name"] == result["album"]["name"]
-            else result.get("album", {}).get("type")
-        )
+        try:
+            album_type = (
+                result.get("type")
+                if result["name"] == result["album"]["name"]
+                else result.get("album", {}).get("type")
+            )
+            album_art = result["album"]["images"][0]["url"]
+        except KeyError:
+            album_type = result.get("type")
+            album_art = result["images"][0]["url"]
 
         return {
             "artists": artists,
-            "album_art": result["album"]["images"][0]["url"],
+            "album_art": album_art,
             "album_title": result.get("album", {}).get("name", result["name"]),
             "album_type": album_type,
             "title": result["name"],
