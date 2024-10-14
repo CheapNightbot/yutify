@@ -38,14 +38,13 @@ def build_result(
     itunes_result = {} if not itunes_result else itunes_result
     album_type = (
         (deezer_data or itunes_result)
-        if deezer_data.get("album_type") == itunes_result.get("album_type")
+        if deezer_data.get("album_type", "x") == itunes_result.get("album_type", "y")
         else spotify_data
     )
 
     if not album_type:
         album_type = ytmusic_data
 
-    print(album_type)
     return {
         "album_art": result.get("album_art"),
         "album_type": album_type.get("album_type").replace("track", "single"),
@@ -116,6 +115,7 @@ def get_spotify_result(
         priority = "spotify"
         logger.info("Got result from Spotify.")
     else:
+        priority = "spotify"
         logger.info("Search Spotify with user-provided data.")
         result = spotipy.search_music(artist, song)
 
