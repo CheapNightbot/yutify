@@ -115,9 +115,9 @@ def get_spotify_result(
         priority = "spotify"
         logger.info("Got result from Spotify.")
     else:
-        priority = "spotify"
         logger.info("Search Spotify with user-provided data.")
         result = spotipy.search_music(artist, song)
+        priority = "spotify" if result else priority
 
     return result
 
