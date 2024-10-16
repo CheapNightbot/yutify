@@ -24,6 +24,7 @@ def build_result(
 ):
     """Construct the final result using available data from YouTube Music, Deezer, and Spotify."""
     global priority
+    album_art = None
     match priority:
         case "spotify":
             result = spotify_data
