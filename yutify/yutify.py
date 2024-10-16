@@ -30,7 +30,8 @@ def build_result(
         case "deezer":
             result = deezer_data
         case "itunes":
-            result = ytmusic_data
+            result = itunes_result
+            album_art = ytmusic_data
         case _:
             result = ytmusic_data
 
@@ -46,7 +47,7 @@ def build_result(
         album_type = ytmusic_data
 
     return {
-        "album_art": result.get("album_art"),
+        "album_art": album_art.get("album_art") if album_art else result.get("album_art"),
         "album_type": album_type.get("album_type").replace("track", "single"),
         "album_title": result.get("album_title"),
         "artists": result.get("artists"),
@@ -103,6 +104,7 @@ def get_spotify_result(
         )
 
     elif itunes_data:
+        priority = "itunes"
         logger.info("Search Spotify with iTunes results.")
         result = spotipy.search_music(itunes_data["artists"], itunes_data["title"])
 
