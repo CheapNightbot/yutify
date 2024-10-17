@@ -262,7 +262,7 @@ class Spotipy:
             album_type = result.get("type")
             album_art = result["images"][0]["url"]
 
-        tempo = self.get_tempo(result["id"]) if isrc else None
+        tempo = round(self.get_tempo(result["id"])) if isrc else None
 
         return {
             "artists": artists,
