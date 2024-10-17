@@ -32,6 +32,10 @@
         /api/<span class="var">Rick Astley</span>:<span class="var">Never Gonna Give You Up</span>
     </code>
     <p><b>Status Code</b>: <span style="color: lightgreen;">200 OK</span>:</p>
+    <p style="font-size:medium;">
+        &rbarr; Note that NOT always all the information will be returned (e.g. lyrics can be "null").<br>
+        &rbarr; While I try my best, (but) there is NO guarantee that all the information will be correct.<br>
+    </p>
     <section class="result scroll-me">
 <pre style="font-size: large;">
 {
@@ -39,11 +43,18 @@
     '<b class="var">album_title</b>': 'Whenever You Need Somebody',
     '<b class="var">album_type</b>': 'album',
     '<b class="var">artists</b>': 'Rick Astley',
-    '<b class="var">deezer</b>': "https://www.deezer.com/track/781592622",
+    '<b class="var">deezer</b>': 'https://www.deezer.com/track/781592622',
     '<b class="var">genre</b>': 'Pop',
-    '<b class="var">itunes</b>': "https://music.apple.com/us/album/never-gonna-give-you-up-2022-remaster/1612648318?i=1612648319&uo=4",
-    '<b class="var">release_date</b>': "1987, November 12",
+    '<b class="var">itunes</b>': 'https://music.apple.com/us/album/never-gonna-give-you-up-2022-remaster/1612648318?i=1612648319&uo=4',
+    '<b class="var">lyrics</b>': null,
+    '<b class="var">release_date</b>': [
+        '1987, November 12',
+        {
+            '<b class="var">iso_format</b>': '1987-11-12'
+        }
+    ],
     '<b class="var">spotify</b>': 'https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8',
+    '<b class="var">tempo</b>': '113 BPM',
     '<b class="var">title</b>': 'Never Gonna Give You Up',
     '<b class="var">ytmusic</b>': {
         '<b class="var">id</b>': 'dQw4w9WgXcQ',
