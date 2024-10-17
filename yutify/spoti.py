@@ -179,6 +179,7 @@ class Spotipy:
             release_date = self.format_release_date(
                 track["album"]["release_date"], track["album"]["release_date_precision"]
             )
+            iso_date = track["album"]["release_date"]
             tempo = round(self.get_tempo(track["id"]))
 
             music_info.append(
@@ -187,7 +188,7 @@ class Spotipy:
                     "album_title": track["album"]["name"],
                     "album_type": track["album"]["album_type"],
                     "artists": ", ".join(artists_name),
-                    "release_date": release_date,
+                    "release_date": [release_date, {"iso_format": iso_date}],
                     "tempo": f"{tempo} BPM",
                     "title": track["name"],
                     "url": track["external_urls"]["spotify"],
@@ -213,13 +214,14 @@ class Spotipy:
             release_date = self.format_release_date(
                 album["release_date"], album["release_date_precision"]
             )
+            iso_date = album["release_date"]
             music_info.append(
                 {
                     "album_art": album["images"][0]["url"],
                     "album_title": album["name"],
                     "album_type": album["album_type"],
                     "artists": ", ".join(artists_name),  # Use full artist names
-                    "release_date": release_date,
+                    "release_date": [release_date, {"iso_format": iso_date}],
                     "tempo": None,
                     "title": album["name"],
                     "url": album["external_urls"]["spotify"],
@@ -245,11 +247,15 @@ class Spotipy:
             release_date = self.format_release_date(
                 result["release_date"], result["release_date_precision"]
             )
+
+            iso_date = result["release_date"]
         except KeyError:
             release_date = self.format_release_date(
                 result["album"]["release_date"],
                 result["album"]["release_date_precision"],
             )
+
+            iso_date = result["album"]["release_date"]
 
         try:
             album_type = (
@@ -271,7 +277,7 @@ class Spotipy:
             "album_type": album_type,
             "title": result["name"],
             "tempo": f"{tempo} BPM" if tempo else None,
-            "release_date": release_date,
+            "release_date": [release_date, {"iso_format": iso_date}],
             "url": result["external_urls"]["spotify"],
         }
 

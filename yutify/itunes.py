@@ -88,6 +88,10 @@ class Itunes:
                 result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
             ).strftime("%Y, %B %d")
 
+            iso_date = datetime.strptime(
+                result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
+            ).strftime("%Y-%m-%d")
+
             self.music_info.append(
                 {
                     "album_art": result["artworkUrl100"],
@@ -95,7 +99,7 @@ class Itunes:
                     "album_type": album_type.lower(),
                     "artists": result["artistName"],
                     "genre": result["primaryGenreName"],
-                    "release_date": release_date,
+                    "release_date": [release_date, {"iso_format": iso_date}],
                     "title": result.get("trackName", album_title),
                     "type": result["wrapperType"],
                     "url": result.get("trackViewUrl", result["collectionViewUrl"]),

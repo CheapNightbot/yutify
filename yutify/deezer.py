@@ -80,6 +80,7 @@ class Deezer:
                     release_date = album_info["release_date"]
                     isrc = None
 
+            iso_date = release_date
             release_date = datetime.strptime(release_date, "%Y-%m-%d").strftime("%Y, %B %d")
 
             try:
@@ -95,7 +96,7 @@ class Deezer:
                     "artists": result["artist"]["name"],
                     "id": result["id"],
                     "isrc": isrc,
-                    "release_date": release_date,
+                    "release_date": [release_date, {"iso_format": iso_date}],
                     "title": result["title"],
                     "type": result["type"],
                     "upc": upc,
