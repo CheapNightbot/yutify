@@ -20,7 +20,7 @@ priority = None
 
 
 def build_result(
-    ytmusic_data=None, deezer_data=None, spotify_data=None, itunes_result=None
+    ytmusic_data=None, deezer_data=None, spotify_data=None, itunes_data=None
 ):
     """Construct the final result using available data from YouTube Music, Deezer, and Spotify."""
     global priority
@@ -31,16 +31,16 @@ def build_result(
         case "deezer":
             result = deezer_data
         case "itunes":
-            result = itunes_result
+            result = itunes_data
             album_art = ytmusic_data
         case _:
             result = ytmusic_data
 
     deezer_data = {} if not deezer_data else deezer_data
-    itunes_result = {} if not itunes_result else itunes_result
+    itunes_data = {} if not itunes_data else itunes_data
     album_type = (
-        (deezer_data or itunes_result)
-        if deezer_data.get("album_type", "x") == itunes_result.get("album_type", "y")
+        (deezer_data or itunes_data)
+        if deezer_data.get("album_type", "x") == itunes_data.get("album_type", "y")
         else spotify_data
     )
 
@@ -53,8 +53,9 @@ def build_result(
         "album_title": result.get("album_title"),
         "artists": result.get("artists"),
         "deezer": deezer_data.get("url") if deezer_data else None,
-        "genre": itunes_result.get("genre"),
-        "itunes": itunes_result.get("url") if itunes_result else None,
+        "genre": itunes_data.get("genre"),
+        "itunes": itunes_data.get("url") if itunes_data else None,
+        "lyrics": ytmusic_data.get("lyrics"),
         "release_date": (spotify_data or deezer_data or {}).get("release_date"),
         "spotify": spotify_data.get("url") if spotify_data else None,
         "title": result.get("title"),

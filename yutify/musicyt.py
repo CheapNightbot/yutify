@@ -105,6 +105,8 @@ class MusicYT:
         artist_name = ", ".join([artists["name"] for artists in result["artists"]])
         video_id = result["videoId"]
         song_url = f"https://music.youtube.com/watch?v={video_id}"
+        lyrics_id = self.ytmusic.get_watch_playlist(video_id)
+        lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
         try:
             album_art = result["thumbnails"][-1]["url"]
         except KeyError:
@@ -119,6 +121,7 @@ class MusicYT:
                 "album_type": "single",
                 "album_title": None,
                 "id": video_id,
+                "lyrics": lyrics["lyrics"],
                 "title": title,
                 "url": song_url,
             }
@@ -134,6 +137,8 @@ class MusicYT:
         artist_name = ", ".join([artists["name"] for artists in result["artists"]])
         browse_id = result["browseId"]
         album_url = f"https://music.youtube.com/browse/{browse_id}"
+        lyrics_id = self.ytmusic.get_watch_playlist(browse_id)
+        lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
         try:
             album_art = result["thumbnails"][-1]["url"]
             album_title = result["title"]
@@ -148,6 +153,7 @@ class MusicYT:
                 "album_type": "Album",
                 "album_title": album_title,
                 "id": browse_id,
+                "lyrics": lyrics["lyrics"],
                 "title": title,
                 "url": album_url,
             }
