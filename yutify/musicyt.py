@@ -5,7 +5,7 @@ from pprint import pprint
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dotenv import load_dotenv
-from ytmusicapi import YTMusic
+from ytmusicapi import YTMusic, exceptions
 
 from utils.cheap_utils import cheap_compare
 from utils.logger import logger
@@ -106,7 +106,10 @@ class MusicYT:
         video_id = result["videoId"]
         song_url = f"https://music.youtube.com/watch?v={video_id}"
         lyrics_id = self.ytmusic.get_watch_playlist(video_id)
-        lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
+        try:
+            lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
+        except exceptions.YTMusicUserError:
+            lyrics = {}
         try:
             album_art = result["thumbnails"][-1]["url"]
         except KeyError:
@@ -121,7 +124,7 @@ class MusicYT:
                 "album_type": "single",
                 "album_title": None,
                 "id": video_id,
-                "lyrics": lyrics["lyrics"],
+                "lyrics": lyrics.get("lyrics"),
                 "title": title,
                 "url": song_url,
             }
@@ -138,7 +141,10 @@ class MusicYT:
         browse_id = result["browseId"]
         album_url = f"https://music.youtube.com/browse/{browse_id}"
         lyrics_id = self.ytmusic.get_watch_playlist(browse_id)
-        lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
+        try:
+            lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
+        except exceptions.YTMusicUserError:
+            lyrics = {}
         try:
             album_art = result["thumbnails"][-1]["url"]
             album_title = result["title"]
@@ -153,7 +159,7 @@ class MusicYT:
                 "album_type": "Album",
                 "album_title": album_title,
                 "id": browse_id,
-                "lyrics": lyrics["lyrics"],
+                "lyrics": lyrics.get("lyrics"),
                 "title": title,
                 "url": album_url,
             }

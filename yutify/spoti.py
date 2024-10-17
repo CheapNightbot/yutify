@@ -126,6 +126,20 @@ class Spotipy:
 
         return artist_ids
 
+    def get_tempo(self, spotify_id: str) -> float | None:
+        """Return tempo in beats per minute (BPM) of a track."""
+        query_url = f"https://api.spotify.com/v1/audio-features/{spotify_id}"
+        logger.info("Get track tempo from Spotify.")
+        response = requests.get(query_url, headers=self.__header)
+
+        if response.status_code != 200:
+            logger.error(
+                f"Spotify returned with status code @get_tempo(): {response.status_code}"
+            )
+            return None
+
+        return response.json()["tempo"]
+
     def find_music_info(
         self, song: str, artist: str, response_json: dict, artist_ids: list
     ) -> list:
@@ -165,15 +179,18 @@ class Spotipy:
             release_date = self.format_release_date(
                 track["album"]["release_date"], track["album"]["release_date_precision"]
             )
+            tempo = round(self.get_tempo(track["id"]))
+
             music_info.append(
                 {
                     "album_art": track["album"]["images"][0]["url"],
-                    "artists": ", ".join(artists_name),  # Use full artist names
-                    "title": track["name"],
-                    "album_type": track["album"]["album_type"],
                     "album_title": track["album"]["name"],
-                    "url": track["external_urls"]["spotify"],
+                    "album_type": track["album"]["album_type"],
+                    "artists": ", ".join(artists_name),
                     "release_date": release_date,
+                    "tempo": f"{tempo} BPM",
+                    "title": track["name"],
+                    "url": track["external_urls"]["spotify"],
                 }
             )
 
@@ -199,12 +216,13 @@ class Spotipy:
             music_info.append(
                 {
                     "album_art": album["images"][0]["url"],
-                    "artists": ", ".join(artists_name),  # Use full artist names
-                    "title": album["name"],
-                    "album_type": album["album_type"],
                     "album_title": album["name"],
-                    "url": album["external_urls"]["spotify"],
+                    "album_type": album["album_type"],
+                    "artists": ", ".join(artists_name),  # Use full artist names
                     "release_date": release_date,
+                    "tempo": None,
+                    "title": album["name"],
+                    "url": album["external_urls"]["spotify"],
                 }
             )
 
@@ -244,12 +262,15 @@ class Spotipy:
             album_type = result.get("type")
             album_art = result["images"][0]["url"]
 
+        tempo = self.get_tempo(result["id"]) if isrc else None
+
         return {
             "artists": artists,
             "album_art": album_art,
             "album_title": result.get("album", {}).get("name", result["name"]),
             "album_type": album_type,
             "title": result["name"],
+            "tempo": f"{tempo} BPM" if tempo else None,
             "release_date": release_date,
             "url": result["external_urls"]["spotify"],
         }
