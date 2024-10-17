@@ -46,9 +46,17 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 
 ### Features ™️
 
-- Retrieve information about music like album title, release date, genre, etc. OwO
+- Retrieve various information about music OwO ~!
+  - Some of the noticable information that can be retrieved:
+  - [x] Album Art
+  - [x] Album Type
+  - [x] Genre
+  - [x] Lyrics
+  - [x] Release Date
+  - [x] Tempo (in beats per minute aka BPM)
+  - [x] Many More ™ ヾ(⌐■_■)ノ♪ 
 - Get streaming link for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
-- Use API endpoint to search for music in code or play around directly on website. ヾ(⌐■_■)ノ♪
+- Use API endpoint to search for music in code or play around directly on [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
 - It's FREE. \_(:з)∠)\_
 
 ### Available Music Platforms 📻
