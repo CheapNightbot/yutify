@@ -11,7 +11,7 @@
 # yutify <img src="static/favicon.svg" width="50px">
 
 <details>
-  <summary>TABLE OF CONTENTS</summary>
+  <summary>✨ TABLE OF CONTENTS</summary>
 
 - [yutify <img src="static/favicon.svg" width="20px">](#yutify) ← you're here..
   - [Features ™️](#features-️)
@@ -26,15 +26,15 @@
 </details>
 
 <details>
-  <summary>SCREENSHOTS</summary>
+  <summary>✨ SCREENSHOTS</summary>
 
   <span align="center">
 
   |                                           OwO                                             |
   | ----------------------------------------------------------------------------------------- |
-  | ![image](https://github.com/user-attachments/assets/fd99a964-5fbc-4335-84e9-38f4010298a4) |
-  | ![image](https://github.com/user-attachments/assets/686eaea4-7178-48b9-83f8-0029c4c65606) |
-  | ![image](https://github.com/user-attachments/assets/1dca5b8b-b83b-46e1-a0d3-ccff22740a3f) |
+  | ![image](https://github.com/user-attachments/assets/0f8c5bf8-e081-4679-b1fb-3cd12d6096ed) |
+  | ![image](https://github.com/user-attachments/assets/6d08624b-37cc-4bac-987a-dea34bb7f541) |
+  | ![image](https://github.com/user-attachments/assets/223d9fb6-6a86-4edb-8934-d2a038b257a3) |
 
   </span>
 
