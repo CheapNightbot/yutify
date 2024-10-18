@@ -78,10 +78,12 @@ def build_response_template(response, artist, song):
         artist=artist,
         artists=yutify_data.get("artists"),
         deezer=yutify_data.get("deezer"),
+        genre=yutify_data.get("genre"),
         itunes=yutify_data.get("itunes"),
         song=song,
         spotify=yutify_data.get("spotify"),
         title=yutify_data.get("title"),
+        tempo=yutify_data.get("tempo"),
         yt_music=yutify_data["ytmusic"].get("url") if yutify_data["ytmusic"] else None,
     )
 

@@ -44,7 +44,7 @@
         {% else %}
         <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ title }} - Album Art" class="album-art result" style="height:33vh;width:28vh;">
         {% endif %}
-        <div class=" result-container" style="flex-direction:column;">
+        <div class=" result-container" style="flex-direction:column; text-align: center;">
             <h2>
                 {% if title %}
                 {{ title }}
@@ -66,6 +66,20 @@
                 Artist(s)
                 {% endif %}
             </h3>
+            <p>
+                {% if genre %}
+                {{ genre }}
+                {% else %}
+                Genre
+                {% endif %}
+                <span>
+                    {% if tempo %}
+                    &nbsp;|&nbsp; {{ tempo }}
+                    {% else %}
+                    &nbsp;|&nbsp; Tempo
+                    {% endif %}
+                </span>
+            </p>
             <div class="result-container" style="flex-direction:row; padding:1rem;">
                 <!-- Deezer Music -->
                 {% if deezer == None %}
