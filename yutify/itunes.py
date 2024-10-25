@@ -6,24 +6,23 @@ from datetime import datetime
 import requests
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.logger import logger
 from utils.cheap_utils import cheap_compare
 
 
 class Itunes:
     def __init__(self) -> None:
         self.music_info = []
-        self.endpoint = "https://itunes.apple.com/search"
+        self.api_url = "https://itunes.apple.com"
 
-    def search_itunes(self, artist: str, song: str) -> dict | None:
-        """Search for music in iTunes Store
+    def search(self, artist: str, song: str) -> dict | None:
+        """Search for music in iTunes Store.
 
         Args:
             artist (str): Artist(s) Name
             song (str): Song Name
 
         Returns:
-            dict | None: If found, return dict containing song info else None.
+            dict | None: Dictionary contiaing music info or `None`.
         """
         self.music_info = []
 
@@ -32,36 +31,38 @@ class Itunes:
             if self.music_info:
                 return self.music_info[0]
 
+            endpoint = f"{self.api_url}/search"
             query = f"?term={artist} - {song}&media=music&entity={entity}&limit=10"
-            query_url = self.endpoint + query
-
-            logger.info(f"iTunes Search Query: `{query}")
+            query_url = endpoint + query
 
             response = requests.get(query_url)
-
             if response.status_code != 200:
-                logger.error(
-                    f"iTunes returned with status code: {response.status_code}"
-                )
                 return None
 
             try:
                 result = response.json()["results"]
             except IndexError:
-                logger.error("iTunes returned with empty result.")
                 return None
 
-            self.parse_result(artist, song, entity, result)
+            self._parse_result(artist, song, result)
 
         if self.music_info:
             return self.music_info[0]
         else:
             return None
 
-    def parse_result(
-        self, artist: str, song: str, entity: str, response_json: dict
-    ) -> None:
-        for result in response_json:
+    def _parse_result(self, artist: str, song: str, results: list[dict]) -> None:
+        """Helper function to parse results return by iTunes API.
+
+        Args:
+            artist (str): Artist name(s)
+            song (str): Song name
+            results (list[dict]): Retruned by `self.search()`
+
+        Returns:
+            None: Modify instance variable `self.music_info`.
+        """
+        for result in results:
             if self.music_info:
                 return
 
@@ -69,7 +70,6 @@ class Itunes:
                 cheap_compare(result.get("trackName", result["collectionName"]), song)
                 and cheap_compare(result["artistName"], artist)
             ):
-                logger.error(f"No result found in iTunes for search type: {entity}.")
                 continue
 
             try:
@@ -86,10 +86,6 @@ class Itunes:
 
             release_date = datetime.strptime(
                 result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
-            ).strftime("%Y, %B %d")
-
-            iso_date = datetime.strptime(
-                result["releaseDate"], "%Y-%m-%dT%H:%M:%SZ"
             ).strftime("%Y-%m-%d")
 
             self.music_info.append(
@@ -99,7 +95,7 @@ class Itunes:
                     "album_type": album_type.lower(),
                     "artists": result["artistName"],
                     "genre": result["primaryGenreName"],
-                    "release_date": [release_date, {"iso_format": iso_date}],
+                    "release_date": release_date,
                     "title": result.get("trackName", album_title),
                     "type": result["wrapperType"],
                     "url": result.get("trackViewUrl", result["collectionViewUrl"]),
@@ -114,4 +110,4 @@ if __name__ == "__main__":
     artist = input("Artist Name: ")
     song = input("Song Name: ")
 
-    pprint(itunes.search_itunes(artist, song))
+    pprint(itunes.search(artist, song))

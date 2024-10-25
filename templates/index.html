@@ -26,7 +26,7 @@
 {% block content %}
 <form action="/yutify" class="content">
     {% if artist %}
-    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name", value="{{ artist }}" required>
+    <input type="search" name="artist" id="artist" placeholder="Enter artist name", value="{{ artist }}" required>
     {% else %}
     <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name" required>
     {% endif %}

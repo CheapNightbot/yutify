@@ -3,7 +3,6 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.logger import logger
-from utils.cheap_utils import cheap_compare
 from yutify.deezer import Deezer
 from yutify.itunes import Itunes
 from yutify.musicyt import MusicYT
@@ -73,7 +72,7 @@ def build_result(
 
 def get_deezer_result(artist: str, song: str):
     """Search for the song in Deezer."""
-    result = deezer.search_deez_songs(artist, song)
+    result = deezer.search(artist, song)
     if result:
         logger.info("Got result from Deezer.")
     else:
@@ -83,7 +82,7 @@ def get_deezer_result(artist: str, song: str):
 
 def get_itunes_result(artist: str, song: str):
     """Search for the song in iTunes Store"""
-    result = itunes.search_itunes(artist, song)
+    result = itunes.search(artist, song)
     if result:
         logger.info("Got result from iTunes.")
     else:
@@ -99,7 +98,7 @@ def get_spotify_result(
     if deezer_data:
         priority = "deezer"
         logger.info("Search Spotify with Deezer results.")
-        result = spotipy.search_advance(
+        result = spotipy.search_advanced(
             deezer_data["artists"],
             deezer_data["title"],
             isrc=deezer_data.get("isrc"),
@@ -109,19 +108,19 @@ def get_spotify_result(
     elif itunes_data:
         priority = "itunes"
         logger.info("Search Spotify with iTunes results.")
-        result = spotipy.search_music(itunes_data["artists"], itunes_data["title"])
+        result = spotipy.search(itunes_data["artists"], itunes_data["title"])
 
     elif ytmusic_data:
         priority = "ytmusic"
         logger.info("Search Spotify with YouTube Music results.")
-        result = spotipy.search_music(ytmusic_data["title"], ytmusic_data["artists"])
+        result = spotipy.search(ytmusic_data["title"], ytmusic_data["artists"])
 
     if result:
         priority = "spotify"
         logger.info("Got result from Spotify.")
     else:
         logger.info("Search Spotify with user-provided data.")
-        result = spotipy.search_music(artist, song)
+        result = spotipy.search(artist, song)
         priority = "spotify" if result else priority
 
     return result
@@ -129,7 +128,7 @@ def get_spotify_result(
 
 def get_ytmusic_result(artist: str, song: str):
     """Search for the song in YouTube Music."""
-    result = yt_music.search_musicyt(artist, song)
+    result = yt_music.search(artist, song)
     if result:
         logger.info("Got result from YouTube Music.")
     else:

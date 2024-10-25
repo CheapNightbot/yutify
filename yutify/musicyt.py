@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from ytmusicapi import YTMusic, exceptions
 
 from utils.cheap_utils import cheap_compare
-from utils.logger import logger
 
 load_dotenv()
 
@@ -21,51 +20,49 @@ class MusicYT:
         self.music_info = []
         self.ytmusic = YTMusic("oauth.json", b_id)
 
-    def search_musicyt(self, artist: str, song: str) -> dict | None:
-        """Return a dictionary containing YouTube Music ID and URL for a song or None.
+    def search(self, artist: str, song: str) -> dict | None:
+        """Search for music YouTube Music.
 
         Args:
-            artist (str): Artist Name of the song
+            artist (str): Artist Name(s)
             song (str): Song Name
 
         Returns:
-            dict | None: If successful, a dictionary containing music ID and URL, else None
+            dict | None: Dictionary containing music info or `None`.
         """
         self.music_info = []
 
         query = f"{artist} - {song}"
-        logger.info(f"YouTube Music Search Query: `{query}`")
-        search = self.ytmusic.search(query=query)
+        results = self.ytmusic.search(query=query)
 
-        for result in search:
-            if self.music_info:
-                return self.music_info[0]
+        for result in results:
+            if self._is_relevent_result(artist, song, result):
+                self._process_result(result)
+                return self.music_info[0] if self.music_info else None
 
-            elif self.skip_categories(result):
-                continue
+        return None
 
-            elif not cheap_compare(result["title"], song):
-                continue
+    def _is_relevent_result(self, artist: str, song: str, result: dict) -> bool:
+        """Helper function to determine if a search result is relevent.
 
-            for artists in result["artists"]:
-                if self.music_info:
-                    return self.music_info[0]
+        Args:
+            artist (str): Artist name(s)
+            song (str): Song name
+            results (dict): Retruned by `self.search()`
 
-                if not cheap_compare(artists["name"], artist):
-                    continue
+        Returns:
+            bool: Whether any result is relevent.
+        """
+        if self._skip_categories(result):
+            return False
 
-                elif result["resultType"] == "song" or result["resultType"] == "video":
-                    self.get_song(result)
+        return any(
+            cheap_compare(result["title"], song)
+            and cheap_compare(_artist["name"], artist)
+            for _artist in result.get("artists", [])
+        )
 
-                else:
-                    self.get_album(result)
-
-        if self.music_info:
-            return self.music_info[0]
-        else:
-            return None
-
-    def skip_categories(self, result: dict):
+    def _skip_categories(self, result: dict):
         """Skip these search categories in search results.
         In other words, only include "songs, videos, albums, playlists".
 
@@ -95,12 +92,8 @@ class MusicYT:
         else:
             return False
 
-    def get_song(self, result: dict):
-        """Helper function to add song info to the `music_info` list.
-
-        Args:
-            result (dict): Returned by `musicyt.search()`.
-        """
+    def _get_song(self, result: dict) -> None:
+        """Helper function to add song info to the `music_info` list."""
         title = result["title"]
         artist_name = ", ".join([artists["name"] for artists in result["artists"]])
         video_id = result["videoId"]
@@ -130,12 +123,8 @@ class MusicYT:
             }
         )
 
-    def get_album(self, result: dict):
-        """Helper function to add album info to the `music_info` list.
-
-        Args:
-            result (dict): Returned by the `musicyt.search()`.
-        """
+    def _get_album(self, result: dict) -> None:
+        """Helper function to add album info to the `music_info` list."""
         title = result["title"]
         artist_name = ", ".join([artists["name"] for artists in result["artists"]])
         browse_id = result["browseId"]
@@ -165,6 +154,14 @@ class MusicYT:
             }
         )
 
+    def _process_result(self, result: dict) -> None:
+        """Helper function to process results return my YTMusic."""
+        if result["resultType"] in ["song", "video"]:
+            self._get_song(result)
+
+        else:
+            self._get_album(result)
+
 
 if __name__ == "__main__":
 
@@ -172,4 +169,4 @@ if __name__ == "__main__":
 
     artist = input("Artist Name: ")
     song = input("Song Name: ")
-    pprint(music_yt.search_musicyt(artist, song))
+    pprint(music_yt.search(artist, song))

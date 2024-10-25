@@ -3,7 +3,6 @@ import json
 import os
 import sys
 import time
-from datetime import datetime
 from pprint import pprint
 
 import requests
@@ -11,23 +10,23 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.cheap_utils import cheap_compare, sep_artists
-from utils.logger import logger
 
 load_dotenv()
 
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-SEARCH_ENDPOINT = "https://api.spotify.com/v1/search"
 date_format = "%Y, %B %d"
 
 
 class Spotipy:
     def __init__(self, client_id: str, client_secret: str) -> None:
+        self.api_url = "https://api.spotify.com/v1"
         self.client_id = client_id
         self.client_secret = client_secret
         self.__header = self.__authenticate()
         self.__start_time = time.time()
+        self.music_info = []
 
     def __authenticate(self) -> dict:
         """Obtain Spotify access token and headers for requests."""
@@ -48,48 +47,52 @@ class Spotipy:
         data = {"grant_type": "client_credentials"}
 
         response = requests.post(url=url, headers=headers, data=data)
-        token = response.json().get("access_token")
-
-        if token:
-            logger.info("Spotify access token request successful.")
-        else:
-            logger.warning("Spotify access token request unsuccessful!")
-
-        return token
+        return response.json().get("access_token")
 
     def __refresh_token_if_expired(self):
         """Check if the token is expired and refresh it if necessary."""
         if time.time() - self.__start_time >= 3600:
-            logger.info("Refreshing Spotify access token.")
             self.__header = self.__authenticate()
             self.__start_time = time.time()
 
-    def search_music(self, artist: str, song: str) -> dict | None:
-        """Search for a track or album by artist and song on Spotify."""
+    def search(self, artist: str, song: str) -> dict | None:
+        """Search for music in Spotify Music.
+
+        Args:
+            artist (str): Artist name(s)
+            song (str): Song name
+
+        Returns:
+            dict | None: Dictionary containing music info or `None`.
+        """
         self.__refresh_token_if_expired()
 
-        query_url = f"{SEARCH_ENDPOINT}?q={artist} {song}&type=track,album&limit=10"
-        logger.info(f"Spotify Search Query: `{query_url}`")
+        query_url = f"{self.api_url}/search?q={artist} {song}&type=track,album&limit=10"
         response = requests.get(query_url, headers=self.__header)
 
         if response.status_code != 200:
-            logger.error(f"Spotify returned with status code: {response.status_code}")
             return None
 
-        response_json = response.json()
         artist_ids = self.get_artists_ids(artist)
+        artist_ids = artist_ids if artist_ids else []
 
-        if not artist_ids:
-            artist_ids = []
+        self.find_music_info(artist, song, response.json(), artist_ids)
+        return self.music_info[0] if self.music_info else None
 
-        # Try finding track and album information
-        music_info = self.find_music_info(song, artist, response_json, artist_ids)
-        return music_info[0] if music_info else None
-
-    def search_advance(
+    def search_advanced(
         self, artist: str, song: str, isrc: str = None, upc: str = None
     ) -> dict | None:
-        """Search using ISRC or UPC for advanced search."""
+        """Search music in Spotify Music using ISRC or UPC.
+
+        Args:
+            artist (str): Artist name(s)
+            song (str): Song name
+            isrc (str, optional): ISRC of a track. Defaults to None.
+            upc (str, optional): UPC of an album. Defaults to None.
+
+        Returns:
+            dict | None: Dictionary containing music info or `None`.
+        """
         self.__refresh_token_if_expired()
 
         if isrc:
@@ -97,28 +100,25 @@ class Spotipy:
         elif upc:
             query = f"?q={artist} {song} upc:{upc}&type=album&limit=1"
 
-        query_url = SEARCH_ENDPOINT + query
-        logger.info(f"Spotify Search Query: `{query_url}`")
+        query_url = f"{self.api_url}/search{query}"
         response = requests.get(query_url, headers=self.__header)
 
         if response.status_code != 200:
-            logger.error(f"Spotify returned with status code: {response.status_code}")
             return None
 
-        return self.extract_music_info(response.json(), isrc=bool(isrc))
+        artist_ids = self.get_artists_ids(artist)
+        artist_ids = artist_ids if artist_ids else []
+
+        self.find_music_info(artist, song, response.json(), artist_ids)
 
     def get_artists_ids(self, artist: str) -> list | None:
         """Return a list of artist IDs matching the artist's name."""
         artist_ids = []
         for name in sep_artists(artist):
-            query_url = f"{SEARCH_ENDPOINT}?q={name}&type=artist&limit=5"
-            logger.info(f"Spotify Search Query: `{query_url}`")
+            query_url = f"{self.api_url}/search?q={name}&type=artist&limit=5"
             response = requests.get(query_url, headers=self.__header)
 
             if response.status_code != 200:
-                logger.error(
-                    f"Spotify returned with status code: {response.status_code}"
-                )
                 return None
 
             for artist in response.json()["artists"]["items"]:
@@ -128,39 +128,37 @@ class Spotipy:
 
     def get_tempo(self, spotify_id: str) -> float | None:
         """Return tempo in beats per minute (BPM) of a track."""
-        query_url = f"https://api.spotify.com/v1/audio-features/{spotify_id}"
-        logger.info("Get track tempo from Spotify.")
+        query_url = f"{self.api_url}/audio-features/{spotify_id}"
         response = requests.get(query_url, headers=self.__header)
 
         if response.status_code != 200:
-            logger.error(
-                f"Spotify returned with status code @get_tempo(): {response.status_code}"
-            )
             return None
 
         return response.json()["tempo"]
 
     def find_music_info(
-        self, song: str, artist: str, response_json: dict, artist_ids: list
-    ) -> list:
+        self, artist: str, song: str, response_json: dict, artist_ids: list
+    ) -> None:
         """Helper to extract music info from the search response."""
-        music_info = []
-
         # Process tracks
-        for track in response_json["tracks"]["items"]:
-            if music_info:
-                return music_info
-            self.find_tracks(song, artist, track, artist_ids, music_info)
+        try:
+            for track in response_json["tracks"]["items"]:
+                if self.music_info:
+                    return
+                self.find_tracks(song, artist, track, artist_ids)
+        except KeyError:
+            pass
 
-        # Process albums if no track was found
-        for album in response_json["albums"]["items"]:
-            if music_info:
-                return music_info
-            self.find_album(song, artist, album, artist_ids, music_info)
+        try:
+            # Process albums if no track was found
+            for album in response_json["albums"]["items"]:
+                if self.music_info:
+                    return
+                self.find_album(song, artist, album, artist_ids)
+        except KeyError:
+            pass
 
-        return music_info
-
-    def find_tracks(self, song, artist, track, artist_ids, music_info) -> None:
+    def find_tracks(self, song, artist, track, artist_ids) -> None:
         """Helper function to find track info and add to music_info."""
         if not cheap_compare(track["name"], song):
             return
@@ -176,26 +174,23 @@ class Spotipy:
         ]
 
         if matching_artists:
-            release_date = self.format_release_date(
-                track["album"]["release_date"], track["album"]["release_date_precision"]
-            )
-            iso_date = track["album"]["release_date"]
+            release_date = track["album"]["release_date"]
             tempo = round(self.get_tempo(track["id"]))
 
-            music_info.append(
+            self.music_info.append(
                 {
                     "album_art": track["album"]["images"][0]["url"],
                     "album_title": track["album"]["name"],
                     "album_type": track["album"]["album_type"],
                     "artists": ", ".join(artists_name),
-                    "release_date": [release_date, {"iso_format": iso_date}],
-                    "tempo": f"{tempo} BPM",
+                    "release_date": release_date,
+                    "tempo": tempo,
                     "title": track["name"],
                     "url": track["external_urls"]["spotify"],
                 }
             )
 
-    def find_album(self, song, artist, album, artist_ids, music_info) -> None:
+    def find_album(self, song, artist, album, artist_ids) -> None:
         """Helper function to find album info and add to music_info."""
         if not cheap_compare(album["name"], song):
             return
@@ -211,81 +206,19 @@ class Spotipy:
         ]
 
         if matching_artists:
-            release_date = self.format_release_date(
-                album["release_date"], album["release_date_precision"]
-            )
-            iso_date = album["release_date"]
-            music_info.append(
+            release_date = album["release_date"]
+            self.music_info.append(
                 {
                     "album_art": album["images"][0]["url"],
                     "album_title": album["name"],
                     "album_type": album["album_type"],
                     "artists": ", ".join(artists_name),  # Use full artist names
-                    "release_date": [release_date, {"iso_format": iso_date}],
+                    "release_date": release_date,
                     "tempo": None,
                     "title": album["name"],
                     "url": album["external_urls"]["spotify"],
                 }
             )
-
-    def extract_music_info(
-        self, response_json: dict, isrc: bool = False
-    ) -> dict | None:
-        """Extracts music info from advanced search results."""
-        try:
-            result = (
-                response_json["tracks"]["items"][0]
-                if isrc
-                else response_json["albums"]["items"][0]
-            )
-        except IndexError:
-            logger.warning("Spotify returned empty result!")
-            return None
-
-        artists = ", ".join(artist["name"] for artist in result["artists"])
-        try:
-            release_date = self.format_release_date(
-                result["release_date"], result["release_date_precision"]
-            )
-
-            iso_date = result["release_date"]
-        except KeyError:
-            release_date = self.format_release_date(
-                result["album"]["release_date"],
-                result["album"]["release_date_precision"],
-            )
-
-            iso_date = result["album"]["release_date"]
-
-        try:
-            album_type = (
-                result.get("type")
-                if result["name"] == result["album"]["name"]
-                else result.get("album", {}).get("type")
-            )
-            album_art = result["album"]["images"][0]["url"]
-        except KeyError:
-            album_type = result.get("type")
-            album_art = result["images"][0]["url"]
-
-        tempo = round(self.get_tempo(result["id"])) if isrc else None
-
-        return {
-            "artists": artists,
-            "album_art": album_art,
-            "album_title": result.get("album", {}).get("name", result["name"]),
-            "album_type": album_type,
-            "title": result["name"],
-            "tempo": f"{tempo} BPM" if tempo else None,
-            "release_date": [release_date, {"iso_format": iso_date}],
-            "url": result["external_urls"]["spotify"],
-        }
-
-    def format_release_date(self, date_str: str, precision: str) -> str:
-        """Helper function to format the release date."""
-        if precision == "day":
-            return datetime.strptime(date_str, "%Y-%m-%d").strftime(date_format)
-        return datetime.strptime(date_str, "%Y-%m").strftime(date_format)
 
 
 if __name__ == "__main__":
@@ -294,4 +227,4 @@ if __name__ == "__main__":
     artist = input("Artist Name: ")
     song = input("Song Name: ")
 
-    pprint(spotipy.search_music(artist, song))
+    pprint(spotipy.search(artist, song))
