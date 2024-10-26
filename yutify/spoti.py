@@ -66,6 +66,7 @@ class Spotipy:
             dict | None: Dictionary containing music info or `None`.
         """
         self.__refresh_token_if_expired()
+        self.music_info = []
 
         query_url = f"{self.api_url}/search?q={artist} {song}&type=track,album&limit=10"
         response = requests.get(query_url, headers=self.__header)
@@ -94,6 +95,7 @@ class Spotipy:
             dict | None: Dictionary containing music info or `None`.
         """
         self.__refresh_token_if_expired()
+        self.music_info = []
 
         if isrc:
             query = f"?q={artist} {song} isrc:{isrc}&type=track&limit=1"
