@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let form = document.querySelector('form');
 
     form.addEventListener('submit', function() {
-        document.body.style.cursor = 'wait';
-        document.querySelector('#search').style.cursor = 'wait';
+        let searchButton = document.querySelector('#search');
+        searchButton.innerHTML = '<div class="loader"></div>'
     });
 
     const backgrouondImage = document.createElement('div');

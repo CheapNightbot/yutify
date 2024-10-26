@@ -251,6 +251,22 @@ button:hover {
     padding: 0%;
 }
 
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 2.2rem;
+    height: 1rem;
+    mask: radial-gradient(circle closest-side, #000 22%, #0000) left/20% 100%;
+    background: linear-gradient(#a7caff 0 0) left/0% 100% no-repeat #eeeeee;
+    animation: l17 2s infinite steps(6);
+}
+
+@keyframes l17 {
+    100% {
+        background-size: 120% 100%
+    }
+}
+
+
 @media (max-width: 1260px) {
     main {
         padding-left: 20%;
@@ -275,6 +291,10 @@ button:hover {
 @media (max-width: 600px) {
     body {
         font-size: 1rem;
+    }
+
+    main {
+        width: max-content;
     }
 }
 
