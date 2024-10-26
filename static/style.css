@@ -292,10 +292,6 @@ button:hover {
     body {
         font-size: 1rem;
     }
-
-    main {
-        width: max-content;
-    }
 }
 
 footer {
