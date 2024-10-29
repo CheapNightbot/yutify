@@ -19,7 +19,13 @@ from waitress import serve
 
 from utils.logger import logger
 from utils.replace import replace_after_half
-from yutify.yutify import yutify_it
+from yutify.yutify import (
+    get_deezer_result,
+    get_itunes_result,
+    get_spotify_result,
+    get_ytmusic_result,
+    yutify_it,
+)
 
 # Configuring Redis URI
 redis_uri = os.getenv("REDIS_URI", "memory:///")
@@ -106,12 +112,25 @@ class Yutify(Resource):
         song = song.strip()
 
         # Rate-limiting is not working per user ~ it's always 127.0.0.1 !!! _(:з)∠)_
-        logger.info(f"Request came from: `{replace_after_half(get_remote_address())}`")
-        logger.info(f"Artist: `{artist}` & Song: `{song}`")
+        logger.info("Request came from: `%s`", replace_after_half(get_remote_address()))
+        logger.info("Artist: `%s` & Song: `%s`", artist, song)
 
-        result = fetch_yutify_data(artist, song)
+        platform = list(request.args.keys())
+        platform = "".join(platform).lower()
+
+        match platform:
+            case "deezer":
+                result = get_deezer_result(artist, song)
+            case "itunes" | "apple-music":
+                result = get_itunes_result(artist, song)
+            case "spotify":
+                result = get_spotify_result(artist, song)
+            case "ytmusic":
+                result = get_ytmusic_result(artist, song)
+            case _:
+                result = fetch_yutify_data(artist, song)
+
         return jsonify(result)
-
 
 api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 
@@ -135,7 +154,7 @@ def yutify_me():
         return redirect(url_for(".index"))
 
     url = f"https://yutify.onrender.com/api/{artist}:{song}"
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
 
     # Render the appropriate response based on the status code
     return build_response_template(response, artist, song)

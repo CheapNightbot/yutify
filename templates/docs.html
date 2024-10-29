@@ -1,16 +1,18 @@
 {% extends "base.html" %}
 {% block metadata %}
-    <meta property="og:url" content="https://yutify.onrender.com/docs">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="yutify: Docs">
-    <meta property="og:description" content="Read the docs for yutify, simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
-    <meta property="og:image" content="https://yutify.onrender.com/static/music.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="yutify.onrender.com">
-    <meta property="twitter:url" content="https://yutify.onrender.com/docs">
-    <meta name="twitter:title" content="yutify: Docs">
-    <meta name="twitter:description" content="Read the docs for yutify, simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
-    <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:url" content="https://yutify.onrender.com/docs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Docs">
+<meta property="og:description"
+    content="Read the docs for yutify, simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/docs">
+<meta name="twitter:title" content="yutify: Docs">
+<meta name="twitter:description"
+    content="Read the docs for yutify, simple RESTful API (wrapper) for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 {% block title %}Docs{% endblock %}
 {% block content %}
@@ -21,12 +23,40 @@
             /api/<span class="var">artist</span>:<span class="var">song</span>
         </code>
     </section>
-    <p style="font-size:medium;">
+    <p style="font-size: medium;">
         &rbarr; Do NOT overlook the colon (:) in between the artist name & song name.<br>
         &rbarr; <strong>You can only make 60 requests per minute. PLEASE DO NOT ABUSE THE API.</strong><br>
         &rbarr; Check example usage using Python & JavaScript on <a
             href="https://github.com/CheapNightbot/yutify/tree/main/examples" id="example" target="_blank">GitHub</a>.
     </p>
+    <h3>&sc; Request Individual Platfroms:</h3>
+    <p style="font-size: medium;">
+        It is possible to request individual streaming platforms for information by passing the name of the platform as
+        an empty query
+        parameter:
+    </p>
+    <section class="result" style="font-size: large;">
+        <code>
+                /api/<span class="var">artist</span>:<span class="var">song</span>?<span class="var">platform</span>
+            </code>
+    </section>
+    <p style="font-size: medium;">
+        &rbarr; This parameter is optional.<br>
+        &rbarr; The following streaming platforms are available:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&rbarr; <span class="var">deezer</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&rbarr; <span class="var">itunes</span> or <span class="var">apple-music</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&rbarr; <span class="var">spotify</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&rbarr; <span class="var">ytmusic</span><br>
+    </p>
+    <h4>&sc; Example of Requesting Individual Platform:</h4>
+    <p style="font-size: medium;">
+        This will only return the result from Spotify:
+    </p>
+    <section class="result" style="font-size: large;">
+        <code>
+                /api/<span class="var">artist</span>:<span class="var">song</span>?<span class="var">spotify</span>
+            </code>
+    </section>
     <h2>&sext; Response Examples:</h2>
     <code style="font-size: large;">
         /api/<span class="var">Rick Astley</span>:<span class="var">Never Gonna Give You Up</span>
@@ -37,7 +67,7 @@
         &rbarr; While I try my best, (but) there is NO guarantee that all the information will be correct.<br>
     </p>
     <section class="result scroll-me">
-<pre style="font-size: large;">
+        <pre style="font-size: large;">
 {
     '<b class="var">album_art</b>': 'https://i.scdn.co/image/ab67616d0000b27315ebbedaacef61af244262a8',
     '<b class="var">album_title</b>': 'Whenever You Need Somebody',
@@ -60,7 +90,7 @@
     </section>
     <p><b>Status Code</b>: <span style="color: lightcoral;">404 NOT FOUND</span>:</p>
     <section class="result scroll-me" id="not-found">
-<pre style="font-size: large;">
+        <pre style="font-size: large;">
 {
     '<b class="var">error</b>': "Couldn't find 'Song' by 'Artist'"
 }

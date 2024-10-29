@@ -1,7 +1,6 @@
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.logger import logger
 from yutify.deezer import Deezer
 from yutify.itunes import Itunes
@@ -22,7 +21,6 @@ def build_result(
     ytmusic_data=None, deezer_data=None, spotify_data=None, itunes_data=None
 ):
     """Construct the final result using available data from YouTube Music, Deezer, and Spotify."""
-    global priority
     album_art = None
     match priority:
         case "spotify":
