@@ -5,5 +5,5 @@ Flask-RESTful==0.3.10
 python-dotenv==1.0.1
 redis==5.0.8
 requests==2.32.3
-waitress==3.0.0
+waitress==3.0.1
 ytmusicapi==1.8.2
