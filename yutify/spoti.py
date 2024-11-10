@@ -1,5 +1,4 @@
 import base64
-import json
 import os
 import sys
 import time
@@ -13,20 +12,36 @@ from utils.cheap_utils import cheap_compare, sep_artists
 
 load_dotenv()
 
-client_id = os.getenv("CLIENT_ID")
-client_secret = os.getenv("CLIENT_SECRET")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
-date_format = "%Y, %B %d"
+DATE_FORMAT = "%Y, %B %d"
 
 
 class Spotipy:
     def __init__(self, client_id: str, client_secret: str) -> None:
+        self.music_info = []
+        self._session = requests.Session()
         self.api_url = "https://api.spotify.com/v1"
         self.client_id = client_id
         self.client_secret = client_secret
         self.__header = self.__authenticate()
         self.__start_time = time.time()
-        self.music_info = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.close_session()
+
+    def __del__(self) -> None:
+        """Ensure session closes when instance is deleted."""
+        self.close_session()
+
+    def close_session(self) -> None:
+        """Close the session when no longer needed."""
+        self._session.close()
+
 
     def __authenticate(self) -> dict:
         """Obtain Spotify access token and headers for requests."""
@@ -46,7 +61,7 @@ class Spotipy:
         }
         data = {"grant_type": "client_credentials"}
 
-        response = requests.post(url=url, headers=headers, data=data)
+        response = self._session.post(url=url, headers=headers, data=data, timeout=30)
         return response.json().get("access_token")
 
     def __refresh_token_if_expired(self):
@@ -69,7 +84,7 @@ class Spotipy:
         self.music_info = []
 
         query_url = f"{self.api_url}/search?q={artist} {song}&type=track,album&limit=10"
-        response = requests.get(query_url, headers=self.__header)
+        response = self._session.get(query_url, headers=self.__header, timeout=30)
 
         if response.status_code != 200:
             return None
@@ -101,9 +116,11 @@ class Spotipy:
             query = f"?q={artist} {song} isrc:{isrc}&type=track&limit=1"
         elif upc:
             query = f"?q={artist} {song} upc:{upc}&type=album&limit=1"
+        else:
+            return
 
         query_url = f"{self.api_url}/search{query}"
-        response = requests.get(query_url, headers=self.__header)
+        response = self._session.get(query_url, headers=self.__header, timeout=30)
 
         if response.status_code != 200:
             return None
@@ -118,7 +135,7 @@ class Spotipy:
         artist_ids = []
         for name in sep_artists(artist):
             query_url = f"{self.api_url}/search?q={name}&type=artist&limit=5"
-            response = requests.get(query_url, headers=self.__header)
+            response = self._session.get(query_url, headers=self.__header, timeout=30)
 
             if response.status_code != 200:
                 return None
@@ -131,7 +148,7 @@ class Spotipy:
     def get_tempo(self, spotify_id: str) -> float | None:
         """Return tempo in beats per minute (BPM) of a track."""
         query_url = f"{self.api_url}/audio-features/{spotify_id}"
-        response = requests.get(query_url, headers=self.__header)
+        response = self._session.get(query_url, headers=self.__header, timeout=30)
 
         if response.status_code != 200:
             return None
@@ -224,9 +241,11 @@ class Spotipy:
 
 
 if __name__ == "__main__":
-    spotipy = Spotipy(client_id, client_secret)
+    spotipy = Spotipy(CLIENT_ID, CLIENT_SECRET)
 
-    artist = input("Artist Name: ")
-    song = input("Song Name: ")
-
-    pprint(spotipy.search(artist, song))
+    try:
+        artist_name = input("Artist Name: ")
+        song_name = input("Song Name: ")
+        pprint(spotipy.search(artist_name, song_name))
+    finally:
+        spotipy.close_session()

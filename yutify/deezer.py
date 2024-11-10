@@ -11,7 +11,22 @@ from utils.cheap_utils import cheap_compare
 class Deezer:
     def __init__(self) -> None:
         self.music_info = []
+        self._session = requests.Session()
         self.api_url = "https://api.deezer.com"
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.close_session()
+
+    def __del__(self) -> None:
+        """Ensure session closes when instance is deleted."""
+        self.close_session()
+
+    def close_session(self) -> None:
+        """Close the session when no longer needed."""
+        self._session.close()
 
     def search(self, artist: str, song: str) -> dict | None:
         """Search Deezer's music catalogue.
@@ -34,7 +49,7 @@ class Deezer:
             query = f'?q=artist:"{artist}" {search_type}:"{song}"&limit=10'
             query_url = endpoint + query
 
-            response = requests.get(query_url)
+            response = self._session.get(query_url, timeout=30)
             if response.status_code != 200:
                 return None
 
@@ -47,10 +62,9 @@ class Deezer:
 
         if self.music_info:
             return self.music_info[0]
-        else:
-            return None
+        return None
 
-    def get_upc_isrc(self, id: int, type: str) -> dict | None:
+    def get_upc_isrc(self, music_id: int, music_type: str) -> dict | None:
         """Return ISRC or UPC for a track or album respectively and release date!
 
         Args:
@@ -60,20 +74,20 @@ class Deezer:
         Returns:
             str | None: Return ISRC or UPC if found, otherwise return None.
         """
-        match type:
+        match music_type:
             case "track":
-                query_url = f"{self.api_url}/track/{id}"
-                response = requests.get(query_url)
+                query_url = f"{self.api_url}/track/{music_id}"
+                response = self._session.get(query_url, timeout=30)
                 if response.status_code != 200:
                     return None
 
                 result = response.json()
                 return {"isrc": result["isrc"], "release_date": result["release_date"]}
 
-        match type:
+        match music_type:
             case "album":
-                query_url = f"{self.api_url}/album/{id}"
-                response = requests.get(query_url)
+                query_url = f"{self.api_url}/album/{music_id}"
+                response = self._session.get(query_url, timeout=30)
 
                 if response.status_code != 200:
                     return None
@@ -81,7 +95,7 @@ class Deezer:
                 result = response.json()
                 return {"upc": result["upc"], "release_date": result["release_date"]}
 
-        match type:
+        match music_type:
             case _:
                 return None
 
@@ -98,7 +112,7 @@ class Deezer:
         """
         for result in results:
             if self.music_info:
-                return self.music_info[0]
+                return
 
             if not (
                 cheap_compare(result["title"], song)
@@ -154,10 +168,11 @@ class Deezer:
 
 
 if __name__ == "__main__":
-
     deezer = Deezer()
 
-    artist = input("Artist Name: ")
-    song = input("Song Name: ")
-
-    pprint(deezer.search(artist, song))
+    try:
+        artist_name = input("Artist Name: ")
+        song_name = input("Song Name: ")
+        pprint(deezer.search(artist_name, song_name))
+    finally:
+        deezer.close_session()

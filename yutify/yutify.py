@@ -1,19 +1,10 @@
-import os
-import sys
-
 from utils.logger import logger
 from yutify.deezer import Deezer
 from yutify.itunes import Itunes
 from yutify.musicyt import MusicYT
-from yutify.spoti import Spotipy, client_id, client_secret
+from yutify.spoti import Spotipy, CLIENT_ID, CLIENT_SECRET
 
-# Initialize services
-deezer = Deezer()
-spotipy = Spotipy(client_id, client_secret)
 yt_music = MusicYT()
-itunes = Itunes()
-
-# Global Variable
 priority = None
 
 
@@ -45,7 +36,9 @@ def build_result(
         album_type = ytmusic_data
 
     return {
-        "album_art": album_art.get("album_art") if album_art else result.get("album_art"),
+        "album_art": (
+            album_art.get("album_art") if album_art else result.get("album_art")
+        ),
         "album_type": album_type.get("album_type").replace("track", "single"),
         "album_title": result.get("album_title"),
         "artists": result.get("artists"),
@@ -70,58 +63,66 @@ def build_result(
 
 def get_deezer_result(artist: str, song: str):
     """Search for the song in Deezer."""
-    result = deezer.search(artist, song)
-    if result:
-        logger.info("Got result from Deezer.")
-    else:
-        logger.error("No result from Deezer.")
-    return result
+    with Deezer() as deezer:
+        result = deezer.search(artist, song)
+        if result:
+            logger.info("Got result from Deezer.")
+        else:
+            logger.error("No result from Deezer.")
+        return result
 
 
 def get_itunes_result(artist: str, song: str):
     """Search for the song in iTunes Store"""
-    result = itunes.search(artist, song)
-    if result:
-        logger.info("Got result from iTunes.")
-    else:
-        logger.error("No result from iTunes.")
-    return result
+    with Itunes() as itunes:
+        result = itunes.search(artist, song)
+        if result:
+            logger.info("Got result from iTunes.")
+        else:
+            logger.error("No result from iTunes.")
+        return result
 
 
 def get_spotify_result(
     artist: str, song: str, deezer_data=None, itunes_data=None, ytmusic_data=None
 ):
+    """Search for the song in Spotify."""
     global priority
-    result = None
-    if deezer_data:
-        priority = "deezer"
-        logger.info("Search Spotify with Deezer results.")
-        result = spotipy.search_advanced(
-            deezer_data["artists"],
-            deezer_data["title"],
-            isrc=deezer_data.get("isrc"),
-            upc=deezer_data.get("upc"),
-        )
 
-    elif itunes_data:
-        priority = "itunes"
-        logger.info("Search Spotify with iTunes results.")
-        result = spotipy.search(itunes_data["artists"], itunes_data["title"])
+    with Spotipy(CLIENT_ID, CLIENT_SECRET) as spotipy:
+        result = None
+        if deezer_data:
+            priority = "deezer"
+            logger.info("Search Spotify with Deezer results.")
+            result = (
+                spotipy.search_advanced(
+                    deezer_data["artists"],
+                    deezer_data["title"],
+                    isrc=deezer_data.get("isrc"),
+                    upc=deezer_data.get("upc"),
+                )
+                or ""
+            )
 
-    elif ytmusic_data:
-        priority = "ytmusic"
-        logger.info("Search Spotify with YouTube Music results.")
-        result = spotipy.search(ytmusic_data["title"], ytmusic_data["artists"])
+        elif itunes_data:
+            priority = "itunes"
+            logger.info("Search Spotify with iTunes results.")
+            result = spotipy.search(itunes_data["artists"], itunes_data["title"])
 
-    if result:
-        priority = "spotify"
-        logger.info("Got result from Spotify.")
-    else:
-        logger.info("Search Spotify with user-provided data.")
-        result = spotipy.search(artist, song)
-        priority = "spotify" if result else priority
+        elif ytmusic_data:
+            priority = "ytmusic"
+            logger.info("Search Spotify with YouTube Music results.")
+            result = spotipy.search(ytmusic_data["title"], ytmusic_data["artists"])
 
-    return result
+        if result:
+            priority = "spotify"
+            logger.info("Got result from Spotify.")
+        else:
+            logger.info("Search Spotify with user-provided data.")
+            result = spotipy.search(artist, song)
+            priority = "spotify" if result else priority
+
+        return result
 
 
 def get_ytmusic_result(artist: str, song: str):

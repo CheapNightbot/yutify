@@ -15,7 +15,6 @@ b_id = os.getenv("B_ID")
 
 
 class MusicYT:
-
     def __init__(self) -> None:
         self.music_info = []
         self.ytmusic = YTMusic("oauth.json", b_id)
@@ -33,7 +32,10 @@ class MusicYT:
         self.music_info = []
 
         query = f"{artist} - {song}"
-        results = self.ytmusic.search(query=query)
+        try:
+            results = self.ytmusic.search(query=query)
+        except exceptions.YTMusicServerError:
+            return None
 
         for result in results:
             if self._is_relevent_result(artist, song, result):
@@ -95,7 +97,7 @@ class MusicYT:
     def _get_song(self, result: dict) -> None:
         """Helper function to add song info to the `music_info` list."""
         title = result["title"]
-        artist_name = ", ".join([artists["name"] for artists in result["artists"]])
+        artist_names = ", ".join([artists["name"] for artists in result["artists"]])
         video_id = result["videoId"]
         song_url = f"https://music.youtube.com/watch?v={video_id}"
         lyrics_id = self.ytmusic.get_watch_playlist(video_id)
@@ -112,7 +114,7 @@ class MusicYT:
             ]
         self.music_info.append(
             {
-                "artists": artist_name,
+                "artists": artist_names,
                 "album_art": album_art,
                 "album_type": "single",
                 "album_title": None,
@@ -126,7 +128,7 @@ class MusicYT:
     def _get_album(self, result: dict) -> None:
         """Helper function to add album info to the `music_info` list."""
         title = result["title"]
-        artist_name = ", ".join([artists["name"] for artists in result["artists"]])
+        artist_names = ", ".join([artists["name"] for artists in result["artists"]])
         browse_id = result["browseId"]
         album_url = f"https://music.youtube.com/browse/{browse_id}"
         lyrics_id = self.ytmusic.get_watch_playlist(browse_id)
@@ -143,7 +145,7 @@ class MusicYT:
             album_title = album_result["title"]
         self.music_info.append(
             {
-                "artists": artist_name,
+                "artists": artist_names,
                 "album_art": album_art,
                 "album_type": "Album",
                 "album_title": album_title,
@@ -164,9 +166,8 @@ class MusicYT:
 
 
 if __name__ == "__main__":
-
     music_yt = MusicYT()
 
-    artist = input("Artist Name: ")
-    song = input("Song Name: ")
-    pprint(music_yt.search(artist, song))
+    artist_name = input("Artist Name: ")
+    song_name = input("Song Name: ")
+    pprint(music_yt.search(artist_name, song_name))

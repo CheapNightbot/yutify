@@ -12,7 +12,22 @@ from utils.cheap_utils import cheap_compare
 class Itunes:
     def __init__(self) -> None:
         self.music_info = []
+        self._session = requests.Session()
         self.api_url = "https://itunes.apple.com"
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.close_session()
+
+    def __del__(self) -> None:
+        """Ensure session closes when instance is deleted."""
+        self.close_session()
+
+    def close_session(self) -> None:
+        """Close the session when no longer needed."""
+        self._session.close()
 
     def search(self, artist: str, song: str) -> dict | None:
         """Search for music in iTunes Store.
@@ -35,7 +50,7 @@ class Itunes:
             query = f"?term={artist} - {song}&media=music&entity={entity}&limit=10"
             query_url = endpoint + query
 
-            response = requests.get(query_url)
+            response = self._session.get(query_url, timeout=30)
             if response.status_code != 200:
                 return None
 
@@ -104,10 +119,12 @@ class Itunes:
 
 
 if __name__ == "__main__":
-
     itunes = Itunes()
 
-    artist = input("Artist Name: ")
-    song = input("Song Name: ")
+    try:
+        artist_name = input("Artist Name: ")
+        song_name = input("Song Name: ")
 
-    pprint(itunes.search(artist, song))
+        pprint(itunes.search(artist_name, song_name))
+    finally:
+        itunes.close_session()
