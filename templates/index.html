@@ -84,7 +84,7 @@
                 <!-- Deezer Music -->
                 {% if deezer == None %}
                 <a class="music-link" href="#deezer" title="Deezer">
-                {% elif spotify %}
+                {% elif deezer %}
                 <a class="music-link" href="{{ deezer }}" target="_blank" title="Deezer">
                 {% else %}
                 <a class="music-link" href="#deezer" title="Deezer">
@@ -94,7 +94,7 @@
                 <!-- iTunes Store -->
                 {% if itunes == None %}
                 <a class="music-link" href="#itunes" title="iTunes">
-                {% elif spotify %}
+                {% elif itunes %}
                 <a class="music-link" href="{{ itunes }}" target="_blank" title="iTunes">
                 {% else %}
                 <a class="music-link" href="#itunes" title="iTunes">
