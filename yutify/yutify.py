@@ -33,7 +33,7 @@ def build_result(
     )
 
     if not album_type:
-        album_type = ytmusic_data
+        album_type = ytmusic_data if ytmusic_data else (deezer_data or itunes_data)
 
     return {
         "album_art": (
