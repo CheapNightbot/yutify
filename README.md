@@ -110,11 +110,8 @@ Okay, doing above *three* steps didn't work, right >.< ? Because there are few o
   - Create a variable inside this `.env` file called `CLIENT_ID` and paste the Client ID from Spotify Dashboard after it (after `=` sign. no space).
   - Then, create new variable `CLIENT_SECRET` and paste Client secret from Spotify Dashboard. You may have to click on "View client secret".
 
-→ For retrieving information from YouTube Music, it uses [ytmusicapi](https://github.com/sigma67/ytmusicapi) and OAuth for authenticated requests. Please check the [docs](https://ytmusicapi.readthedocs.io/en/stable/setup/oauth.html) on how to setup OAuth. You just need to authenticate and save the "oauth.json" in the root directory of the project. The authentication is not required, so you can change [this line](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/yutify/musicyt.py#L37) inside [yutify/musicyt.py](/yutify/musicyt.py) slightly to not use OAuth:
+→ For retrieving information from YouTube Music, it uses [ytmusicapi](https://github.com/sigma67/ytmusicapi) and OAuth for authenticated requests. Please check the [docs](https://ytmusicapi.readthedocs.io/en/stable/setup/oauth.html) on how to setup OAuth. You just need to authenticate and save the "oauth.json" in the root directory of the project. The authentication is not required. If not `oauth.json` file will be found or doesn't contain valid data, then it will be ignored.
 
-```python
-ytmusic = YTMusic()
-```
 
 → And regarding ratelimit:
 
@@ -123,50 +120,9 @@ ytmusic = YTMusic()
 - You can, at this point, just copy and paste the URL where the redis instance is running into the variable `redis_uri` at [line `16`](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/api.py#L16) inside `api.py` and run yutify again with `python api.py` and NOW, it should work.
 - OR, better, create a file `.env` in the root folder of project and create a variable `REDIS_URI` inside it and paste the redis instace url after it (after `=` sign!) and without changing any other file like before, run `python api.py` command, and everything will work as expected.
 - If no `.env` file exists or it fails to get `"REDIS_URI"`, it will use the memory for ratelimiting instead of redis. It is good for running in development environment, do not use it for production.
-
-<details>
-  <summary>If you do not want to use ratelimiting at all, you have to change (or really remove) few lines of code inside `api.py`:</summary>
-<br>
-
-- [Remove imports](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/api.py#L8-L9):
-
-```python
-from flask_limiter import Limiter, RequestLimit
-from flask_limiter.util import get_remote_address
-```
-
-- [Remove Flask-Limiter config](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/api.py#L30-L36):
-
-```python
-redis_uri = os.environ["REDIS_URI"]
-
-limiter = Limiter(
-    key_func=get_remote_address,
-    app=app,
-    storage_uri=redis_uri,
-    strategy="fixed-window-elastic-expiry",
-    on_breach=default_error_responder,
-)
-```
-
-- [Remove the ratelimit decorator from the endpoint](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/api.py#L40):
-
-```python
-@limiter.limit("60 per minute")
-```
-
-- Finally, [remove the ratelimit error handling function](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/api.py#L24-L27):
-
-```python
-def default_error_responder(request_limit: RequestLimit):
-    limit = str(request_limit.limit)
-    limit = re.sub(r"(\d+)\s+per", r"\1 request(s) per", limit)
-    return make_response(jsonify(error=f"ratelimit exceeded {limit}"), 429)
-```
-
-You can run `python api.py` again, and everything should work as expected.
-
-</details>
+- If you do not want to use ratelimiting at all, you can change the global `RATELIMIT` variable in `api.py` to `False`:
+  - `RATELIMIT = False`
+  - You can run `python api.py` again, and everything should work as expected.
 
 # Contributing 🤝
 
