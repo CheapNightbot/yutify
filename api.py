@@ -35,6 +35,9 @@ app = Flask(__name__)
 api = Api(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+# Whether to have rate limiting or not
+RATELIMIT = True
+
 
 # Helper Functions
 def default_error_responder(request_limit: RequestLimit):
@@ -91,6 +94,7 @@ def build_response_template(response, artist, song):
     except (KeyError, AttributeError) as e:
         logger.error("Something went wrong in `build_response_template()` function:")
         logger.error(e)
+        return None
 
 
 # Flask Limiter Setup
@@ -105,7 +109,7 @@ limiter = Limiter(
 
 # API Resource for Yutify
 class Yutify(Resource):
-    @limiter.limit("30 per minute")
+    @limiter.limit("30 per minute" if RATELIMIT else "")
     def get(self, artist, song):
         """GET method to fetch song details from Deezer, Spotify, and YouTube Music."""
         artist = artist.strip()
@@ -131,6 +135,7 @@ class Yutify(Resource):
                 result = fetch_yutify_data(artist, song)
 
         return jsonify(result)
+
 
 api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 
