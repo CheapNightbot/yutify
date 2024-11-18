@@ -1,6 +1,6 @@
 <div align=center>
 
-  ![Banner](https://github.com/user-attachments/assets/d024bf6d-7a58-4f61-8a29-681e076995cf)
+  ![Banner](https://github.com/user-attachments/assets/6423bf5a-29d9-42b4-90a5-8851d701def7)
 
   [![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%23dfebfc)](LICENSE)
   [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.onrender.com%2F&style=for-the-badge&color=%23dfebfc)](https://yutify.onrender.com/)
@@ -59,6 +59,12 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 - Request for information only for a particular streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
 - Use API endpoint to search for music in code or play around directly on [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
 - It's FREE. \_(:з)∠)\_
+
+### TODO
+
+- Unified responses!
+    - Right now, the response for individual platforms and default response etc., there are a lot of differences in data. Like, there is no guarantee that a key will available or not.
+    - So, me will make sure to standardize the responses. No matter what, all the responses will have same keys, although the data might be `null` (cause of music platforms, not me !!).
 
 ### Available Music Platforms 📻
 
