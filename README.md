@@ -123,8 +123,8 @@ Okay, doing above *three* steps didn't work, right >.< ? Because there are few o
 
 - For ratelimiting, it uses **Flask-Limiter** and for storage, **redis**.
 - So, first, you will have to have a redis instance up and running.
-- You can, at this point, just copy and paste the URL where the redis instance is running into the variable `redis_uri` at [line `16`](https://github.com/CheapNightbot/yutify/blob/b449e4352b34f6efea5c299fbb258efb0ab347f3/api.py#L16) inside `api.py` and run yutify again with `python api.py` and NOW, it should work.
-- OR, better, create a file `.env` in the root folder of project and create a variable `REDIS_URI` inside it and paste the redis instace url after it (after `=` sign!) and without changing any other file like before, run `python api.py` command, and everything will work as expected.
+  - You can, at this point, just copy and paste the URL where the redis instance is running into the `.env` file in the project root directory (check the `.env_example` file!).
+- Run `python api.py` command, and everything will work as expected.
 - If no `.env` file exists or it fails to get `"REDIS_URI"`, it will use the memory for ratelimiting instead of redis. It is good for running in development environment, do not use it for production.
 - If you do not want to use ratelimiting at all, you can change the global `RATELIMIT` variable in `api.py` to `False`:
   - `RATELIMIT = False`
