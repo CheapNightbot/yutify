@@ -40,7 +40,7 @@
 
 </details>
 
-**yutifiy** is a simple RESTful API (wrapper) for retrieving music info for various steaming platforms written in Flask (Python). Using the artist name and song name, you can get various information about the song including the streaming link(s) for various music streaming platforms. To prevent the abuse of the API, there is a ratelimit of 30 requests per minute for every user.
+**yutifiy** is a simple RESTful API for retrieving music info for various streaming platforms. Using the artist name and song name, you can get various information about the song including the streaming link(s) for various music streaming platforms. To prevent the abuse of the API, there is a ratelimit of 30 requests per minute for every user.
 
 Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you would like me to add any other streaming platforms or more metadata about the song(s), feel free to open an issue. You can visit the website to playaround [here](https://yutify.onrender.com/) or maybe check simple [examples](/examples) on how get started and make sure to read [docs](https://yutify.onrender.com/docs).
 
@@ -141,5 +141,6 @@ If you don't know programming, you can still contribute to this project by openi
 - Powered by [Render](https://render.com/register). 🚀
 - Logos/Icons provided by [SVG REPO](https://www.svgrepo.com/). 🧑‍🎨
 - Using [Spotify Web API](https://developer.spotify.com/documentation/web-api). 🛠️
+- Using [Deezer API](https://developers.deezer.com/api). 🛠️
 - Thanks to [sigma67](https://github.com/sigma67) for [ytmusicapi](https://github.com/sigma67/ytmusicapi). 🫂
 - Thanks to [OhaJoq](https://github.com/Joqnix) for motivation behind this project. ✨
