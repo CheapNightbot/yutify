@@ -260,6 +260,20 @@ button:hover {
     animation: l17 2s infinite steps(6);
 }
 
+#lyrics {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 330px;
+    height: 270px;
+    opacity: 1;
+}
+
+#lyrics:hover {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 @keyframes l17 {
     100% {
         background-size: 120% 100%
@@ -279,6 +293,11 @@ button:hover {
         flex-direction: column;
         height: auto;
     }
+
+    #lyrics {
+        width: 260px;
+        height: 200px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -286,11 +305,20 @@ button:hover {
         padding-left: 10%;
         padding-right: 10%;
     }
+
+    #lyrics {
+        width: 220px;
+        height: 160px;
+    }
 }
 
 @media (max-width: 600px) {
     body {
         font-size: 1rem;
+    }
+
+    #lyrics {
+        display: none;
     }
 }
 
