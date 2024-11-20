@@ -125,8 +125,13 @@ class MusicYT:
         artist_names = ", ".join([artists["name"] for artists in result["artists"]])
         browse_id = result["browseId"]
         album_url = f"https://music.youtube.com/browse/{browse_id}"
-        lyrics_id = self.ytmusic.get_watch_playlist(browse_id)
         try:
+            lyrics_id = self.ytmusic.get_watch_playlist(browse_id)
+        except exceptions.YTMusicServerError:
+            lyrics_id = {}
+        try:
+            if not lyrics_id:
+                raise exceptions.YTMusicUserError
             lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
         except exceptions.YTMusicUserError:
             lyrics = {}
