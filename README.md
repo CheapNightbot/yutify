@@ -116,9 +116,6 @@ Okay, doing above *three* steps didn't work, right >.< ? Because there are few o
   - Create a variable inside this `.env` file called `CLIENT_ID` and paste the Client ID from Spotify Dashboard after it (after `=` sign. no space).
   - Then, create new variable `CLIENT_SECRET` and paste Client secret from Spotify Dashboard. You may have to click on "View client secret".
 
-→ For retrieving information from YouTube Music, it uses [ytmusicapi](https://github.com/sigma67/ytmusicapi) and OAuth for authenticated requests. Please check the [docs](https://ytmusicapi.readthedocs.io/en/stable/setup/oauth.html) on how to setup OAuth. You just need to authenticate and save the "oauth.json" in the root directory of the project. The authentication is not required. If not `oauth.json` file will be found or doesn't contain valid data, then it will be ignored.
-
-
 → And regarding ratelimit:
 
 - For ratelimiting, it uses **Flask-Limiter** and for storage, **redis**.

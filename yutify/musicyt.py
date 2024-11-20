@@ -1,31 +1,17 @@
 import os
 import sys
-from json.decoder import JSONDecodeError
 from pprint import pprint
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from dotenv import load_dotenv
 from ytmusicapi import YTMusic, exceptions
-
 from utils.cheap_utils import cheap_compare
-from utils.logger import logger
-
-load_dotenv()
-
-b_id = os.getenv("B_ID")
 
 
 class MusicYT:
     def __init__(self) -> None:
         self.music_info = []
-        try:
-            self.ytmusic = YTMusic("oauth.json", b_id)
-        except JSONDecodeError:
-            logger.warning(
-                "`oauth.json` wasn't found or doesn't contain valid data. Continuing without it."
-            )
-            self.ytmusic = YTMusic()
+        self.ytmusic = YTMusic()
 
     def search(self, artist: str, song: str) -> dict | None:
         """Search for music YouTube Music.
@@ -38,8 +24,8 @@ class MusicYT:
             dict | None: Dictionary containing music info or `None`.
         """
         self.music_info = []
-
         query = f"{artist} - {song}"
+
         try:
             results = self.ytmusic.search(query=query)
         except exceptions.YTMusicServerError:
