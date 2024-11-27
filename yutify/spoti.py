@@ -194,7 +194,8 @@ class Spotipy:
 
         if matching_artists:
             release_date = track["album"]["release_date"]
-            tempo = round(self.get_tempo(track["id"]))
+            tempo = self.get_tempo(track["id"])
+            tempo = round(tempo) if tempo else None
 
             self.music_info.append(
                 {
