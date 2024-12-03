@@ -86,7 +86,6 @@ def build_response_template(response, artist, song):
             song=song,
             spotify=yutify_data.get("spotify"),
             title=yutify_data.get("title"),
-            tempo=yutify_data.get("tempo"),
             yt_music=(
                 yutify_data["ytmusic"].get("url") if yutify_data["ytmusic"] else None
             ),
