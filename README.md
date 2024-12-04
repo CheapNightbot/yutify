@@ -53,7 +53,6 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
   - [x] Genre
   - [x] Lyrics
   - [x] Release Date
-  - [x] Tempo (in beats per minute aka BPM)
   - [x] Many More ™ ヾ(⌐■_■)ノ♪
 - Get streaming link for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
 - Request for information only for a particular streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
