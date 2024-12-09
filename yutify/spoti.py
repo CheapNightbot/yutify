@@ -244,7 +244,7 @@ class Spotipy:
                     "release_date": release_date,
                     "tempo": None,
                     "title": album["name"],
-                    "upc": album.get("external_ids").get("upc"),
+                    "upc": album.get("external_ids", {}).get("upc"),
                     "url": album["external_urls"]["spotify"],
                 }
             )
