@@ -98,7 +98,7 @@ class MusicYT:
         lyrics_id = self.ytmusic.get_watch_playlist(video_id)
 
         song_data = self.ytmusic.get_song(video_id)
-        release_date = song_data["microformat"]["microformatDataRenderer"]["uploadDate"]
+        release_date = song_data.get("microformat").get("microformatDataRenderer").get("uploadDate")
         # Get the index of "T" and slice the string after that or only get string before "T".
         # For example, "2016-10-18T11:00:03-07:00" will become "2016-10-18"
         release_date: str = release_date[:release_date.index("T")]
