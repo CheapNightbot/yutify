@@ -99,17 +99,18 @@ class MusicYT:
 
         try:
             song_data = self.ytmusic.get_song(video_id)
-        except exceptions.YTMusicServerError:
+        except (exceptions.YTMusicServerError, exceptions.YTMusicError):
             song_data = {}
         else:
+            song_data = song_data if song_data else {}
             release_date = (
-                song_data.get("microformat")
-                .get("microformatDataRenderer")
+                song_data.get("microformat", {})
+                .get("microformatDataRenderer", {})
                 .get("uploadDate")
             )
             # Get the index of "T" and slice the string after that or only get string before "T".
             # For example, "2016-10-18T11:00:03-07:00" will become "2016-10-18"
-            release_date: str = release_date[: release_date.index("T")]
+            release_date = release_date[: release_date.index("T")] if release_date else None
 
         try:
             lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
@@ -120,9 +121,9 @@ class MusicYT:
             album_art = result["thumbnails"][-1]["url"]
         except KeyError:
             album_art = (
-                song_data.get("videoDetails")
-                .get("thumbnail")
-                .get("thumbnails")[-1]
+                song_data.get("videoDetails", {})
+                .get("thumbnail", {})
+                .get("thumbnails", {"x", "y"})[-1]
                 .get("url")
             )
         self.music_info.append(
