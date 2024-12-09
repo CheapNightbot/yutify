@@ -27,8 +27,49 @@
         &rbarr; Do NOT overlook the colon (:) in between the artist name & song name.<br>
         &rbarr; <strong>You can only make 60 requests per minute. PLEASE DO NOT ABUSE THE API.</strong><br>
         &rbarr; Check example usage using Python & JavaScript on <a
-            href="https://github.com/CheapNightbot/yutify/tree/main/examples" id="example" target="_blank">GitHub</a>.
+            href="https://github.com/CheapNightbot/yutify/tree/main/examples" id="example" target="_blank">GitHub</a>.<br>
     </p>
+
+    <details>
+        <summary>Schema</summary>
+        <details style="text-indent: 1rem;">
+            <summary><b>Status Code</b>: <span style="color: lightgreen;">200</span><span style="font-size: medium;">
+                    &nbsp;&rbarr; Response Type: JSON Object</span></summary>
+            <ul style="text-indent: initial;">
+                <li><b class="var">album_art</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">album_title</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">album_type</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">artists</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">deezer</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">genre</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">itunes</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">lyrics</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">release_date</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">spotify</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">title</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">ytmusic</b>: <code style="color: thistle">object</code> | <code style="color: tomato;">null</code>
+                    <ul>
+                        <li><b class="var">id</b>: <code style="color: lemonchiffon">string</code></li>
+                        <li><b class="var">url</b>: <code style="color: lemonchiffon">string</code></li>
+                    </ul>
+                </li>
+            </ul>
+        </details>
+
+        <details style="text-indent: 1rem;">
+            <summary><b>Status Code</b>: <span style="color: lightcoral;">404</span><span
+                    style="font-size: medium;">&nbsp;&rbarr; Response Type: JSON Object</span></summary>
+            <ul style="text-indent: initial;">
+                <li><b class="var">error</b>: <code style="color: lemonchiffon">string</code></li>
+            </ul>
+        </details>
+    </details>
+
     <h3>&sc; Request Individual Platforms:</h3>
     <p style="font-size: medium;">
         It is possible to request individual streaming platforms for information by passing the name of the platform as
@@ -48,6 +89,42 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&rbarr; <span class="var">spotify</span><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&rbarr; <span class="var">ytmusic</span><br>
     </p>
+
+    <details>
+        <summary>Schema</summary>
+        <details style="text-indent: 1rem;">
+            <summary><b>Status Code</b>: <span style="color: lightgreen;">200</span><span style="font-size: medium;">
+                    &nbsp;&rbarr; Response Type: JSON Object</span></summary>
+            <ul style="text-indent: initial;">
+                <li><b class="var">album_art</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">album_title</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">album_type</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">artists</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">genre</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">id</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">isrc</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">lyrics</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">release_date</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">tempo</b>: <code style="color: lemonchiffon">string</code> | <code
+                        style="color: tomato;">null</code></li>
+                <li><b class="var">title</b>: <code style="color: lemonchiffon">string</code></li>
+                <li><b class="var">upc</b>: <code style="color: lemonchiffon">string</code> | <code style="color: tomato;">null</code></li>
+                <li><b class="var">url</b>: <code style="color: lemonchiffon">string</code></li>
+            </ul>
+        </details>
+
+        <details style="text-indent: 1rem;">
+            <summary><b>Status Code</b>: <span style="color: lightcoral;">404</span><span
+                    style="font-size: medium;">&nbsp;&rbarr; Response Type: JSON Object</span></summary>
+            <ul style="text-indent: initial;">
+                <li><b class="var">error</b>: <code style="color: lemonchiffon">string</code></li>
+            </ul>
+        </details>
+    </details>
+
     <h4>&sc; Example of Requesting Individual Platform:</h4>
     <p style="font-size: medium;">
         This will only return the result from Spotify:
