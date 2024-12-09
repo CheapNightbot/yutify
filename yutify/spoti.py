@@ -42,7 +42,6 @@ class Spotipy:
         """Close the session when no longer needed."""
         self._session.close()
 
-
     def __authenticate(self) -> dict:
         """Obtain Spotify access token and headers for requests."""
         token = self.__get_spotify_token()
@@ -203,9 +202,14 @@ class Spotipy:
                     "album_title": track["album"]["name"],
                     "album_type": track["album"]["album_type"],
                     "artists": ", ".join(artists_name),
+                    "genre": None,
+                    "id": track["id"],
+                    "isrc": track.get("external_ids").get("isrc"),
+                    "lyrics": None,
                     "release_date": release_date,
                     "tempo": tempo,
                     "title": track["name"],
+                    "upc": None,
                     "url": track["external_urls"]["spotify"],
                 }
             )
@@ -232,10 +236,15 @@ class Spotipy:
                     "album_art": album["images"][0]["url"],
                     "album_title": album["name"],
                     "album_type": album["album_type"],
-                    "artists": ", ".join(artists_name),  # Use full artist names
+                    "artists": ", ".join(artists_name),
+                    "genre": None,
+                    "id": album["id"],
+                    "isrc": None,
+                    "lyrics": None,
                     "release_date": release_date,
                     "tempo": None,
                     "title": album["name"],
+                    "upc": album.get("external_ids").get("upc"),
                     "url": album["external_urls"]["spotify"],
                 }
             )

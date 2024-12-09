@@ -1,7 +1,7 @@
 import os
 import sys
-from pprint import pprint
 from datetime import datetime
+from pprint import pprint
 
 import requests
 
@@ -110,7 +110,11 @@ class Itunes:
                     "album_type": album_type.lower(),
                     "artists": result["artistName"],
                     "genre": result["primaryGenreName"],
+                    "id": result.get("trackId", result["collectionId"]),
+                    "isrc": None,
+                    "lyrics": None,
                     "release_date": release_date,
+                    "tempo": None,
                     "title": result.get("trackName", album_title),
                     "type": result["wrapperType"],
                     "url": result.get("trackViewUrl", result["collectionViewUrl"]),

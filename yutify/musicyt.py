@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 from pprint import pprint
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -95,6 +96,13 @@ class MusicYT:
         video_id = result["videoId"]
         song_url = f"https://music.youtube.com/watch?v={video_id}"
         lyrics_id = self.ytmusic.get_watch_playlist(video_id)
+
+        song_data = self.ytmusic.get_song(video_id)
+        release_date = song_data["microformat"]["microformatDataRenderer"]["uploadDate"]
+        # Get the index of "T" and slice the string after that or only get string before "T".
+        # For example, "2016-10-18T11:00:03-07:00" will become "2016-10-18"
+        release_date: str = release_date[:release_date.index("T")]
+
         try:
             lyrics = self.ytmusic.get_lyrics(lyrics_id.get("lyrics"))
         except exceptions.YTMusicUserError:
@@ -102,19 +110,23 @@ class MusicYT:
         try:
             album_art = result["thumbnails"][-1]["url"]
         except KeyError:
-            song_result = self.ytmusic.get_song(video_id)
-            album_art = song_result["videoDetails"]["thumbnail"]["thumbnails"][-1][
+            album_art = song_data["videoDetails"]["thumbnail"]["thumbnails"][-1][
                 "url"
             ]
         self.music_info.append(
             {
-                "artists": artist_names,
                 "album_art": album_art,
-                "album_type": "single",
                 "album_title": None,
+                "album_type": "single",
+                "artists": artist_names,
+                "genre": None,
                 "id": video_id,
+                "isrc": None,
                 "lyrics": lyrics.get("lyrics"),
+                "release_date": release_date,
+                "tempo": None,
                 "title": title,
+                "upc": None,
                 "url": song_url,
             }
         )
@@ -125,6 +137,10 @@ class MusicYT:
         artist_names = ", ".join([artists["name"] for artists in result["artists"]])
         browse_id = result["browseId"]
         album_url = f"https://music.youtube.com/browse/{browse_id}"
+
+        album_data = self.ytmusic.get_album(browse_id)
+        release_date = album_data["year"]
+
         try:
             lyrics_id = self.ytmusic.get_watch_playlist(browse_id)
         except exceptions.YTMusicServerError:
@@ -139,18 +155,22 @@ class MusicYT:
             album_art = result["thumbnails"][-1]["url"]
             album_title = result["title"]
         except KeyError:
-            album_result = self.ytmusic.get_album(browse_id)
-            album_art = album_result["thumbnails"][-1]["url"]
-            album_title = album_result["title"]
+            album_art = album_data["thumbnails"][-1]["url"]
+            album_title = album_data["title"]
         self.music_info.append(
             {
-                "artists": artist_names,
                 "album_art": album_art,
-                "album_type": "Album",
                 "album_title": album_title,
+                "album_type": "Album",
+                "artists": artist_names,
+                "genre": None,
                 "id": browse_id,
+                "isrc": None,
                 "lyrics": lyrics.get("lyrics"),
+                "release_date": release_date,
+                "tempo": None,
                 "title": title,
+                "upc": None,
                 "url": album_url,
             }
         )

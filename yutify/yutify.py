@@ -39,17 +39,16 @@ def build_result(
         "album_art": (
             album_art.get("album_art") if album_art else result.get("album_art")
         ),
-        "album_type": album_type.get("album_type").replace("track", "single"),
         "album_title": result.get("album_title"),
+        "album_type": album_type.get("album_type").replace("track", "single"),
         "artists": result.get("artists"),
         "deezer": deezer_data.get("url") if deezer_data else None,
-        "genre": itunes_data.get("genre"),
+        "genre": (itunes_data or deezer_data).get("genre"),
         "itunes": itunes_data.get("url") if itunes_data else None,
         "lyrics": ytmusic_data.get("lyrics") if ytmusic_data else None,
-        "release_date": (spotify_data or deezer_data or {}).get("release_date"),
+        "release_date": (spotify_data or deezer_data or itunes_data or {}).get("release_date"),
         "spotify": spotify_data.get("url") if spotify_data else None,
         "title": result.get("title"),
-        "tempo": spotify_data.get("tempo") if spotify_data else None,
         "ytmusic": (
             {
                 "id": ytmusic_data.get("id"),

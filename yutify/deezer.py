@@ -82,9 +82,12 @@ class Deezer:
                     return None
 
                 result = response.json()
-                return {"isrc": result["isrc"], "release_date": result["release_date"]}
+                return {
+                    "isrc": result["isrc"],
+                    "release_date": result["release_date"],
+                    "tempo": result["bpm"] if result["bpm"] else None,
+                }
 
-        match music_type:
             case "album":
                 query_url = f"{self.api_url}/album/{music_id}"
                 response = self._session.get(query_url, timeout=30)
@@ -93,9 +96,12 @@ class Deezer:
                     return None
 
                 result = response.json()
-                return {"upc": result["upc"], "release_date": result["release_date"]}
+                return {
+                    "genre": result["genres"]["data"][0]["name"],
+                    "release_date": result["release_date"],
+                    "upc": result["upc"],
+                }
 
-        match music_type:
             case _:
                 return None
 
@@ -123,15 +129,19 @@ class Deezer:
             match result["type"]:
                 case "track":
                     track_info = self.get_upc_isrc(result["id"], result["type"])
+                    genre = None
                     isrc = track_info["isrc"]
                     release_date = track_info["release_date"]
+                    tempo = track_info.get("tempo")
                     upc = None
 
                 case "album":
                     album_info = self.get_upc_isrc(result["id"], result["type"])
-                    upc = album_info["upc"]
-                    release_date = album_info["release_date"]
+                    genre = album_info.get("genre")
                     isrc = None
+                    release_date = album_info["release_date"]
+                    tempo = None
+                    upc = album_info["upc"]
 
             try:
                 album_type = (
@@ -156,9 +166,12 @@ class Deezer:
                     ),
                     "album_type": album_type,
                     "artists": result["artist"]["name"],
+                    "genre": genre,
                     "id": result["id"],
                     "isrc": isrc,
+                    "lyrics": None,
                     "release_date": release_date,
+                    "tempo": tempo,
                     "title": result["title"],
                     "type": result["type"],
                     "upc": upc,
