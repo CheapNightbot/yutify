@@ -54,8 +54,8 @@ class MusicYT:
             return False
 
         return any(
-            cheap_compare(result["title"], song)
-            and cheap_compare(_artist["name"], artist)
+            cheap_compare(result.get("title"), song)
+            and cheap_compare(_artist.get("name"), artist)
             for _artist in result.get("artists", [])
         )
 
@@ -81,8 +81,8 @@ class MusicYT:
         ]
 
         if (
-            result["category"].lower() in categories_skip
-            or result["resultType"].lower() in categories_skip
+            result.get("category", "").lower() in categories_skip
+            or result.get("resultType", "").lower() in categories_skip
         ):
             return True
 
