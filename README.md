@@ -59,12 +59,6 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 - Use API endpoint to search for music in code or play around directly on [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
 - It's FREE. \_(:з)∠)\_
 
-### TODO
-
-- Unified responses!
-    - Right now, the response for individual platforms and default response etc., there are a lot of differences in data. Like, there is no guarantee that a key will available or not.
-    - So, me will make sure to standardize the responses. No matter what, all the responses will have same keys, although the data might be `null` (cause of music platforms, not me !!).
-
 ### Available Music Platforms 📻
 
 > Alphabetically sorted
