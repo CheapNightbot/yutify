@@ -1,6 +1,8 @@
 import os
 import re
 
+from datetime import date
+
 import requests
 from flask import (
     Flask,
@@ -68,6 +70,8 @@ def build_response_template(response, artist, song):
             song=song,
             album_art="static/favicon.svg",
             title=response.json().get("error"),
+            active_page="home",
+            year=date.today().year,
         )
 
     yutify_data = response.json()
@@ -89,6 +93,8 @@ def build_response_template(response, artist, song):
             yt_music=(
                 yutify_data["ytmusic"].get("url") if yutify_data["ytmusic"] else None
             ),
+            active_page="home",
+            year=date.today().year,
         )
     except (KeyError, AttributeError) as e:
         logger.error("Something went wrong in `build_response_template()` function:")
@@ -142,7 +148,7 @@ api.add_resource(Yutify, "/api/<path:artist>:<path:song>")
 @app.route("/")
 def index():
     """Render the main index/home page."""
-    return render_template("index.html")
+    return render_template("index.html", active_page="home", year=date.today().year)
 
 
 @app.route("/yutify")
@@ -167,7 +173,7 @@ def yutify_me():
 @app.route("/docs")
 def docs():
     """Render the API documentation page."""
-    return render_template("docs.html")
+    return render_template("docs.html", active_page="docs", year=date.today().year)
 
 
 if __name__ == "__main__":

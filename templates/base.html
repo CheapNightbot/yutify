@@ -9,42 +9,45 @@
     <meta name="keywords" content="yutify, music, rest-api, api, python, flask, free-api, Cheap Nighbot">
     {% block metadata %}{% endblock %}
     <title>yutify: {% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="https://use.typekit.net/mgf5eji.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://use.typekit.net/mgf5eji.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.indigo.min.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.svg') }}">
     {% block style %}{% endblock %}
 </head>
 
-<body>
-    <header>
-        <div id="nav-bar">
-            <section class="nav">
-                <a class="button" href="/">Home</a>
-                <a class="button" href="/docs" title="API Docs">Docs</a>
-            </section>
-            <section class="nav">
-                <a class="button" id="github" href="https://github.com/CheapNightbot/yutify/" title="Souce Code"
-                    target="_blank">
-                    <img src="{{ url_for('static', filename='logos/github.svg') }}" alt="github logo" class="rotate"
-                        style="width:26px;height:26px;">
-                </a>
-            </section>
-        </div>
-        <section id="head">
-            <h1>yutify</h1>
-            <p>Simple RESTful API for retrieving music info for various steaming platforms.</p>
-        </section>
+<body class="container-fluid">
+    <nav class="container">
+        <ul>
+            <li class="{% if active_page == 'home' %}active{% endif %}"><a data-tooltip="API Playground" data-placement="bottom" href="/">Home</a></li>
+            <li class="{% if active_page == 'docs' %}active{% endif %}"><a data-tooltip="API Docs" data-placement="bottom" href="/docs">Docs</a></li>
+        </ul>
+        <ul>
+            <li>
+            <a data-tooltip="Souce Code" data-placement="left" id="github" href="https://github.com/CheapNightbot/yutify/" target="_blank">
+                <img src="{{ url_for('static', filename='logos/github.svg') }}" alt="github logo" class="rotate" style="width:36px;height:36px;">
+            </a>
+            </li>
+        </ul>
+    </nav>
+
+    <header class="container">
+        <h1 id="brand">yutify</h1>
+        <p>Simple RESTful API for retrieving music info for various steaming platforms.</p>
     </header>
 
-    <main>
+    <main class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <img id="lyrics" src="{{ url_for('static', filename='others/mystia-lorelei-touhou.gif')}}" alt="Mystia Lorelei Touhou">
-
-    <footer>
-        <p>&copy; 2024 Cheap Nightbot | All Rights Reserved | &lpar;〃￣ω￣〃ゞ</p>
+    <footer class="container">
+        <p>&copy;{{ year }} Cheap Nightbot</p>
+        <p>|</p>
+        <p><a href="https://github.com/CheapNightbot/yutify?tab=MIT-1-ov-file" target="_blank" style="text-decoration: none;">MIT License</a></p>
+        <p>|</p>
+        <p>&lpar;〃￣ω￣〃ゞ</p>
     </footer>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>

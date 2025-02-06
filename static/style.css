@@ -1,78 +1,44 @@
-* {
-    margin: 0;
-    box-sizing: border-box;
-}
-
-.background-image {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -3;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-}
-
-.background-overlay {
-    background: #222831dd;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2;
-}
-
-body {
-    background-color: #222831;
-    color: #dfebfc;
-    font-family: "yrsa", serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 1.2rem;
-    padding: 2rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+nav, nav ul {
     gap: 2rem;
-    width: 100%;
-    margin: 0;
 }
 
-h1 {
-    font-family: "yrsa", serif;
-    font-weight: 700;
-    font-style: normal;
-    font-size: 6rem;
+nav {
+    margin-top: 1rem;
+}
+
+nav a {
+    font-size: 1.2rem;
+}
+
+header {
+    text-align: center;
+}
+
+#brand {
+    font-size: clamp(6rem, 10vw, 6rem);
     background: linear-gradient(45deg, #a7caff 0%, #eeeeee 100%);
     background-clip: text;
     color: transparent;
 }
 
-.nav {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
+a,
+a:visited {
+    color: #a7caff;
+    text-decoration: none;
 }
 
-#nav-bar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+a:active {
+    color: #4d94ff;
 }
 
-#head {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+.active {
+    border-bottom: 1px solid;
+    transition: all 0.3s;
 }
 
+.active:hover {
+    color: transparent;
+}
 
 @keyframes rotate {
     0% {
@@ -92,237 +58,33 @@ h1 {
     animation: none;
 }
 
-.button,
-.button:visited {
-    text-decoration: none;
-    color: inherit;
-    border: 1px #a7caff solid;
-    padding: 12px 20px;
-    border-radius: .369rem;
-}
-
-.button:hover {
-    background-color: #a7caff;
-    transform: scale(1.1);
-    transition: transform 0.3s ease-in-out;
-    box-shadow: 0 0 16px #a7caff;
-}
-
-a,
-a:visited {
-    color: #a7caff;
-}
-
-
-main {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding-left: 30%;
-    padding-right: 30%;
-    flex: 1;
-}
-
-.content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
-
-input {
-    color: inherit;
-    border: 1px #a7caff solid;
-    padding: 0.5rem 1rem;
-    border-radius: .369rem;
-    font-size: 1rem;
-    width: 100%;
-    background: transparent;
-}
-
-input:focus {
-    box-shadow: 0px 0px 6px 0px #a7caff;
-}
-
-#second-row {
-    width: inherit;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-}
-
-button {
-    color: inherit;
-    border: 1px #a7caff solid;
-    padding: 0.6rem 1.6rem;
-    border-radius: .369rem;
-    margin-left: 0.2rem;
-    background: transparent;
-}
-
-#github {
-    padding: 0.4rem 1rem;
-}
-
-.music-link {
-    display: grid;
-    place-items: center;
-    width: 30px;
-    height: 30px;
-    overflow: hidden;
-    border-radius: 100%;
-}
-
-.music-link img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.music-link:hover {
-    transform: scale(1.1);
-    transition: transform 0.3s ease-in-out;
-    box-shadow: 0 0 10px 3px #a7caff;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #a7caff;
-    transform: scale(1.1);
-    transition: transform 0.3s ease-in-out;
-    box-shadow: 0 0 16px #a7caff;
-    cursor: pointer;
-}
-
-.result {
-    width: 100%;
-    height: fit-content;
-    border: 1px #a7caff solid;
-    padding: 1.75rem 1rem;
-    border-radius: .369rem;
-    margin-left: 0.2rem;
-    background: transparent;
-}
-
-.result-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-    justify-content: space-evenly;
-    overflow: hidden;
-}
-
-.scroll-me {
-    overflow: auto;
-    height: fit-content;
-}
-
-.scroll-me::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.scroll-me::-webkit-scrollbar-thumb {
-    background-color: #a7caff;
-    border-radius: 5px;
-}
-
-.scroll-me::-webkit-scrollbar-track,
-.scroll-me::-webkit-scrollbar-corner {
-    background: transparent;
-}
-
-
 .var {
     color: #a7caff;
 }
 
-#docs {
-    align-items: flex-start;
+.result-container {
+    padding-left: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
 }
 
 .album-art {
-    height: 33vh;
-    width: 28vh;
-    padding: 0%;
+    width: max(8rem, min(28vw, 18rem));
+    height: max(10rem, min(33vw, 20rem));
+    border: 1px solid;
+    border-radius: .746rem;
 }
 
-/* HTML: <div class="loader"></div> */
-.loader {
-    width: 2.2rem;
-    height: 1rem;
-    mask: radial-gradient(circle closest-side, #000 22%, #0000) left/20% 100%;
-    background: linear-gradient(#a7caff 0 0) left/0% 100% no-repeat #eeeeee;
-    animation: l17 2s infinite steps(6);
-}
-
-#lyrics {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    width: 330px;
-    height: 270px;
-    opacity: 1;
-}
-
-#lyrics:hover {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-@keyframes l17 {
-    100% {
-        background-size: 120% 100%
-    }
-}
-
-
-@media (max-width: 1260px) {
-    main {
-        padding-left: 20%;
-        padding-right: 20%;
-    }
-}
-
-@media (max-width: 960px) {
-    .result-container {
-        flex-direction: column;
-        height: auto;
-    }
-
-    #lyrics {
-        width: 260px;
-        height: 200px;
-    }
-}
-
-@media (max-width: 768px) {
-    main {
-        padding-left: 10%;
-        padding-right: 10%;
-    }
-
-    #lyrics {
-        width: 220px;
-        height: 160px;
-    }
-}
-
-@media (max-width: 600px) {
-    body {
-        font-size: 1rem;
-    }
-
-    #lyrics {
-        display: none;
-    }
+.streaming-platforms {
+    display: flex;
+    gap: 2rem;
 }
 
 footer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
     position: relative;
     bottom: 0;
     width: 100%;

@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     form.addEventListener('submit', function() {
         let searchButton = document.querySelector('#search');
-        searchButton.innerHTML = '<div class="loader"></div>'
+        searchButton.setAttribute('aria-busy', 'true');
+        searchButton.innerHTML = 'Searching...'
     });
 
     const backgrouondImage = document.createElement('div');
