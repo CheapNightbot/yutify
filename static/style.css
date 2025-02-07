@@ -1,3 +1,7 @@
+body {
+    min-height: 100dvh;
+}
+
 nav, nav ul {
     gap: 2rem;
 }
@@ -85,8 +89,5 @@ footer {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    position: relative;
-    bottom: 0;
-    width: 100%;
     text-align: center;
 }
