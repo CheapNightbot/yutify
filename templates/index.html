@@ -127,8 +127,30 @@
             {% endif %}
             <img src="{{ url_for('static', filename='logos/youtube-music.svg') }}" alt="youtube music logo" style="width:2rem; height:2rem;">
             </a>
+            <button class="outline secondary" id="show-lyrics" data-target="lyrics">Lyrics</button>
         </div>
     </div>
+    <dialog id="lyrics">
+        <article>
+            <header>
+                <button id="close-lyrics" aria-label="Close" rel="prev" data-target="lyrics"></button>
+                <p>
+                    {% if title %}
+                    <strong>{{ title }} ~ Lyrics:</strong>
+                    {% else %}
+                    <strong>Yutify ~ Lyrics:</strong>
+                    {% endif %}
+                </p>
+            </header>
+            <p>
+                {% if lyrics %}
+                {{ lyrics|replace("\r", "<br>")|safe }}
+                {% else %}
+                No lyrics found...
+                {% endif %}
+            </p>
+        </article>
+    </dialog>
 </article>
 
 {% endblock %}

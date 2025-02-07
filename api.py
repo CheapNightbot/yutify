@@ -17,6 +17,7 @@ from flask_cors import CORS
 from flask_limiter import Limiter, RequestLimit
 from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
+from markupsafe import escape
 from waitress import serve
 
 from utils.logger import logger
@@ -87,6 +88,7 @@ def build_response_template(response, artist, song):
             deezer=yutify_data.get("deezer"),
             genre=yutify_data.get("genre"),
             itunes=yutify_data.get("itunes"),
+            lyrics=yutify_data.get("lyrics"),
             song=song,
             spotify=yutify_data.get("spotify"),
             title=yutify_data.get("title"),

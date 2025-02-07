@@ -69,6 +69,7 @@ a:active {
 .result-container {
     padding-left: 2rem;
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 3rem;
 }
@@ -82,6 +83,7 @@ a:active {
 
 .streaming-platforms {
     display: flex;
+    align-items: center;
     gap: 2rem;
 }
 
@@ -90,4 +92,11 @@ footer {
     justify-content: center;
     gap: 2rem;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    .result-container {
+        flex-direction: column;
+        justify-content: center;
+    }
 }
