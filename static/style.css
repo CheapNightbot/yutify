@@ -76,10 +76,11 @@ a:active {
 }
 
 .album-art {
-    width: max(8rem, min(28vw, 18rem));
-    height: max(10rem, min(33vw, 20rem));
+    width: max(14rem, min(28vw, 18rem));
+    height: max(16rem, min(33vw, 20rem));
     border: 1px solid;
     border-radius: .746rem;
+    pointer-events: none;
 }
 
 .streaming-platforms {
@@ -89,6 +90,7 @@ a:active {
 }
 
 footer {
+    font-size: clamp(0.6rem, 1.5vw, 2rem);
     display: flex;
     justify-content: center;
     gap: 2rem;

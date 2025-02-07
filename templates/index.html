@@ -91,7 +91,7 @@
             {% else %}
             <a class="music-link" href="#deezer" title="Deezer">
             {% endif %}
-            <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="deezer logo" style="width:2rem; height:2rem;">
+            <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="deezer logo" style="width:max(2rem, 2vw); height:max(2rem, 2vw);">
             </a>
 
             <!-- iTunes Store -->
@@ -102,7 +102,7 @@
             {% else %}
             <a class="music-link" href="#itunes" title="iTunes">
             {% endif %}
-            <img src="{{ url_for('static', filename='logos/itunes.svg') }}" alt="itunes logo" style="width:2rem; height:2rem;">
+            <img src="{{ url_for('static', filename='logos/itunes.svg') }}" alt="itunes logo" style="width:max(2rem, 2vw); height:max(2rem, 2vw);">
             </a>
 
             <!-- Spotify Music -->
@@ -113,7 +113,7 @@
             {% else %}
             <a class="music-link" href="#spotify" title="Spotify">
             {% endif %}
-            <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="spotify logo" style="width:2rem; height:2rem;">
+            <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="spotify logo" style="width:max(2rem, 2vw); height:max(2rem, 2vw);">
             </a>
 
             <!-- YouTube Music -->
@@ -125,7 +125,7 @@
             {% else %}
             <a class="music-link" href="#ytmusic" title="YouTube Music">
             {% endif %}
-            <img src="{{ url_for('static', filename='logos/youtube-music.svg') }}" alt="youtube music logo" style="width:2rem; height:2rem;">
+            <img src="{{ url_for('static', filename='logos/youtube-music.svg') }}" alt="youtube music logo" style="width:max(2rem, 2vw); height:max(2rem, 2vw);">
             </a>
             <button class="outline secondary" id="show-lyrics" data-target="lyrics">Lyrics</button>
         </div>
