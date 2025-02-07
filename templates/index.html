@@ -144,7 +144,7 @@
             </header>
             <p>
                 {% if lyrics %}
-                {{ lyrics|replace("\r", "<br>")|safe }}
+                {{ lyrics | safe }}
                 {% else %}
                 No lyrics found...
                 {% endif %}
