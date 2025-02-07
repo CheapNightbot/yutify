@@ -23,6 +23,7 @@ header {
     background: linear-gradient(45deg, #a7caff 0%, #eeeeee 100%);
     background-clip: text;
     color: transparent;
+    padding-bottom: 0.5rem;
 }
 
 a,

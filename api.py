@@ -17,7 +17,6 @@ from flask_cors import CORS
 from flask_limiter import Limiter, RequestLimit
 from flask_limiter.util import get_remote_address
 from flask_restful import Api, Resource, abort
-from markupsafe import escape
 from waitress import serve
 
 from utils.logger import logger
