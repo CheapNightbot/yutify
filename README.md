@@ -32,8 +32,8 @@
 
   |                                           OwO                                             |
   | ----------------------------------------------------------------------------------------- |
-  | ![image](https://github.com/user-attachments/assets/0f8c5bf8-e081-4679-b1fb-3cd12d6096ed) |
-  | ![image](https://github.com/user-attachments/assets/6d08624b-37cc-4bac-987a-dea34bb7f541) |
+  | ![image](https://github.com/user-attachments/assets/26ca3c64-64c3-4ea0-9b9c-bd47a8837211) |
+  | ![image](https://github.com/user-attachments/assets/5e69c853-293f-452b-bb97-b3a7eba024e9) |
   | ![image](https://github.com/user-attachments/assets/223d9fb6-6a86-4edb-8934-d2a038b257a3) |
 
   </span>
