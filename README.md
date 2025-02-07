@@ -134,6 +134,7 @@ If you don't know programming, you can still contribute to this project by openi
 
 # Acknowledgement // End Note 🙃
 
+- Uses [Pico CSS](https://picocss.com/) 🎨
 - Powered by [Render](https://render.com/register). 🚀
 - Logos/Icons provided by [SVG REPO](https://www.svgrepo.com/). 🧑‍🎨
 - Using [Spotify Web API](https://developer.spotify.com/documentation/web-api). 🛠️
