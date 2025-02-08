@@ -1,5 +1,12 @@
 body {
     min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+main {
+    flex: 1;
 }
 
 nav, nav ul {
@@ -95,6 +102,7 @@ footer {
     justify-content: center;
     gap: 2rem;
     text-align: center;
+    padding: 1rem;
 }
 
 @media (max-width: 768px) {
