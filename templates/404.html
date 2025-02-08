@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/404">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Home">
+<meta property="og:description" content="The content you're looking for is not found. This is simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/404">
+<meta name="twitter:title" content="yutify: Home">
+<meta name="twitter:description" content="The content you're looking for is not found. This is simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+{% block title %}404{% endblock %}
+
+{% block content %}
+<h1>404 - NOT FOUND</h1>
+<p>{{ error }}</p>
+<p>It seems like you're lost... Why not go back <a href="/">Home</a>?</p>
+<p>If you think we have made some mistake, feel free to open an issue on Github <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !</p>
+{% endblock %}
