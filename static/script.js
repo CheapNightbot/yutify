@@ -19,5 +19,4 @@ document.addEventListener('DOMContentLoaded', function () {
         document.documentElement.classList.remove("modal-is-open", "modal-is-closing");
         lyricsModal.removeAttribute("open");
     });
-
 });

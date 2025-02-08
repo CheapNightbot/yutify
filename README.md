@@ -136,7 +136,6 @@ If you don't know programming, you can still contribute to this project by openi
 
 - Uses [Pico CSS](https://picocss.com/) 🎨
 - Powered by [Render](https://render.com/register). 🚀
-- Logos/Icons provided by [SVG REPO](https://www.svgrepo.com/). 🧑‍🎨
 - Using [Spotify Web API](https://developer.spotify.com/documentation/web-api). 🛠️
 - Using [Deezer API](https://developers.deezer.com/api). 🛠️
 - Thanks to [sigma67](https://github.com/sigma67) for [ytmusicapi](https://github.com/sigma67/ytmusicapi). 🫂

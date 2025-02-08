@@ -5,6 +5,10 @@ body {
     justify-content: space-between;
 }
 
+#theme-btn {
+    transition: all ease-in-out 0.3s;
+}
+
 main {
     flex: 1;
 }
@@ -27,25 +31,15 @@ header {
 
 #brand {
     font-size: clamp(6rem, 10vw, 6rem);
-    background: linear-gradient(45deg, #a7caff 0%, #eeeeee 100%);
+    background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%);
     background-clip: text;
     color: transparent;
     padding-bottom: 0.5rem;
 }
 
-a,
-a:visited {
-    color: #a7caff;
-    text-decoration: none;
-}
-
-a:active {
-    color: #4d94ff;
-}
-
 .active {
     border-bottom: 1px solid;
-    transition: all 0.3s;
+    transition: all ease-in-out 0.3s;
 }
 
 .active:hover {
@@ -70,10 +64,6 @@ a:active {
     animation: none;
 }
 
-.var {
-    color: #a7caff;
-}
-
 .result-container {
     padding-left: 2rem;
     display: flex;
@@ -93,7 +83,13 @@ a:active {
 .streaming-platforms {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
+    font-size: 1.4rem;
+}
+
+.streaming-platforms a:hover {
+    transform: scale(1.2);
+    transition: all ease-in-out 0.2s;
 }
 
 footer {
