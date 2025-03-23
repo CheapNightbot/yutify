@@ -34,3 +34,10 @@ class User(Base):
 
     def __repr__(self):
         return f"<User {self.username}>"
+
+
+class Service(Base):
+    __tablename__ = "services"
+    service_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    service_name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    service_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
