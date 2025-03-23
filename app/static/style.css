@@ -1,0 +1,131 @@
+body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#theme-btn {
+    transition: all ease-in-out 0.3s;
+}
+
+main {
+    flex: 1;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(4px);
+}
+
+nav,
+nav ul {
+    gap: 2rem;
+}
+
+nav a {
+    font-size: 1.2rem;
+}
+
+nav a:hover {
+    text-decoration: none;
+}
+
+header {
+    text-align: center;
+}
+
+#brand {
+    font-size: clamp(6rem, 10vw, 6rem);
+    background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%);
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.5rem;
+    transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.brand {
+    visibility: hidden;
+    opacity: 0;
+    margin: 0;
+    background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%);
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.active {
+    padding: .5rem;
+    border-bottom: 1px solid;
+    transition: all ease-in-out 0.2s;
+}
+
+.active:hover {
+    color: transparent;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate {
+    animation: rotate 4s ease-in-out infinite;
+}
+
+#github:hover .rotate {
+    animation: none;
+}
+
+.result-container {
+    padding: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3rem;
+}
+
+.album-art {
+    width: max(14rem, min(25vw, 18rem));
+    height: max(16rem, min(30vw, 20rem));
+    border: 1px solid;
+    border-radius: .746rem;
+    pointer-events: none;
+}
+
+.streaming-platforms {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.streaming-platforms a:hover {
+    transform: scale(1.2);
+    transition: all ease-in-out 0.2s;
+}
+
+footer {
+    font-size: clamp(0.6rem, 1.5vw, 2rem);
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .result-container {
+        flex-direction: column;
+        justify-content: center;
+    }
+}

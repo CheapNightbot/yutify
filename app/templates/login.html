@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Account">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Login">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+{% block title %}Login{% endblock %}
+
+{% block header %}
+<h1>Login</h1>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <fieldset>
+        <label>
+            {{ form.username.label }}
+            {% if form.username.errors %}
+            {{ form.username(aria_label="Username", aria_describedby="email-helper", aria_invalid="true") }}
+            {% else %}
+            {{ form.username(aria_label="Username", aria_describedby="email-helper") }}
+            {% endif %}
+            {% for error in form.username.errors %}
+            <small id="email-helper">{{ error }}</small>
+            {% endfor %}
+        </label>
+
+        <label>
+            {{ form.password.label }}
+            {% if form.password.errors %}
+            {{ form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+            {% else %}
+            {{ form.password(aria_label="Password", aria_describedby="password-helper") }}
+            {% endif %}
+            {% for error in form.password.errors %}
+            <small id="password-helper">{{ error }}</small>
+            {% endfor %}
+        </label>
+        <label>
+            {{ form.remember_me() }} {{ form.remember_me.label }}
+        </label>
+    </fieldset>
+    {{ form.submit() }}
+</form>
+{% endblock %}

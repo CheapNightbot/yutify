@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Home">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Home">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block header %}
+<h1 id="brand">yutify</h1>
+<p>Simple RESTful API for retrieving music info for various steaming platforms.</p>
+{% endblock %}
+
+{% block content %}
+<form id="search-form" action="/yutify" class="content">
+    {% if artist %}
+    <input type="search" name="artist" id="artist" placeholder="Enter artist name" , value="{{ artist }}" required>
+    {% else %}
+    <input autofocus type="search" name="artist" id="artist" placeholder="Enter artist name" required>
+    {% endif %}
+
+    <fieldset role="search">
+        {% if song %}
+        <input type="search" name="song" id="song" placeholder="Enter song name" value="{{ song }}" required>
+        {% else %}
+        <input type="search" name="song" id="song" placeholder="Enter song name" required>
+        {% endif %}
+        <button type="submit" id="search">Search</button>
+    </fieldset>
+</form>
+
+<article class="result-container">
+    {% if album_art %}
+    <img src="{{ album_art }}" alt="{{ title }} - Album Art" class="album-art">
+    {% else %}
+    <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ title }} - Album Art" class="album-art">
+    {% endif %}
+
+    <div>
+        <p style="font-size: 1.5rem;">
+            Title:
+            {% if title %}
+            {{ title }}
+            {% else %}
+            Yutify
+            {% endif %}
+        </p>
+        <p style="font-size: 1.125rem;">
+            {% if album_type %}
+            <p>{{ album_type }} : {{ album_title }}</p>
+            {% else %}
+            Album Type: Album Title
+            {% endif %}
+        </p>
+        <p style="font-size: 1.25rem;">
+            Artist(s):
+            {% if artists %}
+            {{ artists }}
+            {% else %}
+            Cheap Nightbot
+            {% endif %}
+        </p>
+        <p style="font-size: 1rem;">
+            Genre:
+            {% if genre %}
+            {{ genre }}
+            {% else %}
+            ?
+            {% endif %}
+        </p>
+
+        <div class="streaming-platforms">
+            <!-- Deezer Music -->
+            {% if deezer == None %}
+            <a class="music-link" href="#deezer" title="Deezer">
+            {% elif deezer %}
+            <a class="music-link" href="{{ deezer }}" target="_blank" title="Deezer">
+            {% else %}
+            <a class="music-link" href="#deezer" title="Deezer">
+            {% endif %}
+            <i class="fab fa-deezer"></i>
+            </a>
+
+            <!-- iTunes Store -->
+            {% if itunes == None %}
+            <a class="music-link" href="#itunes" title="iTunes">
+            {% elif itunes %}
+            <a class="music-link" href="{{ itunes }}" target="_blank" title="iTunes">
+            {% else %}
+            <a class="music-link" href="#itunes" title="iTunes">
+            {% endif %}
+            <i class="fab fa-itunes"></i>
+            </a>
+
+            <!-- Spotify Music -->
+            {% if spotify == None %}
+            <a class="music-link" href="#spotify" title="Spotify">
+            {% elif spotify %}
+            <a class="music-link" href="{{ spotify }}" target="_blank" title="Spotify">
+            {% else %}
+            <a class="music-link" href="#spotify" title="Spotify">
+            {% endif %}
+            <i class="fab fa-spotify"></i>
+            </a>
+
+            <!-- YouTube Music -->
+            {% if yt_music == None %}
+            <a class="music-link" href="#ytmusic" title="YouTube Music">
+            {% elif yt_music %}
+            <a class="music-link" href="{{ yt_music }}" target="_blank"
+            title="YouTube Music">
+            {% else %}
+            <a class="music-link" href="#ytmusic" title="YouTube Music">
+            {% endif %}
+            <i class="fas fa-play-circle"></i>
+            </a>
+            <button class="outline secondary" id="show-lyrics" data-target="lyrics">Lyrics</button>
+        </div>
+    </div>
+    <dialog id="lyrics">
+        <article>
+            <header>
+                <button id="close-lyrics" aria-label="Close" rel="prev" data-target="lyrics"></button>
+                <p>
+                    {% if title %}
+                    <strong>{{ title }} ~ Lyrics:</strong>
+                    {% else %}
+                    <strong>Yutify ~ Lyrics:</strong>
+                    {% endif %}
+                </p>
+            </header>
+            <p>
+                {% if lyrics %}
+                {{ lyrics | safe }}
+                {% else %}
+                No lyrics found...
+                {% endif %}
+            </p>
+        </article>
+    </dialog>
+</article>
+
+{% endblock %}

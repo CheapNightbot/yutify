@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Account">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Profile">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+{% block title %}{{ users.username }}{% endblock %}
+
+{% block header %}
+<h1>Hello, {{ users.username }}</h1>
+{% endblock %}
+
+{% block content %}
+{% for post in posts %}
+<div>
+    <p>{{ post.author.username }} says: <b>{{ post.body }}</b></p>
+</div>
+{% endfor %}
+{% endblock %}
