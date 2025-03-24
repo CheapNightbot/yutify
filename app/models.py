@@ -1,9 +1,19 @@
+import os
 from datetime import datetime, timezone
 from typing import Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from cryptography.exceptions import InvalidKey
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
 from sqlalchemy.event import listens_for
+from werkzeug.security import check_password_hash, generate_password_hash
+
+load_dotenv()
+
+key = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
+cipher = Fernet(key)
 
 from app import db
 
@@ -20,6 +30,28 @@ class Base(db.Model):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
+    @staticmethod
+    def encrypt(data: str):
+        if not data:
+            return None
+
+        try:
+            return cipher.encrypt(data.encode())
+        except InvalidKey as e:
+            print(f"Encryption error: {e}")
+            return None
+
+    @staticmethod
+    def decrypt(data: str):
+        if not data:
+            return None
+
+        try:
+            return cipher.decrypt(data).decode()
+        except InvalidKey as e:
+            print(f"Decryption error: {e}")
+            return None
+
 
 @listens_for(Base, "before_update", named=True)
 def update_timestamps(mapper, connection, target):
@@ -33,7 +65,7 @@ class User(Base):
     __tablename__ = "users"
     user_id: so.Mapped[int] = so.mapped_column(primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
-    email: so.Mapped[str] = so.mapped_column(sa.String(128), index=True, unique=True)
+    _email: so.Mapped[str] = so.mapped_column(sa.String(128), index=True, unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
 
@@ -45,8 +77,22 @@ class User(Base):
         passive_deletes=True,
     )
 
+    @property
+    def email(self):
+        return self.decrypt(self._email)
+
+    @email.setter
+    def email(self, value):
+        self._email = self.encrypt(value)
+
     def __repr__(self):
-        return f"<User: {self.username}>"
+        return f"<User: {self.name}@{self.username}>"
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Service(Base):
@@ -82,8 +128,8 @@ class UserService(Base):
     service_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey(Service.service_id, ondelete="CASCADE"), index=True
     )
-    access_token: so.Mapped[str] = so.mapped_column(sa.String(256))
-    refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
+    _access_token: so.Mapped[str] = so.mapped_column(sa.String(256))
+    _refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
 
     # Relationships
@@ -91,6 +137,22 @@ class UserService(Base):
     service: so.Mapped["Service"] = so.relationship(
         "Service", back_populates="user_services"
     )
+
+    @property
+    def access_token(self):
+        return self.decrypt(self._access_token)
+
+    @access_token.setter
+    def access_token(self, value):
+        self._access_token = self.encrypt(value)
+
+    @property
+    def refresh_token(self):
+        return self.decrypt(self._refresh_token)
+
+    @refresh_token.setter
+    def refresh_token(self, value):
+        self._refresh_token = self.encrypt(value)
 
     def __repr__(self):
         return (
