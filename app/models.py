@@ -7,6 +7,7 @@ import sqlalchemy.orm as so
 from cryptography.exceptions import InvalidKey
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
+from flask_login import UserMixin
 from sqlalchemy.event import listens_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -15,7 +16,7 @@ load_dotenv()
 key = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
 cipher = Fernet(key)
 
-from app import db
+from app import db, login
 
 
 class Base(db.Model):
@@ -59,15 +60,16 @@ def update_timestamps(mapper, connection, target):
     target.updated_at = datetime.now(timezone.utc)
 
 
-class User(Base):
+class User(UserMixin, Base):
     """User model representing a user in the application."""
 
     __tablename__ = "users"
     user_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     _email: so.Mapped[str] = so.mapped_column(sa.String(128), index=True, unique=True)
+    email_hash: so.Mapped[str] = so.mapped_column(sa.String(256), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-    name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
 
     # Relationship to UserService
     user_services: so.WriteOnlyMapped["UserService"] = so.relationship(
@@ -88,11 +90,25 @@ class User(Base):
     def __repr__(self):
         return f"<User: {self.name}@{self.username}>"
 
+    def get_id(self):
+        return self.user_id
+
+    def set_email_hash(self):
+        self.email_hash = generate_password_hash(self.email)
+
+    def check_email_hash(self, email):
+        return check_password_hash(self.email_hash, email)
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+@login.user_loader
+def load_user(user_id):
+    return db.session.get(User, int(user_id))
 
 
 class Service(Base):
