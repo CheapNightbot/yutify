@@ -97,7 +97,7 @@ class User(UserMixin, Base):
         return f"<User: {self.name}@{self.username}>"
 
     def get_id(self):
-        return self.user_id
+        return str(self.user_id)
 
     @staticmethod
     def hash_email(email):
