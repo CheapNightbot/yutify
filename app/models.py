@@ -67,8 +67,8 @@ class User(UserMixin, Base):
     user_id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
-    _email: so.Mapped[str] = so.mapped_column(sa.String(128), index=True, unique=True)
-    email_hash: so.Mapped[str] = so.mapped_column(sa.String(256), index=True)
+    _email: so.Mapped[str] = so.mapped_column(sa.String(128), unique=True)
+    email_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
     # Relationship to UserService
