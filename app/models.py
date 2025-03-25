@@ -1,3 +1,4 @@
+import hashlib
 import os
 from datetime import datetime, timezone
 from typing import Optional
@@ -68,7 +69,7 @@ class User(UserMixin, Base):
     name: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
     _email: so.Mapped[str] = so.mapped_column(sa.String(128), unique=True)
-    email_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), index=True)
+    _email_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
     # Relationship to UserService
@@ -83,8 +84,13 @@ class User(UserMixin, Base):
     def email(self):
         return self.decrypt(self._email)
 
+    @property
+    def email_hash(self):
+        return self._email_hash
+
     @email.setter
     def email(self, value):
+        self._email_hash = self.hash_email(value)
         self._email = self.encrypt(value)
 
     def __repr__(self):
@@ -93,11 +99,9 @@ class User(UserMixin, Base):
     def get_id(self):
         return self.user_id
 
-    def set_email_hash(self):
-        self.email_hash = generate_password_hash(self.email)
-
-    def check_email_hash(self, email):
-        return check_password_hash(self.email_hash, email)
+    @staticmethod
+    def hash_email(email):
+        return hashlib.sha256(email.encode()).hexdigest()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
