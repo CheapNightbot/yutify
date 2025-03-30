@@ -80,6 +80,11 @@ class User(UserMixin, Base):
         passive_deletes=True,
     )
 
+    about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(140))
+    last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
+        default=lambda: datetime.now(timezone.utc)
+    )
+
     @property
     def email(self):
         return self.decrypt(self._email)
