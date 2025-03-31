@@ -72,7 +72,7 @@ class User(UserMixin, Base):
     _email_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
-    # Relationship to UserService
+    # Relationship to UserService: one-to-many
     user_services: so.WriteOnlyMapped["UserService"] = so.relationship(
         "UserService",
         back_populates="user",
@@ -130,7 +130,7 @@ class Service(Base):
     )
     service_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
-    # Relationship to UserService
+    # Relationship to UserService: one-to-many
     user_services: so.WriteOnlyMapped["UserService"] = so.relationship(
         "UserService",
         back_populates="service",
@@ -157,10 +157,19 @@ class UserService(Base):
     _refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
 
-    # Relationships
+    # Relationships: many-to-one
     user: so.Mapped["User"] = so.relationship("User", back_populates="user_services")
     service: so.Mapped["Service"] = so.relationship(
         "Service", back_populates="user_services"
+    )
+
+    # Relationship to UserData: one-to-one
+    user_data: so.Mapped["UserData"] = so.relationship(
+        "UserData",
+        back_populates="user_service",
+        cascade="all, delete",
+        passive_deletes=True,
+        uselist=False,  # Ensures one-to-one relationship
     )
 
     @property
@@ -186,3 +195,22 @@ class UserService(Base):
             f"access_token_present={'Yes' if self.access_token else 'No'}, "
             f"expires_in={self.expires_in}>"
         )
+
+
+class UserData(Base):
+    """UserData model representing the most recent music metadata for a user's listening activity."""
+
+    __tablename__ = "users_data"
+    user_data_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_service_id: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey(UserService.user_services_id, ondelete="CASCADE"), unique=True
+    )
+    data: so.Mapped[dict] = so.mapped_column(sa.JSON)
+
+    # Relationship to UserService: one-to-one
+    user_service: so.Mapped["UserService"] = so.relationship(
+        "UserService", back_populates="user_data", uselist=False
+    )
+
+    def __repr__(self):
+        return f"<UserData: user_service_id={self.user_service_id}, updated_at={self.updated_at}>"
