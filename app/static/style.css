@@ -5,7 +5,20 @@ body {
     justify-content: space-between;
 }
 
+#themeBtn {
+    position: fixed;
+    bottom: 3%;
+    right: 2%;
+    border: none !important;
+    padding: 0 .5rem !important;
+}
+
+#themeBtn:focus {
+    --pico-box-shadow: none
+}
+
 #theme-btn {
+    font-size: 1.8rem !important;
     transition: all ease-in-out 0.3s;
 }
 
@@ -14,13 +27,14 @@ main {
 }
 
 nav {
+    z-index: 10;
     position: sticky;
     top: 0;
     backdrop-filter: blur(4px);
 }
 
 nav,
-nav ul {
+nav ul:not([dir="rtl"]) {
     gap: 2rem;
 }
 
@@ -30,6 +44,11 @@ nav a {
 
 nav a:hover {
     text-decoration: none;
+}
+
+details.dropdown[open]>summary::before {
+    width: 100% !important;
+    height: 100dvh !important;
 }
 
 header {
@@ -56,6 +75,7 @@ header {
     font-size: 1.5rem;
     font-weight: bold;
     transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    cursor: pointer;
 }
 
 .active {
@@ -86,6 +106,46 @@ header {
     animation: none;
 }
 
+.flash-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.flash-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.flash-close-btn {
+    background: none;
+    border: none;
+    width: 1rem;
+    height: 1rem;
+    background-image: var(--pico-icon-close);
+    background-position: center;
+    background-size: auto 1rem;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    transition: opacity var(--pico-transition);
+}
+
+
 .result-container {
     padding: 2rem;
     display: flex;
@@ -102,11 +162,16 @@ header {
     pointer-events: none;
 }
 
+.streaming-platforms-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
 .streaming-platforms {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    font-size: 1.5rem;
 }
 
 .streaming-platforms a:hover {
@@ -123,8 +188,83 @@ footer {
     padding: 1rem;
 }
 
-@media (max-width: 768px) {
+.music-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.material-symbols-outlined {
+    font-size: 1.5rem !important;
+}
+
+.music-info .material-symbols-outlined {
+    font-size: 1.2rem !important;
+    padding-right: .2rem;
+}
+
+#show-lyrics {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    align-content: center;
+    justify-content: center;
+    min-width: 5.5rem;
+    gap: .3rem;
+}
+
+.profile-header {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    max-width: 1000px;
+    min-height: 200px;
+    gap: 1rem;
+}
+
+.profile-header-img {
+    border: 1px solid #524ed26b;
+    border-radius: 50%;
+    padding: 0 !important;
+    width: 128px;
+    height: 128px;
+    overflow: hidden;
+}
+
+.profile-header-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    flex: 1;
+}
+
+.profile-header-edit {
+    white-space: nowrap;
+    position: absolute;
+    top: 8%;
+    right: 2.2%;
+}
+
+@media (max-width: 1024px) {
     .result-container {
+        flex-direction: column;
+        justify-content: center;
+        padding: 3rem 2rem;
+        gap: 2rem;
+    }
+
+    .music-info {
+        justify-content: center;
+    }
+
+    .streaming-platforms-container {
+        margin-top: 2rem;
         flex-direction: column;
         justify-content: center;
     }
