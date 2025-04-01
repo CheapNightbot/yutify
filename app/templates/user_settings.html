@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Account">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Profile">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {% if form.__class__.__name__ == "EmptyForm" %}
+    <fieldset>
+        <label>
+            Username
+            <input type="text" name="username" placeholder="{{ user.username }}" aria-label="Read-only Username"
+                readonly />
+        </label>
+
+        <label>
+            Email
+            <input type="email" name="email"
+                placeholder="{{ user.email | mask_string(mask='*', mask_special_char=True, mask_from_char='@', exclude_bounds=True) }}"
+                aria-label="Read-only Email" readonly />
+        </label>
+
+    </fieldset>
+    {{ form.submit(value="Edit Account Details") }}
+    {% else %}
+    {{ form.username.label }}
+    {% if form.username.errors %}
+    {{ form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.username(value=user.username, aria_label="Username", aria_describedby="username-helper") }}
+    {% endif %}
+    {% for error in form.username.errors %}
+    <small id="username-helper">{{ error }}</small>
+    {% endfor %}
+    {{ form.email.label }}
+    {% if form.email.errors %}
+    {{ form.email(aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.email(value=user.email, aria_label="Email", aria_describedby="email-helper") }}
+    {% endif %}
+    {% for error in form.email.errors %}
+    <small id="email-helper">{{ error }}</small>
+    {% endfor %}
+    {{ form.password.label }}
+    {% if form.password.errors %}
+    {{ form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+    {% endif %}
+    {% for error in form.password.errors %}
+    <small id="password-helper">{{ error }}</small>
+    {% endfor %}
+    {{ form.submit() }}
+    {% endif %}
+
+</form>
+
+
+<h3>Connected Services:</h3>
+
+{% endblock %}

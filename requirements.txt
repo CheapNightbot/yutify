@@ -2,10 +2,15 @@ cryptography==44.0.2
 Flask==3.1.0
 flask-cors==5.0.1
 Flask-Limiter[redis]==3.12
+Flask-Login==0.6.3
+Flask-Mail==0.10.0
 Flask-Migrate==4.1.0
+Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.1.1
-Flask-WTF==1.2.2
+Flask-WTF[email]==1.2.2
+PyJWT==2.10.1
 python-dotenv==1.0.1
 requests==2.32.3
 waitress==3.0.2
-yutipy==1.2.0
+yutipy==1.5.0
+zxcvbn==4.5.0
