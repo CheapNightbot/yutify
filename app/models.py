@@ -1,4 +1,5 @@
 import hashlib
+import os
 from datetime import datetime, timezone
 from time import time
 from typing import Optional
@@ -8,16 +9,18 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from cryptography.exceptions import InvalidKey
 from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+from flask import current_app
 from flask_login import UserMixin
 from sqlalchemy.event import listens_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import app
-
-key = app.config["ENCRYPTION_KEY"].encode()
-cipher = Fernet(key)
-
 from app import db, login
+
+load_dotenv()
+
+key = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
+cipher = Fernet(key)
 
 
 class Base(db.Model):
@@ -117,16 +120,16 @@ class User(UserMixin, Base):
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {"reset_password": self.user_id, "exp": time() + expires_in},
-            app.config["SECRET_KEY"],
+            current_app.config["SECRET_KEY"],
             algorithm="HS256",
         )
 
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            user_id = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])[
-                "reset_password"
-            ]
+            user_id = jwt.decode(
+                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
+            )["reset_password"]
         except Exception:
             return
         return db.session.get(User, user_id)

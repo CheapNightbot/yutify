@@ -12,5 +12,5 @@ PyJWT==2.10.1
 python-dotenv==1.0.1
 requests==2.32.3
 waitress==3.0.2
-yutipy==1.5.0
+yutipy==1.5.2
 zxcvbn==4.5.0

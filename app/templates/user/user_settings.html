@@ -72,6 +72,14 @@
 </form>
 
 
-<h3>Connected Services:</h3>
+<h3>Services:</h3>
+
+<article>
+    <a href="{{ url_for('auth_spotify') }}">
+        <img src="{{ url_for('static', filename='logos/spotify_full_logo.svg') }}" alt="Spotify Full Logo" width="128px" height="128px">
+    </a>
+</article>
+
+
 
 {% endblock %}

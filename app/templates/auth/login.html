@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:url" content="https://yutify.onrender.com/login">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Account">
+<meta property="og:title" content="yutify: Login">
 <meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
 <meta property="og:image" content="https://yutify.onrender.com/static/music.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta property="twitter:url" content="https://yutify.onrender.com/login">
 <meta name="twitter:title" content="yutify: Login">
 <meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
 <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
@@ -18,19 +18,9 @@
 {% endblock %}
 
 {% block content %}
-<form id="register-form" action="" method="post" novalidate>
+<form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <fieldset>
-        {{ form.name.label }}
-        {% if form.name.errors %}
-        {{ form.name(aria_label="Name", aria_describedby="name-helper", aria_invalid="true") }}
-        {% else %}
-        {{ form.name(aria_label="Name", aria_describedby="name-helper") }}
-        {% endif %}
-        {% for error in form.name.errors %}
-        <small id="name-helper">{{ error }}</small>
-        {% endfor %}
-
         {{ form.username.label }}
         {% if form.username.errors %}
         {{ form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
@@ -39,16 +29,6 @@
         {% endif %}
         {% for error in form.username.errors %}
         <small id="username-helper">{{ error }}</small>
-        {% endfor %}
-
-        {{ form.email.label }}
-        {% if form.email.errors %}
-        {{ form.email(aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
-        {% else %}
-        {{ form.email(aria_label="Email", aria_describedby="email-helper") }}
-        {% endif %}
-        {% for error in form.email.errors %}
-        <small id="email-helper">{{ error }}</small>
         {% endfor %}
 
         {{ form.password.label }}
@@ -60,21 +40,12 @@
         {% for error in form.password.errors %}
         <small id="password-helper">{{ error }}</small>
         {% endfor %}
-        <small id="password-strength"></small>
+        <small><a href="{{ url_for('auth.reset_password_request') }}">Forgot Password?</a></small>
 
-        {{ form.password2.label }}
-        {% if form.password2.errors %}
-        {{ form.password2(aria_label="Password2", aria_describedby="password2-helper", aria_invalid="true") }}
-        {% else %}
-        {{ form.password2(aria_label="Password2", aria_describedby="password2-helper password-confirm") }}
-        {% endif %}
-        {% for error in form.password2.errors %}
-        <small id="password2-helper">{{ error }}</small>
-        {% endfor %}
-        <small id="password-confirm"></small>
+        {{ form.remember_me() }} {{ form.remember_me.label }}
     </fieldset>
     {{ form.submit() }}
 </form>
 
-<p>Already got an account? <a href="{{ url_for('login') }}">Login here!</a></p>
+<p>New User? <a href="{{ url_for('auth.signup') }}">Sign Up here!</a></p>
 {% endblock %}

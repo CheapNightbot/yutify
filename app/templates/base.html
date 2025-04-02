@@ -26,9 +26,9 @@
     <nav class="container-fluid">
         <ul>
             <li class="{% if active_page == 'home' %}active{% endif %}"><a data-tooltip="API Playground"
-                    data-placement="bottom" href="{{ url_for('index') }}">Home</a></li>
+                    data-placement="bottom" href="{{ url_for('main.index') }}">Home</a></li>
             <li class="{% if active_page == 'docs' %}active{% endif %}"><a data-tooltip="API Docs"
-                    data-placement="bottom" href="{{ url_for('docs') }}">Docs</a></li>
+                    data-placement="bottom" href="{{ url_for('main.docs') }}">Docs</a></li>
         </ul>
 
         <ul>
@@ -47,12 +47,12 @@
                     <summary>Account&nbsp;</summary>
                     <ul dir="rtl">
                         {% if current_user.is_anonymous %}
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                        <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                        <li><a href="{{ url_for('auth.signup') }}">Sign Up</a></li>
                         {% else %}
-                        <li><a href="{{ url_for('user_profile', username=current_user.username) }}">Profile</a></li>
-                        <li><a href="{{ url_for('user_settings', username=current_user.username) }}">Settings</a></li>
-                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                        <li><a href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a></li>
+                        <li><a href="{{ url_for('user.user_settings', username=current_user.username) }}">Settings</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                         {% endif %}
                     </ul>
                 </details>

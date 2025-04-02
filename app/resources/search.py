@@ -6,7 +6,7 @@ from yutipy.logging import enable_logging
 
 from app.common.logger import logger
 from app.common.utils import mask_string
-from app.resources import limiter
+from app.resources.limiter import limiter
 
 enable_logging()
 
@@ -14,7 +14,8 @@ enable_logging()
 class YutifySearch(Resource):
     """API resource to search & fetch the song details."""
 
-    @limiter.limit("20 per minute")
+    # @limiter.limit("20 per minute")
+    @limiter.limit("1 per minute")
     def get(self, artist, song):
         artist = artist.strip()
         song = song.strip()
@@ -22,9 +23,7 @@ class YutifySearch(Resource):
         # Rate-limiting is not working per user ~ it's always 127.0.0.1 !!! _(:з)∠)_
         logger.info(
             "Request came from: `%s`",
-            mask_string(
-                request.headers.get("True-Client-Ip", get_remote_address())
-            ),
+            mask_string(request.headers.get("True-Client-Ip", get_remote_address())),
         )
         logger.info("Artist: `%s` & Song: `%s`", artist, song)
 
