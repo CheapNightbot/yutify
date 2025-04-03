@@ -176,6 +176,7 @@ class UserService(Base):
     _access_token: so.Mapped[str] = so.mapped_column(sa.String(256))
     _refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
+    requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
 
     # Relationships: many-to-one
     user: so.Mapped["User"] = so.relationship("User", back_populates="user_services")
