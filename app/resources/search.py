@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask_limiter.util import get_remote_address
 from flask_restful import Resource
 from yutipy import Deezer, Itunes, KKBox, MusicYT, Spotify, YutipyMusic
-from yutipy.logging import enable_logging
+from yutipy.utils.logger import enable_logging
 
 from app.common.logger import logger
 from app.common.utils import mask_string
