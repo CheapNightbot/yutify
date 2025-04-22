@@ -9,8 +9,8 @@ Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.1.1
 Flask-WTF[email]==1.2.2
 PyJWT==2.10.1
-python-dotenv==1.0.1
+python-dotenv==1.1.0
 requests==2.32.3
 waitress==3.0.2
-yutipy==1.5.2
+yutipy==2.0.0
 zxcvbn==4.5.0
