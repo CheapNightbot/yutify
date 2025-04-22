@@ -22,6 +22,10 @@ body {
     transition: all ease-in-out 0.3s;
 }
 
+a {
+    text-decoration: none;
+}
+
 main {
     flex: 1;
 }
@@ -249,6 +253,54 @@ footer {
     position: absolute;
     top: 8%;
     right: 2.2%;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.service-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.service-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.service-info .status {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.status.connected {
+    color: #55C21E;
+}
+
+.status.not-connected {
+    color: #C21E1E;
+}
+
+.service-action {
+    width: 6rem;
+}
+
+.service-action button {
+    margin: 0;
+}
+
+.service-action .unlink {
+    background-color: #a71d2a;
+}
+
+.service-action .unlink:hover {
+    background-color: #dc3545;
 }
 
 @media (max-width: 1024px) {
