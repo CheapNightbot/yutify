@@ -24,6 +24,7 @@ mail = Mail()
 api = Api()
 cors = CORS()
 
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -36,10 +37,17 @@ def create_app(config_class=Config):
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
     from app.resources.limiter import limiter
+
     limiter.init_app(app)
+
+    from app.resources import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix="/api")
 
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix="/auth")
+
+    from app.auth_services import bp as auth_services_bp
+    app.register_blueprint(auth_services_bp, url_prefix="/auth_services")
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -49,9 +57,6 @@ def create_app(config_class=Config):
 
     from app.user import bp as user_bp
     app.register_blueprint(user_bp, url_prefix="/u")
-
-    from app.resources import bp as api_bp
-    app.register_blueprint(api_bp, url_prefix="/api")
 
     app.jinja_env.filters["mask_string"] = mask_string
 
@@ -91,5 +96,6 @@ def create_app(config_class=Config):
             app.logger.info("yutify startup")
 
     return app
+
 
 from app import models

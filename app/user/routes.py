@@ -5,7 +5,7 @@ from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app import db
-from app.models import User
+from app.models import User, Service, UserService
 from app.user import bp
 from app.user.forms import EditAccountForm, EditProfileForm, EmptyForm
 
@@ -44,6 +44,17 @@ def user_settings(username):
         abort(404)
 
     user = db.first_or_404(sa.select(User).where(User.username == username))
+    services = db.session.scalars(sa.select(Service)).all()  # Query all services
+    # Query user services for the current user
+    user_services = db.session.scalars(
+        sa.select(UserService.service_id).where(
+            UserService.user_id == current_user.user_id
+        )
+    ).all()
+
+    # Create a dictionary to mark connected services
+    connected_services = {service_id for service_id in user_services}
+
     form = EditAccountForm(current_user.username, current_user.email)
 
     # Check if the "Edit Account Details button was clicked"
@@ -100,4 +111,6 @@ def user_settings(username):
         year=datetime.today().year,
         user=user,
         form=form,
+        services=services,
+        user_services=connected_services,
     )

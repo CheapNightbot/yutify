@@ -74,12 +74,43 @@
 
 <h3>Services:</h3>
 
-<article>
-    <a href="{{ url_for('auth_spotify') }}">
-        <img src="{{ url_for('static', filename='logos/spotify_full_logo.svg') }}" alt="Spotify Full Logo" width="128px" height="128px">
-    </a>
+{% if services %}
+{% for service in services %}
+<article class="service-item">
+    <div class="service-info">
+        <img class="service-logo"
+            src="{{ url_for('static', filename='logos/' + service.service_name.lower() + '.svg') }}"
+            alt="{{ service.service_name }} Logo">
+        <div>
+            <strong>{{ service.service_name }}</strong>
+            {% if service.service_id in user_services %}
+            <p class="status connected">Linked</p>
+            {% else %}
+            <p class="status not-connected">Not Linked</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="service-action">
+        {% if service.service_id in user_services %}
+        <!-- Unlink Form -->
+        <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post"
+            onsubmit="return confirm('Are you sure you want to unlink {{ service.service_name }}?');">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="secondary unlink">Unlink</button>
+        </form>
+        {% else %}
+        <!-- Link Form -->
+        <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post"
+            onsubmit="return confirm('Are you sure you want to link {{ service.service_name }}?');">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="primary link">Link</button>
+        </form>
+        {% endif %}
+    </div>
 </article>
-
-
+{% endfor %}
+{% else %}
+<p>No services available.</p>
+{% endif %}
 
 {% endblock %}
