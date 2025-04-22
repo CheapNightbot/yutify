@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from waitress import serve
 
 from app import create_app, db
 from app.models import Service, User, UserService
@@ -17,3 +18,7 @@ def make_shell_context():
         "Service": Service,
         "UserService": UserService,
     }
+
+
+if __name__ == "__main__":
+    serve(app)
