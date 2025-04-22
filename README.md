@@ -8,12 +8,12 @@
 
 </div>
 
-# yutify <img src="static/favicon.svg" width="50px">
+# yutify <img src="app/static/favicon.svg" width="40px">
 
 <details>
   <summary>✨ TABLE OF CONTENTS</summary>
 
-- [yutify <img src="static/favicon.svg" width="20px">](#yutify) ← you're here..
+- [yutify <img src="app/static/favicon.svg" width="20px">](#yutify) ← you're here..
   - [Features ™️](#features-️)
   - [Available Music Platforms](#available-music-platforms-)
 - [Run Locally 🧑‍💻](#run-locally-)
@@ -40,24 +40,17 @@
 
 </details>
 
-**yutifiy** is a simple RESTful API for retrieving music info for various streaming platforms. Using the artist name and song name, you can get various information about the song including the streaming link(s) for various music streaming platforms. To prevent the abuse of the API, there is a ratelimit of 30 requests per minute for every user.
+**yutifiy** is a simple RESTful API for retrieving music info for various streaming platforms. Using the artist name and song name, you can get various information about the song including the streaming link(s) for various music streaming platforms. To prevent the abuse of the API, there is a ratelimit of 20 requests per minute for every user.
 
-Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you would like me to add any other streaming platforms or more metadata about the song(s), feel free to open an issue. You can visit the website to playaround [here](https://yutify.onrender.com/) or maybe check simple [examples](/examples) on how get started and make sure to read [docs](https://yutify.onrender.com/docs).
+Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you would like me to add any other streaming platforms or more metadata about the song(s), feel free to open an issue. You can visit the website to playaround [here](https://yutify.onrender.com/) and make sure to read [docs](https://yutify.onrender.com/docs) as well.
 
 ### Features ™️
 
-- Retrieve various information about music OwO ~!
-  - Some of the noticable information that can be retrieved:
-  - [x] Album Art
-  - [x] Album Type
-  - [x] Genre
-  - [x] Lyrics
-  - [x] Release Date
-  - [x] Many More ™ ヾ(⌐■_■)ノ♪
+- Retrieve various information about music OwO ~ artists, album, lyrics, release date, etc.!
 - Get streaming link for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
 - Request for information only for a particular streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
 - Use API endpoint to search for music in code or play around directly on [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
-- It's FREE. \_(:з)∠)\_
+- It's FREE. \_(:з)∠)\_ (but you can always support me on [ko-fi](https://ko-fi.com/cheapnightbot))
 
 ### Available Music Platforms 📻
 
@@ -65,6 +58,7 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 
 - [x] [Apple Music](https://music.apple.com/)
 - [x] [Deezer](https://www.deezer.com/)
+- [x] [KKBox](https://www.kkbox.com/)
 - [x] [Spotify](https://spotify.com/)
 - [x] [YouTube Music](https://music.youtube.com/)
 
@@ -87,11 +81,11 @@ pip install -r requirements.txt
 3. Run the application:
 
 ```bash
-python api.py
+flask run
 ```
 
 > [!IMPORTANT]
-> Visit locahost at port 8000: http://localhost:8000/
+> Visit locahost at port 5000: http://localhost:5000 OR http://127.0.0.1:5000
 
 ## Additional Notes On Running yutify 📝
 
