@@ -1,21 +1,29 @@
+import os
+
 from flask import jsonify, request
 from flask_limiter.util import get_remote_address
 from flask_restful import Resource
-from yutipy import Deezer, Itunes, KKBox, MusicYT, Spotify, YutipyMusic
-from yutipy.utils.logger import enable_logging
+from yutipy import deezer, itunes, kkbox, musicyt, spotify, yutipy_music
+from yutipy.logger import disable_logging
 
 from app.common.logger import logger
 from app.common.utils import mask_string
 from app.resources.limiter import limiter
 
-enable_logging()
+# idk, was getting two logs for same messages from yutipy
+# doing this, disables extra one from yutipy
+# however, yutipy's log messages still gets logged via
+# app.common.logger ~ _(:з)∠)_
+disable_logging()
+
+RATELIMIT = int(os.environ.get("RATELIMIT"))
 
 
 class YutifySearch(Resource):
     """API resource to search & fetch the song details."""
 
-    # @limiter.limit("20 per minute")
-    @limiter.limit("1 per minute")
+    # @limiter.limit("20 per minute" if RATELIMIT else "")
+    @limiter.limit("1 per minute" if RATELIMIT else "")
     def get(self, artist, song):
         artist = artist.strip()
         song = song.strip()
@@ -32,23 +40,23 @@ class YutifySearch(Resource):
 
         match platform:
             case "deezer":
-                with Deezer() as deezer:
-                    result = deezer.search(artist, song)
+                with deezer.Deezer() as deezer_music:
+                    result = deezer_music.search(artist, song)
             case "itunes" | "apple-music":
-                with Itunes() as itunes:
-                    result = itunes.search(artist, song)
+                with itunes.Itunes() as apple_music:
+                    result = apple_music.search(artist, song)
             case "kkbox":
-                with KKBox() as kkbox:
-                    result = kkbox.search(artist, song)
+                with kkbox.KKBox() as kkbox_music:
+                    result = kkbox_music.search(artist, song)
             case "spotify":
-                with Spotify() as spotify:
-                    result = spotify.search(artist, song)
+                with spotify.Spotify() as spotify_music:
+                    result = spotify_music.search(artist, song)
             case "ytmusic":
-                with MusicYT() as ytmusic:
-                    result = ytmusic.search(artist, song)
+                with musicyt.MusicYT() as yotube_music:
+                    result = yotube_music.search(artist, song)
             case _:
-                with YutipyMusic() as yutipy_music:
-                    result = yutipy_music.search(artist, song)
+                with yutipy_music.YutipyMusic() as py_music:
+                    result = py_music.search(artist, song)
 
         if not result:
             result = {"error": f"Couldn't find '{song}' by '{artist}'"}
