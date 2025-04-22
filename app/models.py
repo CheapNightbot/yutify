@@ -214,7 +214,9 @@ class UserService(Base):
             f"<UserService: user_id={self.user_id}, "
             f"service_id={self.service_id}, "
             f"access_token_present={'Yes' if self.access_token else 'No'}, "
+            f"refresh_token_present={'Yes' if self.refresh_token else 'No'}, "
             f"expires_in={self.expires_in}>"
+            f"requested_at={self.requested_at}>"
         )
 
 
