@@ -178,6 +178,10 @@ class UserService(Base):
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
     requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
 
+    __table_args__ = (
+        sa.UniqueConstraint("user_id", "service_id", name="uq_user_service"),
+    )
+
     # Relationships: many-to-one
     user: so.Mapped["User"] = so.relationship("User", back_populates="user_services")
     service: so.Mapped["Service"] = so.relationship(
