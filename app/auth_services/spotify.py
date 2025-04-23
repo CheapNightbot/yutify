@@ -46,7 +46,7 @@ class MySpotifyAuth(SpotifyAuth):
             }
 
 
-spotify_auth = MySpotifyAuth(scopes=["user-read-email", "user-read-private"])
+spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
 
 
 def handle_spotify_auth():
@@ -58,7 +58,9 @@ def handle_spotify_auth():
     )
 
     if user_service:
-        return jsonify(spotify_auth.get_user_profile())
+        flash(f"You have already linked Spotify.", "success")
+        spotify_auth.close_session()
+        return redirect(url_for("user.user_settings", username=current_user.username))
 
     state = spotify_auth.generate_state()
     session["state"] = state
@@ -82,7 +84,7 @@ def handle_spotify_callback(request):
         )
         session.pop("state")
 
-        # spotify_auth.close_session()
+        spotify_auth.close_session()
         return redirect(url_for("user.user_settings", username=current_user.username))
 
     try:
@@ -91,10 +93,10 @@ def handle_spotify_callback(request):
         flash("Something went wrong while authenticating with Spotify.", "error")
         session.pop("state")
 
-        # spotify_auth.close_session()
+        spotify_auth.close_session()
         return redirect(url_for("user.user_settings", username=current_user.username))
 
-    flash("Successfully authenticated Spotify!")
+    flash("Successfully linked Spotify!", "success")
     session.pop("state")
 
     return redirect(url_for("user.user_settings", username=current_user.username))
