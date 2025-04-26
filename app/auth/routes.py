@@ -32,8 +32,9 @@ def login():
             flash("Invalid username or password", "error")
             return redirect(url_for("auth.login"))
         login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get("next")
-        if not next_page or urlsplit(next_page).netloc != "":
+        next_page = request.args.get("next", "")
+        next_page = next_page.replace("\\", "")  # Remove backslashes
+        if not next_page or urlsplit(next_page).netloc != "" or urlsplit(next_page).scheme != "":
             next_page = url_for("user.user_profile", username=current_user.username)
         return redirect(next_page)
     return render_template(
