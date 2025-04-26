@@ -41,12 +41,11 @@ class RegistrationForm(FlaskForm):
             password.data, user_inputs=[self.username.data, self.email.data]
         )
         score = results["score"]
-        feedback = (
-            results["feedback"]["suggestions"][0]
-            or "" + " " + results["feedback"]["warning"]
-        )
-
         if score < 3:
+            feedback = (
+                results["feedback"]["suggestions"][0]
+                or "" + " " + results["feedback"]["warning"]
+            )
             raise ValidationError(feedback)
 
 
