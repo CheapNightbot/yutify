@@ -56,15 +56,6 @@ def unlink(service):
         flash(f"You have not linked {service.capitalize()}.", "error")
         return redirect(url_for("user.user_settings", username=current_user.username))
 
-    # Fetch and delete associated UserData
-    user_data = db.session.scalar(
-        sa.select(UserData).where(
-            UserData.user_service_id == user_service.user_services_id
-        )
-    )
-    if user_data:
-        db.session.delete(user_data)
-
     # Delete the UserService entry
     db.session.delete(user_service)
     db.session.commit()
