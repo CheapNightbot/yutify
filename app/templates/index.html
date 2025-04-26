@@ -43,9 +43,9 @@
         <button type="submit" id="search">Search</button>
     </fieldset>
     {% if form.song.errors %}
-    {{ form.song(hidden="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
     {% else %}
-    {{ form.song(hidden="", aria_label="Song Name", aria_describedby="song-helper") }}
+    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper") }}
     {% endif %}
     {% for error in form.song.errors %}
     <small id="song-helper">{{ error }}</small>

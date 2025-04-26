@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const artistName = document.querySelector('#artist');
-        const songName = document.querySelector('#song');
+        const songName = document.querySelector('[name="song"]');
 
         if (artistName.getAttribute('aria-invalid') === 'true') {
             artistName.addEventListener('input', () => {
