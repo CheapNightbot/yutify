@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler, SMTPHandler
 
 from dotenv import load_dotenv
 from flask import Flask
+from flask_caching import Cache
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -23,11 +24,24 @@ login.login_view = "auth.login"
 mail = Mail()
 api = Api()
 cors = CORS()
+cache = Cache()
 
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    # Configure caching
+    redis_url = os.getenv("REDIS_URI")
+    if redis_url:
+        app.config["CACHE_TYPE"] = "RedisCache"
+        app.config["CACHE_REDIS_URL"] = redis_url
+    else:
+        app.config["CACHE_TYPE"] = (
+            "SimpleCache"  # Use in-memory cache for local development
+        )
+    app.config["CACHE_DEFAULT_TIMEOUT"] = 300  # Cache timeout in seconds (5 minutes)
+    cache.init_app(app)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -37,7 +51,6 @@ def create_app(config_class=Config):
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
     from app.resources.limiter import limiter
-
     limiter.init_app(app)
 
     from app.resources import bp as api_bp
