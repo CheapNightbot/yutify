@@ -72,8 +72,8 @@
 </form>
 
 
+{% if form.__class__.__name__ == "EmptyForm" %}
 <h3>Services:</h3>
-
 {% if services %}
 {% for service in services %}
 <article class="service-item">
@@ -100,17 +100,39 @@
         </form>
         {% else %}
         <!-- Link Form -->
-        <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post"
-            onsubmit="return confirm('Are you sure you want to link {{ service.service_name }}?');">
+        <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post">
             {{ form.hidden_tag() }}
-            <button type="submit" class="primary link">Link</button>
+            <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm'
+                %}data-service="lastfm" {% endif %}>Link</button>
         </form>
         {% endif %}
     </div>
 </article>
 {% endfor %}
 {% else %}
-<p>No services available.</p>
+<article>
+    <p>No services available.</p>
+</article>
 {% endif %}
+{% endif %}
+
+<dialog id="lastfm-username-modal">
+    <article>
+        <header>
+            <h3>Link Last.fm</h3>
+            <button id="close-lastfm-modal" aria-label="Close" class="close"
+                data-target="lastfm-username-modal"></button>
+        </header>
+        <form action="{{ url_for('auth_services.service', service='lastfm') }}" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <label for="lastfm-username">Last.fm Username</label>
+                <input type="text" id="lastfm-username" name="lastfm_username" placeholder="Enter your Last.fm username"
+                    required autofocus>
+            </fieldset>
+            <p><button type="submit" class="primary">Link</button></p>
+        </form>
+    </article>
+</dialog>
 
 {% endblock %}
