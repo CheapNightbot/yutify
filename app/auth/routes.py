@@ -66,7 +66,7 @@ def signup():
         db.session.add(user)
         db.session.commit()
         flash(
-            "You're all set! Your account has been created. Log in now with your credentials",
+            "You're all set! Your account has been created.",
             "success",
         )
         return redirect(url_for("auth.login"))
