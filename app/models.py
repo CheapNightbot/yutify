@@ -173,10 +173,11 @@ class UserService(Base):
     service_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey(Service.service_id, ondelete="CASCADE"), index=True
     )
-    _access_token: so.Mapped[str] = so.mapped_column(sa.String(256))
+    _access_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     _refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
     requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
+    username: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
 
     __table_args__ = (
         sa.UniqueConstraint("user_id", "service_id", name="uq_user_service"),
@@ -217,6 +218,7 @@ class UserService(Base):
         return (
             f"<UserService: user_id={self.user_id}, "
             f"service_id={self.service_id}, "
+            f"username={self.username}, "
             f"access_token_present={'Yes' if self.access_token else 'No'}, "
             f"refresh_token_present={'Yes' if self.refresh_token else 'No'}, "
             f"expires_in={self.expires_in}>"
@@ -238,6 +240,21 @@ class UserData(Base):
     user_service: so.Mapped["UserService"] = so.relationship(
         "UserService", back_populates="user_data", uselist=False
     )
+
+    @staticmethod
+    def insert_or_update_user_data(user_service_id, new_data):
+        """Insert or update user data for a given user_service_id."""
+        existing_data = db.session.scalar(
+            sa.select(UserData).where(UserData.user_service_id == user_service_id)
+        )
+
+        if existing_data:
+            existing_data.data = new_data
+        else:
+            new_entry = UserData(user_service_id=user_service_id, data=new_data)
+            db.session.add(new_entry)
+
+        db.session.commit()
 
     def __repr__(self):
         return f"<UserData: user_service_id={self.user_service_id}, updated_at={self.updated_at}>"
