@@ -76,11 +76,10 @@ class User(UserMixin, Base):
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
     # Relationship to UserService: one-to-many
-    user_services: so.WriteOnlyMapped["UserService"] = so.relationship(
+    user_services: so.Mapped["UserService"] = so.relationship(
         "UserService",
         back_populates="user",
         cascade="all, delete",
-        passive_deletes=True,
     )
 
     about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(140))
@@ -151,11 +150,10 @@ class Service(Base):
     service_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
     # Relationship to UserService: one-to-many
-    user_services: so.WriteOnlyMapped["UserService"] = so.relationship(
+    user_services: so.Mapped["UserService"] = so.relationship(
         "UserService",
         back_populates="service",
         cascade="all, delete",
-        passive_deletes=True,
     )
 
     def __repr__(self):
@@ -194,7 +192,6 @@ class UserService(Base):
         "UserData",
         back_populates="user_service",
         cascade="all, delete",
-        passive_deletes=True,
         uselist=False,  # Ensures one-to-one relationship
     )
 
