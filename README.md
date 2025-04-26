@@ -1,10 +1,11 @@
 <div align=center>
 
-  ![Banner](https://github.com/user-attachments/assets/6423bf5a-29d9-42b4-90a5-8851d701def7)
+  ![Banner](https://github.com/user-attachments/assets/ce43c4c7-5716-472d-b834-588f6559048d)
 
-  [![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%23dfebfc)](LICENSE)
-  [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.onrender.com%2F&style=for-the-badge&color=%23dfebfc)](https://yutify.onrender.com/)
-  [![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%23dfebfc)](https://yutify.onrender.com/docs)
+
+  [![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%236f6cc7)](LICENSE)
+  [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.onrender.com%2F&style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/)
+  [![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/docs)
 
 </div>
 
@@ -30,9 +31,11 @@
 
   |                                           OwO                                             |
   | ----------------------------------------------------------------------------------------- |
-  | ![image](https://github.com/user-attachments/assets/26ca3c64-64c3-4ea0-9b9c-bd47a8837211) |
-  | ![image](https://github.com/user-attachments/assets/5e69c853-293f-452b-bb97-b3a7eba024e9) |
-  | ![image](https://github.com/user-attachments/assets/223d9fb6-6a86-4edb-8934-d2a038b257a3) |
+  | ![image](https://github.com/user-attachments/assets/5b976d5e-edf4-4701-8591-95ac54cafdf4) |
+  | ![image](https://github.com/user-attachments/assets/ca3cd475-b52d-4011-8e96-39ca5280ff1a) |
+  | ![image](https://github.com/user-attachments/assets/d536a7b0-642a-44ff-989b-87d4a1e23972) |
+  | ![image](https://github.com/user-attachments/assets/2c568977-ae61-4cea-b547-6c863c1aac0f) |
+  | ![image](https://github.com/user-attachments/assets/9eab7b03-dcd8-48ea-a53b-2feee19b83fb) |
 
   </span>
 
