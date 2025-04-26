@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 
-from flask import render_template
+import requests
+from flask import render_template, request
 from flask_login import current_user
 
 from app import db
 from app.main import bp
 from app.main.forms import SearchForm
-from app.resources.search import YutifySearch
 
 
 @bp.before_request
@@ -22,14 +22,16 @@ def index():
     form = SearchForm()
 
     if form.validate_on_submit():
-        # Create an instance of the Search resource
-        search_resource = YutifySearch()
         artist = form.artist.data
         song = form.song.data
 
-        # Call the get method directly with the artist and song parameters
-        response = search_resource.get(artist, song)
-        result = response.get_json()
+        # Dynamically determine the base URL for the /api/search endpoint
+        base_url = request.host_url.rstrip("/")  # Remove trailing slash
+        search_url = f"{base_url}/api/search/{artist}:{song}"
+
+        # Call the /api/search endpoint using requests
+        response = requests.get(search_url, params={"all": ""})
+        result = response.json()
 
         if result.get("error"):
             return render_template(
