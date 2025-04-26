@@ -15,13 +15,11 @@
 
 - [yutify <img src="app/static/favicon.svg" width="20px">](#yutify) ← you're here..
   - [Features ™️](#features-️)
-  - [Available Music Platforms](#available-music-platforms-)
-- [Run Locally 🧑‍💻](#run-locally-)
-  - [Additional Notes On Running yutify 📝](#additional-notes-on-running-yutify-)
-- [Contributing 🤝](#contributing-)
-  - [Users](#users)
-  - [Developers](#developers)
-- [Acknowledgement // End Note 🙃](#acknowledgement--end-note-)
+  - [Available Music Platforms 📻](#available-music-platforms-)
+  - [Running yutify 🧑‍💻](#running-yutify-)
+    - [Environment Variables](#environment-variables)
+  - [Contributing 🤝](#contributing-)
+  - [Acknowledgement // End Note 🙃](#acknowledgement--end-note-)
 
 </details>
 
@@ -40,16 +38,18 @@
 
 </details>
 
-**yutifiy** is a simple RESTful API for retrieving music info for various streaming platforms. Using the artist name and song name, you can get various information about the song including the streaming link(s) for various music streaming platforms. To prevent the abuse of the API, there is a ratelimit of 20 requests per minute for every user.
+**yutify** is a simple RESTful API for retrieving music info from various streaming platforms. Using the artist name and song name, you can get various information about the song, including streaming link(s) for multiple music platforms. To prevent abuse, the API enforces a rate limit of 20 requests per minute per user.
 
-Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you would like me to add any other streaming platforms or more metadata about the song(s), feel free to open an issue. You can visit the website to playaround [here](https://yutify.onrender.com/) and make sure to read [docs](https://yutify.onrender.com/docs) as well.
+Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you'd like to suggest additional platforms or metadata, feel free to open an issue. You can visit the website to explore [here](https://yutify.onrender.com/) and make sure to read the [docs](https://yutify.onrender.com/docs) as well.
 
 ### Features ™️
 
-- Retrieve various information about music OwO ~ artists, album, lyrics, release date, etc.!
-- Get streaming link for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
-- Request for information only for a particular streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
-- Use API endpoint to search for music in code or play around directly on [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
+- Get streaming links for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
+- Retrieve detailed music information OwO ~ artists, album, lyrics, release date, etc.!
+- Retrieve music metadata for your currently playing tracks from Last.fm and/or Spotify.
+- Request information for a specific streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
+- Use API endpoints to search for music programmatically or explore directly on the [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
+- Account sign-up for personalized features like currently playing tracks.
 - It's FREE. \_(:з)∠)\_ (but you can always support me on [ko-fi](https://ko-fi.com/cheapnightbot))
 
 ### Available Music Platforms 📻
@@ -57,80 +57,88 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 > Alphabetically sorted
 
 - [x] [Apple Music](https://music.apple.com/)
-- [x] [Deezer](https://www.deezer.com/)
-- [x] [KKBox](https://www.kkbox.com/)
+- [x] [Deezer](https://deezer.com/)
+- [x] [KKBox](https://kkbox.com/)
+- [x] [Last.fm](https://last.fm/)
 - [x] [Spotify](https://spotify.com/)
 - [x] [YouTube Music](https://music.youtube.com/)
 
-# Run Locally 🧑‍💻
+# Running yutify 🧑‍💻
 
-Run yutify locally in only three steps. Alright, ready? Go:
-
-1. Clone the repository:
+**1. Clone the repository**:
 
 ```bash
 git clone https://github.com/CheapNightbot/yutify.git
 ```
 
-2. Install dependencies:
+**2. Install dependencies**:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the application:
+Before running yutify, you need to take care of a few things:
+
+## Environment Variables
+
+For certain configurations, it relies on environment variables that must be set before running yutify. Here's a brief overview:
+
+> [!TIP]
+> There is a `.env_example` file in the root directory of the project. Rename it to `.env` and replace placeholder values with actual values when running the project locally.
+> When using a hosting provider, set the respective values in the environment variable settings provided by them.
+
+### Required: These environment variables are mandatory!
+
+- `SECRET_KEY`: Used by Flask for session management and security.
+- `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting user emails at rest (in the database). To generate an encryption key, run the following command after installing dependencies:
+
+  ```bash
+  python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+  ```
+
+  **Important**: Once used to encrypt emails, changing or losing this key will prevent decryption of previously saved emails. Handle with care!
+- `DATABASE_URL`: SQL Database URL. If not set, a file-based SQLite database (`app.db`) will be used in the root directory.
+
+### Optional: These environment variables are optional!
+
+- For retrieving music information from Spotify, KKBox, and Last.fm, client IDs, client secrets, or API keys are required. Thankfully, [yutipy](https://pypi.org/project/yutipy/) provides a command-line utility to obtain these values. Run `yutipy-config` in your terminal after installing dependencies. The wizard will guide you through obtaining and setting up API keys for supported services like KKBOX, Last.fm, and Spotify. These values are automatically saved in the `.env` file.
+  - `KKBOX_CLIENT_ID`, `KKBOX_CLIENT_SECRET`, `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REDIRECT_URI`, `LASTFM_API_KEY`
+  - Without these variables, interaction with these platforms will be unavailable.
+- Variables for sending emails (used for error logs and password resets):
+  - `MAIL_SERVER`: The mail server address (e.g., `smtp.gmail.com`).
+  - `MAIL_PORT`: The port to use for the mail server (e.g., `587` for TLS).
+  - `MAIL_USE_TLS`: Whether to use TLS for secure email communication (`True` or `False`).
+  - `MAIL_USERNAME`: The email address to use for sending emails.
+  - `MAIL_PASSWORD`: The password or app-specific password for the email account.
+  - `ADMIN_EMAIL`: The administrator's email address to receive error logs or notifications.
+- `RATELIMIT`: Enables rate-limiting on all API routes (`/api/*`). For valid values, refer to the [Flask-Limiter Docs](https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation).
+- `REDIS_URI`: URI for Redis (used for rate-limiting and caching). If not set:
+  - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
+  - Without `FLASK_DEBUG` (production mode), caching will be disabled.
+
+**3. Run the application**:
 
 ```bash
 flask run
 ```
 
 > [!IMPORTANT]
-> Visit locahost at port 5000: http://localhost:5000 OR http://127.0.0.1:5000
-
-## Additional Notes On Running yutify 📝
-
-Okay, doing above *three* steps didn't work, right >.< ? Because there are few other steps required to be considered while running yutify:
-> By the way, I assume you already had Python installed. You have, right?
-
-<br>
-
-→ For retrieving information from Spotify, it uses official Spotify API endpoint, which requires authentication. So, you will have to signup for **Spotify for Developers** account (it's free) and follow the steps below:
-
-- Go to your dashboard at https://developer.spotify.com/
-- Create a new app and fill `localhost/callback` in "Redirect URIs" field.
-- Select "Web API" for "Which API/SDKs are you planning to use?".
-- Next, create `.env` file inside [yutify/](yutify/) directory.
-  - Create a variable inside this `.env` file called `CLIENT_ID` and paste the Client ID from Spotify Dashboard after it (after `=` sign. no space).
-  - Then, create new variable `CLIENT_SECRET` and paste Client secret from Spotify Dashboard. You may have to click on "View client secret".
-
-→ And regarding ratelimit:
-
-- For ratelimiting, it uses **Flask-Limiter** and for storage, **redis**.
-- So, first, you will have to have a redis instance up and running.
-  - You can, at this point, just copy and paste the URL where the redis instance is running into the `.env` file in the project root directory (check the `.env_example` file!).
-- Run `python api.py` command, and everything will work as expected.
-- If no `.env` file exists or it fails to get `"REDIS_URI"`, it will use the memory for ratelimiting instead of redis. It is good for running in development environment, do not use it for production.
-- If you do not want to use ratelimiting at all, you can change the global `RATELIMIT` variable in `api.py` to `False`:
-  - `RATELIMIT = False`
-  - You can run `python api.py` again, and everything should work as expected.
+> Visit the application locally at: [http://localhost:5000](http://localhost:5000) or [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 # Contributing 🤝
 
-## Users
+We welcome contributions from everyone! Here's how you can help:
 
-If you don't know programming, you can still contribute to this project by opening an issue for suggestions, improvements or really for an issue.
+- **Open Issues**: If you have suggestions, improvements, or bug reports, feel free to open an issue.
+- **Fork and Develop**: Fork the repository, create a new branch for your changes, and make modifications in that branch.
+- **Submit Pull Requests**: Once your changes are ready, open a pull request for review.
 
-## Developers
-
-- Just fork the repository.
-- Create a new branch for your changes and make changes in that (separate) branch.
-- Open a pull request.
+Whether you're a user or a developer, your contributions are valuable and appreciated!
 
 # Acknowledgement // End Note 🙃
 
+- Uses [yutipy](https://pypi.org/project/yutipy/) 🎶
 - Uses [Pico CSS](https://picocss.com/) 🎨
-- Powered by [Render](https://render.com/register). 🚀
-- Using [Spotify Web API](https://developer.spotify.com/documentation/web-api). 🛠️
-- Using [Deezer API](https://developers.deezer.com/api). 🛠️
-- Thanks to [sigma67](https://github.com/sigma67) for [ytmusicapi](https://github.com/sigma67/ytmusicapi). 🫂
-- Thanks to [OhaJoq](https://github.com/Joqnix) for motivation behind this project. ✨
+- Powered by [Render](https://render.com/register) 🚀
+- Thanks to [OhaJoq](https://github.com/Joqnix) for inspiring this project ✨
+- Thanks to everyone who starred the repo—it means a lot! 🫂
