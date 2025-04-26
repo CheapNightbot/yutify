@@ -13,12 +13,12 @@ from app.auth_services.spotify import get_spotify_activity
 from app.models import UserService
 from app.resources.limiter import limiter
 
-RATELIMIT = int(os.environ.get("RATELIMIT"))
+RATELIMIT = os.environ.get("RATELIMIT")
 
 
 class UserActivityResource(Resource):
 
-    @limiter.limit("20 per minute" if RATELIMIT else "")
+    @limiter.limit(RATELIMIT if RATELIMIT else "")
     def get(self):
         """Fetch the currently playing music for the authenticated user."""
         response_type = request.args.get("type", "json").lower()
