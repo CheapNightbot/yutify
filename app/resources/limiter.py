@@ -24,7 +24,7 @@ def default_error_responder(request_limit: RequestLimit):
 
 limiter = Limiter(
     key_func=lambda: request.headers.get("True-Client-Ip", get_remote_address()),
-    strategy="fixed-window-elastic-expiry",
+    strategy="fixed-window",
     on_breach=default_error_responder,
     storage_uri=os.environ.get("REDIS_URI", "memory:///"),
 )
