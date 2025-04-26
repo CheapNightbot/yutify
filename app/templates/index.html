@@ -19,7 +19,7 @@
 {% endblock %}
 
 {% block content %}
-<form id="search-form" action="" method="post" class="content" novalidate>
+<form id="search-form" action="" method="post" class="content">
     {{ form.hidden_tag() }}
     {% if artist %}
     {{ form.artist(autofocus="", placeholder="Enter artist name", value=artist, aria_label="Artist Name", aria_describedby="artist-helper") }}

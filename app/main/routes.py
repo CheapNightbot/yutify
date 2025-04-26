@@ -87,3 +87,24 @@ def docs():
     return render_template(
         "docs.html", title="Docs", active_page="docs", year=datetime.today().year
     )
+
+
+@bp.route("/privacy-policy")
+def privacy_policy():
+    """Render the privacy policy page."""
+    return render_template(
+        "privacy_policy.html",
+        title="Privacy Policy",
+        active_page="privacy_policy",
+        year=datetime.today().year,
+    )
+
+@bp.route("/terms-of-service")
+def terms_of_service():
+    """Render the terms of service page."""
+    return render_template(
+        "terms_of_service.html",
+        title="Terms of Service",
+        active_page="terms_of_service",
+        year=datetime.today().year,
+    )

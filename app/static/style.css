@@ -301,12 +301,12 @@ footer {
     margin: 0;
 }
 
-.service-action .unlink {
-    background-color: #a71d2a;
+.service-action .unlink, .delete-account {
+    background-color: #a71d2a !important;
 }
 
 .service-action .unlink:hover {
-    background-color: #dc3545;
+    background-color: #dc3545 !important;
 }
 
 /* Updated styles for user activity to ensure consistency */
