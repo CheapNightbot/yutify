@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Account">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Profile">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="post">
+
+    {{ form.hidden_tag() }}
+    {% if form.__class__.__name__ == "EmptyForm" %}
+    <fieldset>
+        <label>
+            Username
+            <input type="text" name="username" placeholder="{{ user.username }}" aria-label="Read-only Username"
+                readonly />
+        </label>
+
+        <label>
+            Email
+            <input type="email" name="email"
+                placeholder="{{ user.email | mask_string(mask='*', mask_special_char=True, mask_from_char='@', exclude_bounds=True) }}"
+                aria-label="Read-only Email" readonly />
+        </label>
+
+    </fieldset>
+    {{ form.submit(value="Edit Account Details") }}
+    {% else %}
+    {{ form.username.label }}
+    {% if form.username.errors %}
+    {{ form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.username(value=user.username, aria_label="Username", aria_describedby="username-helper") }}
+    {% endif %}
+    {% for error in form.username.errors %}
+    <small id="username-helper">{{ error }}</small>
+    {% endfor %}
+    {{ form.email.label }}
+    {% if form.email.errors %}
+    {{ form.email(aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.email(value=user.email, aria_label="Email", aria_describedby="email-helper") }}
+    {% endif %}
+    {% for error in form.email.errors %}
+    <small id="email-helper">{{ error }}</small>
+    {% endfor %}
+    {{ form.password.label }}
+    {% if form.password.errors %}
+    {{ form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+    {% endif %}
+    {% for error in form.password.errors %}
+    <small id="password-helper">{{ error }}</small>
+    {% endfor %}
+    {{ form.submit() }}
+    {% endif %}
+
+</form>
+
+
+{% if form.__class__.__name__ == "EmptyForm" %}
+<button class="secondary delete-account" onclick="openDeleteAccountDialog();">Delete Account</button>
+{% endif %}
+
+{% if form.__class__.__name__ == "EmptyForm" %}
+<h3>Services:</h3>
+{% if services %}
+{% for service in services %}
+<article class="service-item">
+    <div class="service-info">
+        <img class="service-logo"
+            src="{{ url_for('static', filename='logos/' + service.service_name.lower() + '.svg') }}"
+            alt="{{ service.service_name }} Logo">
+        <div>
+            <strong>{{ service.service_name }}</strong>
+            {% if service.service_id in user_services %}
+            <p class="status connected">Linked</p>
+            {% else %}
+            <p class="status not-connected">Not Linked</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="service-action">
+        {% if service.service_id in user_services %}
+        <!-- Unlink Form -->
+        <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post"
+            onsubmit="return confirm('Are you sure you want to unlink {{ service.service_name }}?');">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="secondary unlink">Unlink</button>
+        </form>
+        {% else %}
+        <!-- Link Form -->
+        <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm'
+                %}data-service="lastfm" {% endif %}>Link</button>
+        </form>
+        {% endif %}
+    </div>
+</article>
+{% endfor %}
+{% else %}
+<article class="service-item">
+    <p style="padding: 1rem 0 0 1rem;">No services available.</p>
+</article>
+{% endif %}
+{% endif %}
+
+<dialog id="lastfm-username-modal">
+    <article>
+        <header>
+            <h3>Link Last.fm</h3>
+            <button id="close-lastfm-modal" aria-label="Close" class="close"
+                data-target="lastfm-username-modal"></button>
+        </header>
+        <form action="{{ url_for('auth_services.service', service='lastfm') }}" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <label for="lastfm-username">Last.fm Username</label>
+                <input type="text" id="lastfm-username" name="lastfm_username" placeholder="Enter your Last.fm username"
+                    required autofocus>
+            </fieldset>
+            <p><button type="submit" class="primary">Link</button></p>
+        </form>
+    </article>
+</dialog>
+
+<dialog id="delete-account-modal">
+    <article>
+        <h3>Confirm Account Deletion</h3>
+        <p>To delete your account, please enter your password below:</p>
+        <form method="post" action="">
+            {{ form.hidden_tag() }}
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <footer role="group">
+                {{ form.submit(value="Delete Account", class="secondary delete-account") }}
+                <button type="button" onclick="document.getElementById('delete-account-modal').close();">Cancel</button>
+            </footer>
+        </form>
+    </article>
+</dialog>
+
+<script>
+    function openDeleteAccountDialog() {
+        document.getElementById('delete-account-modal').showModal();
+    }
+</script>
+
+{% endblock %}

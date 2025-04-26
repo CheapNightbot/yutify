@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/privacy-policy">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Privacy Policy">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/privacy-policy">
+<meta name=" twitter:title" content="yutify: Privacy Policy">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Privacy Policy</h1>
+
+    <p>Effective Date: [Insert Date]</p>
+
+    <p>
+        This Privacy Policy explains how <b>yutify</b> ("we", "us", or "our") collects, uses, and protects your
+        information when you use our web application ("the Service"). By using the Service, you acknowledge and consent
+        to the practices outlined in this Privacy Policy.
+    </p>
+
+    <h3>1. Information We Collect</h3>
+    <p>
+        We collect the following types of information:
+    <ul>
+        <li><b>Music Metadata Requests:</b> Information such as artist name, song title, and other search
+            parameters provided by users to retrieve music information.</li>
+        <li><b>User Account Information:</b> For users who sign up, we collect email addresses and linked music
+            service accounts for authentication and to provide requested information, such as music metadata about their
+            currently listening activity on linked platforms. Linking third-party services is optional and only required
+            if users wish to access this feature.</li>
+        <li><b>Activity Data:</b> Only the most recent activity for linked services is saved in our database. We do not
+            store user searches, whether signed up or not.</li>
+        <li><b>Search Logging:</b> For debugging purposes, we temporarily log search queries in the terminal or console.
+            However, these logs are not persisted or saved in any database.</li>
+        <li><b>Rate Limiting:</b> To prevent abuse of the Service, we implement rate limiting based on user IP
+            addresses. IP addresses are temporarily used in memory for this purpose and are not saved or stored
+            persistently.</li>
+    </ul>
+    </p>
+
+    <h3>2. Use of Information</h3>
+    <p>
+        The information we collect is used to:
+    <ul>
+        <li>Provide music metadata and streaming links from third-party services.</li>
+        <li>Enable user account features, such as linking music services and providing music metadata for recent
+            listening activity on linked service(s).</li>
+        <li>Improve the functionality and user experience of the Service.</li>
+    </ul>
+    </p>
+
+    <h3>3. Data Persistence</h3>
+    <p>
+        We do not host, download, or store any music files. The application only saves textual information and links
+        to third-party services in our database for recent activity tracking.
+    </p>
+
+    <h3>4. Account Management</h3>
+    <p>
+        Users can delete their accounts or unlink services they have linked at any time from the settings page. When a
+        service is unlinked, all related data, such as recent activity, is deleted immediately. Similarly, when an
+        account is deleted, all user data is removed, and the username and email used for the account become available
+        for creating a new account.
+    </p>
+
+    <h3>5. Third-Party Services</h3>
+    <p>
+        Our Service integrates with third-party APIs, such as Spotify, Deezer, Apple Music, and YouTube Music, to
+        fetch music information. By using the Service, you agree to be bound by the privacy policies and terms of
+        service of these third-party services. We encourage you to review their policies.
+    </p>
+
+
+    <h3>6. Security</h3>
+    <p>
+        We take reasonable measures to protect your information from unauthorized access or breaches. However, no
+        method of transmission over the internet or electronic storage is completely secure.
+    </p>
+
+
+    <h3>7. Changes to Privacy Policy</h3>
+    <p>
+        We may update this Privacy Policy from time to time. Continued use of the Service after any changes constitutes
+        your acceptance of the updated policy.
+    </p>
+
+    <h3>8. Contact Us</h3>
+    <p>
+        If you have any questions or concerns about this Privacy Policy, please contact us at <a
+            href="mailto:yutify.me@email.com">yutify.me@email.com</a>.
+    </p>
+
+    <p>Last updated: [Insert Date]</p>
+</div>
+{% endblock %}

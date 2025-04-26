@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/login">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Login">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/login">
+<meta name="twitter:title" content="yutify: Login">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <fieldset>
+        {{ form.username.label }}
+        {% if form.username.errors %}
+        {{ form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true", autofocus="") }}
+        {% else %}
+        {{ form.username(aria_label="Username", aria_describedby="username-helper", autofocus="") }}
+        {% endif %}
+        {% for error in form.username.errors %}
+        <small id="username-helper">{{ error }}</small>
+        {% endfor %}
+
+        {{ form.password.label }}
+        {% if form.password.errors %}
+        {{ form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+        {% else %}
+        {{ form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+        {% endif %}
+        {% for error in form.password.errors %}
+        <small id="password-helper">{{ error }}</small>
+        {% endfor %}
+        <small><a href="{{ url_for('auth.reset_password_request') }}">Forgot Password?</a></small>
+
+        {{ form.remember_me() }} {{ form.remember_me.label }}
+    </fieldset>
+    {{ form.submit() }}
+</form>
+
+<p>New User? <a href="{{ url_for('auth.signup') }}">Sign Up here!</a></p>
+{% endblock %}

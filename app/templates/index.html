@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Home">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Home">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block header %}
+<h1 id="brand">yutify</h1>
+<p>Simple RESTful API for retrieving music info for various steaming platforms.</p>
+{% endblock %}
+
+{% block content %}
+<form id="search-form" action="" method="post" class="content">
+    {{ form.hidden_tag() }}
+    {% if artist %}
+    {{ form.artist(autofocus="", placeholder="Enter artist name", value=artist, aria_label="Artist Name", aria_describedby="artist-helper") }}
+    {% elif form.artist.errors %}
+    {{ form.artist(autofocus="", placeholder="Enter artist name", aria_label="Artist Name", aria_describedby="artist-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.artist(autofocus="", placeholder="Enter artist name", aria_label="Artist Name", aria_describedby="artist-helper") }}
+    {% endif %}
+    {% for error in form.artist.errors %}
+    <small id="artist-helper">{{ error }}</small>
+    {% endfor %}
+
+    <fieldset role="search" aria-describedby="song-helper">
+        {% if song %}
+        {{ form.song(placeholder="Enter song name", value=song, aria_label="Song Name", aria_describedby="song-helper") }}
+        {% elif form.song.errors %}
+        {{ form.song(placeholder="Enter song name", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+        {% else %}
+        {{ form.song(placeholder="Enter song name", aria_label="Song Name", aria_describedby="song-helper") }}
+        {% endif %}
+        <button type="submit" id="search">Search</button>
+    </fieldset>
+    {% if form.song.errors %}
+    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+    {% else %}
+    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper") }}
+    {% endif %}
+    {% for error in form.song.errors %}
+    <small id="song-helper">{{ error }}</small>
+    {% endfor %}
+</form>
+
+<article class="result-container">
+    {% if album_art %}
+    <img src="{{ album_art }}" alt="{{ title_ }} - Album Art" class="album-art">
+    {% else %}
+    <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ title_ }} - Album Art" class="album-art">
+    {% endif %}
+
+    <div>
+        <p class="music-info" style="font-size: 1.5rem;">
+            <span class="material-symbols-outlined">music_note</span>
+            {% if title_ %}
+            {{ title_ }}
+            {% else %}
+            Title
+            {% endif %}
+        </p>
+        <p class="music-info" style="font-size: 1.125rem;">
+            <span class="material-symbols-outlined">album</span>
+            {% if album_title %}
+            {{ album_title }} ({{ album_type }})
+            {% elif title_ %}
+            {{ title_ }} ({{ album_type }})
+            {% else %}
+            Album Title (Album Type)
+            {% endif %}
+        </p>
+        <p class="music-info" style="font-size: 1.25rem; ">
+            <span class="material-symbols-outlined">artist</span>
+            {% if artists %}
+            {{ artists }}
+            {% elif title_ %}
+            Unknown
+            {% else %}
+            Artists
+            {% endif %}
+        </p>
+        <p class="music-info" style="font-size: 1rem;">
+            <span class="material-symbols-outlined">genres</span>
+            {% if genre %}
+            {{ genre }}
+            {% elif title_ %}
+            Unknown
+            {% else %}
+            Genre
+            {% endif %}
+        </p>
+
+        <div class="streaming-platforms-container">
+            <div class="streaming-platforms">
+                <!-- Deezer Music -->
+                {% if deezer == None %}
+                <a class="music-link" href="#deezer" title="Deezer">
+                {% elif deezer %}
+                <a class="music-link" href="{{ deezer }}" target="_blank" title="Deezer">
+                {% else %}
+                <a class="music-link" href="https://www.deezer.com/" target="_blank" title="Deezer">
+                {% endif %}
+                <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="Deezer Logo" width="32px" height="32px">
+                </a>
+
+                <!-- iTunes Store -->
+                {% if itunes == None %}
+                <a class="music-link" href="#apple-music" title="Apple Music">
+                {% elif itunes %}
+                <a class="music-link" href="{{ itunes }}" target="_blank" title="Apple Music">
+                {% else %}
+                <a class="music-link" href="https://music.apple.com/" target="_blank" title="Apple Music">
+                {% endif %}
+                <img src="{{ url_for('static', filename='logos/apple-music.svg') }}" alt="Apple Music Logo" width="32px" height="32px">
+                </a>
+
+                <!-- KKBOX -->
+                {% if kkbox == None %}
+                <a class="music-link" href="#kkbox" title="KKBOX">
+                {% elif kkbox %}
+                <a class="music-link" href="{{ kkbox }}" target="_blank" title="KKBOX">
+                {% else %}
+                <a class="music-link" href="https://www.kkbox.com/" target="_blank" title="KKBOX">
+                {% endif %}
+                <img src="{{ url_for('static', filename='logos/kkbox.svg') }}" alt="KKBOX Logo" width="32px" height="32px">
+                </a>
+
+                <!-- Spotify Music -->
+                {% if spotify == None %}
+                <a class="music-link" href="#spotify" title="Spotify">
+                {% elif spotify %}
+                <a class="music-link" href="{{ spotify }}" target="_blank" title="Spotify">
+                {% else %}
+                <a class="music-link" href="https://open.spotify.com/" target="_blank" title="Spotify">
+                {% endif %}
+                <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="Spotify Logo" width="32px" height="32px">
+
+                </a>
+
+                <!-- YouTube Music -->
+                {% if yt_music == None %}
+                <a class="music-link" href="#ytmusic" title="YouTube Music">
+                {% elif yt_music %}
+                <a class="music-link" href="{{ yt_music }}" target="_blank"
+                title="YouTube Music">
+                {% else %}
+                <a class="music-link" href="https://music.youtube.com/" target="_blank" title="YouTube Music">
+                {% endif %}
+                <img src="{{ url_for('static', filename='logos/ytmusic.svg') }}" alt="YouTube Music Logo" width="32px" height="32px">
+                </a>
+            </div>
+
+            <div>
+                <button class="outline secondary" id="show-lyrics" data-target="lyrics"><span class="material-symbols-outlined">lyrics</span>Lyrics</button>
+            </div>
+        </div>
+    </div>
+    <dialog id="lyrics">
+        <article>
+            <header>
+                <button id="close-lyrics" aria-label="Close" rel="prev" data-target="lyrics"></button>
+                <p>
+                    {% if title_ %}
+                    <strong>{{ title_ }} ~ Lyrics:</strong>
+                    {% else %}
+                    <strong>Yutify ~ Lyrics:</strong>
+                    {% endif %}
+                </p>
+            </header>
+            <p>
+                {% if lyrics %}
+                {{ lyrics | safe }}
+                {% else %}
+                No lyrics found...
+                {% endif %}
+            </p>
+        </article>
+    </dialog>
+</article>
+
+{% endblock %}

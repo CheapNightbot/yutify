@@ -1,0 +1,24 @@
+import sqlalchemy as sa
+import sqlalchemy.orm as so
+from waitress import serve
+
+from app import create_app, db
+from app.models import Service, User, UserService
+
+app = create_app()
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return {
+        "sa": sa,
+        "so": so,
+        "db": db,
+        "User": User,
+        "Service": Service,
+        "UserService": UserService,
+    }
+
+
+if __name__ == "__main__":
+    serve(app, host="0.0.0.0", port=app.config["PORT"])
