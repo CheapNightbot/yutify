@@ -1,15 +1,12 @@
-from datetime import datetime, timezone
-from urllib.parse import urlsplit
-
 import sqlalchemy as sa
-from flask import flash, redirect, request, url_for
+from flask import abort, flash, redirect, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from flask_restful import Resource, abort
 
 from app import db
 from app.auth_services import bp
+from app.auth_services.lastfm import handle_lastfm_auth
 from app.auth_services.spotify import handle_spotify_auth, handle_spotify_callback
-from app.models import Service, User, UserService
+from app.models import Service, UserData, UserService
 
 
 @bp.route("/<service>", methods=["POST"])
@@ -19,7 +16,8 @@ def service(service):
         case "spotify":
             return handle_spotify_auth()
         case "lastfm":
-            return "Lastfm"
+            lastfm_username = request.form.get("lastfm_username")
+            return handle_lastfm_auth(lastfm_username)
         case _:
             abort(404, description="Service not supported.")
 
@@ -31,7 +29,9 @@ def callback(service):
         case "spotify":
             return handle_spotify_callback(request)
         case "lastfm":
-            return "Lastfm Callback"
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
         case _:
             abort(404, description="Service not supported.")
 
@@ -39,7 +39,7 @@ def callback(service):
 @bp.route("/<service>/unlink", methods=["POST"])
 @login_required
 def unlink(service):
-    # Fetch the service by name
+    # Fetch the service dynamically by name
     service_obj = db.session.scalar(
         sa.select(Service).where(Service.service_name.ilike(service))
     )
@@ -55,6 +55,15 @@ def unlink(service):
     if not user_service:
         flash(f"You have not linked {service.capitalize()}.", "error")
         return redirect(url_for("user.user_settings", username=current_user.username))
+
+    # Fetch and delete associated UserData
+    user_data = db.session.scalar(
+        sa.select(UserData).where(
+            UserData.user_service_id == user_service.user_services_id
+        )
+    )
+    if user_data:
+        db.session.delete(user_data)
 
     # Delete the UserService entry
     db.session.delete(user_service)
