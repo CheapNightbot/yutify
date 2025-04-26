@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Convert UTC timestamp to local timezone
+    const lastListenedElements = document.querySelectorAll('.last-listened');
+    lastListenedElements.forEach(element => {
+        const utcTime = element.textContent;
+        const localTime = new Date(utcTime).toLocaleString();
+        element.textContent = localTime;
+    });
+
     const searchForm = document.querySelector('#search-form');
     const showLyrics = document.querySelector("#show-lyrics");
     const closeLyrics = document.querySelector("#close-lyrics");
@@ -309,4 +317,81 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         })()
     }
+
+    const lastfmLinkButton = document.querySelector('.link[data-service="lastfm"]');
+    const lastfmModal = document.querySelector('#lastfm-username-modal');
+    const closeLastfmModal = document.querySelector('#close-lastfm-modal');
+
+    if (lastfmLinkButton) {
+        lastfmLinkButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            lastfmModal.showModal();
+        });
+    }
+
+    if (closeLastfmModal) {
+        closeLastfmModal.addEventListener('click', () => {
+            lastfmModal.close();
+        });
+    }
+
+    async function fetchActivity() {
+        const activityContainer = document.querySelector('.user-activity-container') || document.querySelector('.user-activity');
+
+        if (!activityContainer) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/me?type=html');
+            if (response.ok && response.status === 200) {
+                const html = await response.text();
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+
+                const newContent = tempDiv.querySelector('.user-activity');
+                if (newContent) {
+                    // Extract relevant data from the current and new activity
+                    const currentTitle = activityContainer.querySelector('.music-info span.ellipsis')?.textContent.trim();
+                    const newTitle = newContent.querySelector('.music-info span.ellipsis')?.textContent.trim();
+
+                    const currentArtists = activityContainer.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
+                    const newArtists = newContent.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
+
+                    // Compare relevant fields to avoid unnecessary updates
+                    if (currentTitle !== newTitle || currentArtists !== newArtists) {
+                        // Add fade-out effect before replacing content
+                        activityContainer.style.opacity = '0';
+                        setTimeout(() => {
+                            activityContainer.replaceWith(newContent);
+                            newContent.style.opacity = '0';
+                            setTimeout(() => {
+                                newContent.style.opacity = '1';
+                            }, 50); // Delay to trigger fade-in
+                        }, 300); // Match fade-out duration
+                    }
+                }
+            } else {
+                activityContainer.removeAttribute('aria-busy');
+                const errorData = await response.json();
+                activityContainer.innerHTML = `<p>${errorData.error}</p>`;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Fetch activity every 30 seconds normally, but retry in 60 seconds if an error occurs
+    let fetchInterval = 30000;
+    function startFetchingActivity() {
+        fetchActivity().catch(() => {
+            fetchInterval = 60000; // Increase interval to 60 seconds on error
+        }).finally(() => {
+            setTimeout(startFetchingActivity, fetchInterval);
+            fetchInterval = 30000; // Reset interval to normal after retry
+        });
+    }
+
+    startFetchingActivity();
 });

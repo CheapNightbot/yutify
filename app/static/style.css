@@ -155,12 +155,13 @@ header {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-evenly;
     gap: 3rem;
 }
 
 .album-art {
-    width: max(14rem, min(25vw, 18rem));
-    height: max(16rem, min(30vw, 20rem));
+    width: max(14rem, min(20vw, 14rem));
+    height: max(16rem, min(22vw, 16rem));
     border: 1px solid;
     border-radius: .746rem;
     pointer-events: none;
@@ -194,17 +195,21 @@ footer {
 
 .music-info {
     display: flex;
-    flex-direction: row;
     align-items: center;
+    gap: 0.5rem;
 }
 
-.material-symbols-outlined {
-    font-size: 1.5rem !important;
+.ellipsis {
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .music-info .material-symbols-outlined {
-    font-size: 1.2rem !important;
-    padding-right: .2rem;
+    font-size: 1.5rem;
+    color: #524ED2;
 }
 
 #show-lyrics {
@@ -228,6 +233,7 @@ footer {
     max-width: 1000px;
     min-height: 200px;
     gap: 1rem;
+    padding: 1.5rem;
 }
 
 .profile-header-img {
@@ -251,8 +257,8 @@ footer {
 .profile-header-edit {
     white-space: nowrap;
     position: absolute;
-    top: 8%;
-    right: 2.2%;
+    top: 10%;
+    right: 3%;
 }
 
 .service-item {
@@ -301,6 +307,73 @@ footer {
 
 .service-action .unlink:hover {
     background-color: #dc3545;
+}
+
+/* Updated styles for user activity to ensure consistency */
+.user-activity-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 200px;
+    font-size: 1.25rem;
+    color: #666;
+    margin: auto;
+    max-width: 1000px;
+    padding: 2rem;
+    gap: 2rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.user-activity {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+    min-height: 200px;
+    font-size: 1.25rem;
+    color: #666;
+    margin: auto;
+    max-width: 1000px;
+    padding: 2rem;
+    gap: 2rem;
+    transition: opacity 0.3s ease, transform 0.3s ease, opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+.user-activity[aria-busy="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+    transform: scale(0.95);
+}
+
+.user-activity.fade-out {
+    opacity: 0;
+}
+
+.user-activity.fade-in {
+    opacity: 1;
+}
+
+.user-activity img {
+    transition: opacity 0.3s ease;
+}
+
+.user-activity[aria-busy="true"] img {
+    opacity: 0.3;
+}
+
+.user-activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.user-music-info .music-info {
+    justify-content: initial !important;
 }
 
 @media (max-width: 1024px) {
