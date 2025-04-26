@@ -39,7 +39,6 @@
 
     </fieldset>
     {{ form.submit(value="Edit Account Details") }}
-    {{ form.submit(value="Delete Account", class="secondary delete-account") }}
     {% else %}
     {{ form.username.label }}
     {% if form.username.errors %}
@@ -73,6 +72,10 @@
 
 </form>
 
+
+{% if form.__class__.__name__ == "EmptyForm" %}
+<button class="secondary delete-account" onclick="openDeleteAccountDialog();">Delete Account</button>
+{% endif %}
 
 {% if form.__class__.__name__ == "EmptyForm" %}
 <h3>Services:</h3>
@@ -112,8 +115,8 @@
 </article>
 {% endfor %}
 {% else %}
-<article>
-    <p>No services available.</p>
+<article class="service-item">
+    <p style="padding: 1rem 0 0 1rem;">No services available.</p>
 </article>
 {% endif %}
 {% endif %}
@@ -136,5 +139,27 @@
         </form>
     </article>
 </dialog>
+
+<dialog id="delete-account-modal">
+    <article>
+        <h3>Confirm Account Deletion</h3>
+        <p>To delete your account, please enter your password below:</p>
+        <form method="post" action="">
+            {{ form.hidden_tag() }}
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <footer role="group">
+                {{ form.submit(value="Delete Account", class="secondary delete-account") }}
+                <button type="button" onclick="document.getElementById('delete-account-modal').close();">Cancel</button>
+            </footer>
+        </form>
+    </article>
+</dialog>
+
+<script>
+    function openDeleteAccountDialog() {
+        document.getElementById('delete-account-modal').showModal();
+    }
+</script>
 
 {% endblock %}
