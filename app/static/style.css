@@ -280,6 +280,11 @@ footer {
     border-radius: 4px;
 }
 
+.service-logo:hover {
+    transform: scale(1.05);
+    transition: all cubic-bezier(0.445, 0.05, 0.55, 0.95) .1s;
+}
+
 .service-info .status {
     font-size: 0.9rem;
     margin: 0;
