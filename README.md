@@ -113,6 +113,7 @@ For certain configurations, it relies on environment variables that must be set 
 
 ### Optional: These environment variables are optional!
 
+- `PORT`: The port number on which the application will serve HTTP requests. Defaults to `5000`.
 - For retrieving music information from Spotify, KKBox, and Last.fm, client IDs, client secrets, or API keys are required. Thankfully, [yutipy](https://pypi.org/project/yutipy/) provides a command-line utility to obtain these values. Run `yutipy-config` in your terminal after installing dependencies. The wizard will guide you through obtaining and setting up API keys for supported services like KKBOX, Last.fm, and Spotify. These values are automatically saved in the `.env` file.
   - `KKBOX_CLIENT_ID`, `KKBOX_CLIENT_SECRET`, `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REDIRECT_URI`, `LASTFM_API_KEY`
   - Without these variables, interaction with these platforms will be unavailable.
