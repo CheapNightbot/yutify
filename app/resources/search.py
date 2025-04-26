@@ -1,9 +1,11 @@
 import os
+from dataclasses import asdict
 
 from flask import jsonify, request
 from flask_limiter.util import get_remote_address
 from flask_restful import Resource
 from yutipy import deezer, itunes, kkbox, musicyt, spotify, yutipy_music
+from yutipy.exceptions import KKBoxException, SpotifyException
 from yutipy.logger import disable_logging
 
 from app import cache
@@ -17,13 +19,13 @@ from app.resources.limiter import limiter
 # app.common.logger ~ _(:з)∠)_
 disable_logging()
 
-RATELIMIT = int(os.environ.get("RATELIMIT"))
+RATELIMIT = os.environ.get("RATELIMIT")
 
 
 class YutifySearch(Resource):
     """API resource to search & fetch the song details."""
 
-    @limiter.limit("20 per minute" if RATELIMIT else "")
+    @limiter.limit(RATELIMIT if RATELIMIT else "")
     @cache.cached(
         timeout=300,
         key_prefix=lambda: f"search:{request.view_args['artist'].lower()}:{request.view_args['song'].lower()}:{list(request.args.keys())[0].lower() if request.args else 'all'}",
@@ -49,7 +51,7 @@ class YutifySearch(Resource):
             logger.info(f"Cache miss for key: {cache_key}")
 
         result = self.__search_music(artist, song, platform)
-        return jsonify(result)
+        return result
 
     def __search_music(self, artist, song, platform="all"):
         """Search for music information based on artist, song, and platform."""
@@ -66,11 +68,23 @@ class YutifySearch(Resource):
                 with itunes.Itunes() as apple_music:
                     result = apple_music.search(artist, song)
             case "kkbox":
-                with kkbox.KKBox() as kkbox_music:
-                    result = kkbox_music.search(artist, song)
+                try:
+                    with kkbox.KKBox() as kkbox_music:
+                        result = kkbox_music.search(artist, song)
+                except KKBoxException as e:
+                    logger.warning(
+                        f"KKBox Search is disabled due to following error:\n{e}"
+                    )
+                    result = None
             case "spotify":
-                with spotify.Spotify() as spotify_music:
-                    result = spotify_music.search(artist, song)
+                try:
+                    with spotify.Spotify() as spotify_music:
+                        result = spotify_music.search(artist, song)
+                except SpotifyException as e:
+                    logger.warning(
+                        f"Spotify Search is disabled due to following error:\n{e}"
+                    )
+                    result = None
             case "ytmusic":
                 with musicyt.MusicYT() as youtube_music:
                     result = youtube_music.search(artist, song)
@@ -81,6 +95,8 @@ class YutifySearch(Resource):
         if not result:
             result = {
                 "error": f"Couldn't find '{song}' by '{artist}' on platform '{platform}'"
-            }
+            }, 404
+        else:
+            result = asdict(result), 200
 
         return result

@@ -1,8 +1,17 @@
-import re
 import os
+import re
+
 from flask import jsonify, make_response, request
 from flask_limiter import Limiter, RequestLimit
 from flask_limiter.util import get_remote_address
+
+from app.common.logger import logger
+
+RATELIMIT = os.environ.get("RATELIMIT")
+if RATELIMIT:
+    logger.info(f"Ratelimit set to {RATELIMIT}.")
+else:
+    logger.info("Ratelimit is disabled.")
 
 
 def default_error_responder(request_limit: RequestLimit):
