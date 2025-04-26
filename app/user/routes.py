@@ -101,6 +101,17 @@ def user_settings(username):
                 form=form,
             )
 
+    elif (
+        request.method == "POST"
+        and "submit" in request.form
+        and request.form["submit"] == "Delete Account"
+    ):
+        # User clicked on "Delete Account" button
+        db.session.delete(current_user)
+        db.session.commit()
+        flash("Your account has been deleted.", "success")
+        return redirect(url_for("main.index"))
+
     # Default: Render the empty form on "GET" request
     form = EmptyForm()
     return render_template(

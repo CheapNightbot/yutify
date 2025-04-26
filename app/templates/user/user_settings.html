@@ -19,7 +19,8 @@
 
 {% block content %}
 
-<form action="" method="post" novalidate>
+<form action="" method="post">
+
     {{ form.hidden_tag() }}
     {% if form.__class__.__name__ == "EmptyForm" %}
     <fieldset>
@@ -38,6 +39,7 @@
 
     </fieldset>
     {{ form.submit(value="Edit Account Details") }}
+    {{ form.submit(value="Delete Account", class="secondary delete-account") }}
     {% else %}
     {{ form.username.label }}
     {% if form.username.errors %}
