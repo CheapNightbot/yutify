@@ -89,14 +89,23 @@ For certain configurations, it relies on environment variables that must be set 
 
 ### Required: These environment variables are mandatory!
 
-- `SECRET_KEY`: Used by Flask for session management and security.
+- `SECRET_KEY`: Used by Flask for session management and security. To generate a secure key, you may run either of the following commands:
+
+  ```bash
+  python -c "import secrets; print(secrets.token_hex(32))"
+  ```
+  OR
+  ```bash
+  python -c "import secrets; print(secrets.token_urlsafe())"
+  ```
+
 - `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting user emails at rest (in the database). To generate an encryption key, run the following command after installing dependencies:
 
   ```bash
   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
   ```
 
-  **Important**: Once used to encrypt emails, changing or losing this key will prevent decryption of previously saved emails. Handle with care!
+  - **Important**: Once used to encrypt emails, changing or losing this key will prevent decryption of previously saved emails. Handle with care!
 - `DATABASE_URL`: SQL Database URL. If not set, a file-based SQLite database (`app.db`) will be used in the root directory.
 
 ### Optional: These environment variables are optional!
@@ -107,7 +116,7 @@ For certain configurations, it relies on environment variables that must be set 
 - Variables for sending emails (used for error logs and password resets):
   - `MAIL_SERVER`: The mail server address (e.g., `smtp.gmail.com`).
   - `MAIL_PORT`: The port to use for the mail server (e.g., `587` for TLS).
-  - `MAIL_USE_TLS`: Whether to use TLS for secure email communication (`True` or `False`).
+  - `MAIL_USE_TLS`: Whether to use TLS for secure email communication. Set this variable to `1` to enable TLS or omit it to disable TLS.
   - `MAIL_USERNAME`: The email address to use for sending emails.
   - `MAIL_PASSWORD`: The password or app-specific password for the email account.
   - `ADMIN_EMAIL`: The administrator's email address to receive error logs or notifications.
