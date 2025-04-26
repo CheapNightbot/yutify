@@ -9,6 +9,9 @@
 
 </div>
 
+> [!IMPORTANT]
+> See pull request https://github.com/CheapNightbot/yutify/pull/45 for the current state of the project.
+
 # yutify <img src="app/static/favicon.svg" width="40px">
 
 <details>
