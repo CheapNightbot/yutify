@@ -2,7 +2,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 from flask import abort, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, logout_user
 
 from app import db
 from app.models import Service, User, UserService
@@ -54,7 +54,7 @@ def user_settings(username):
 
     # Create a dictionary to mark connected services
     connected_services = {service_id for service_id in user_services}
-
+    empty_form = EmptyForm()
     form = EditAccountForm(current_user.username, current_user.email)
     # Check if the "Edit Account Details button was clicked"
     if (
@@ -77,7 +77,6 @@ def user_settings(username):
         and "submit" in request.form
         and request.form["submit"] == "Save Account Details"
     ):
-
         # User clicked on "Save Account Details" after filling form
         if form.validate_on_submit():
             current_user.username = form.username.data
@@ -107,20 +106,28 @@ def user_settings(username):
         and request.form["submit"] == "Delete Account"
     ):
         # User clicked on "Delete Account" button
-        db.session.delete(current_user)
-        db.session.commit()
-        flash("Your account has been deleted.", "success")
-        return redirect(url_for("main.index"))
+        if empty_form.validate_on_submit():
+            password = request.form.get("password")
+            if not password or not user.check_password(password):
+                flash("Invalid password. Please try again.", "error")
+                return redirect(
+                    url_for("user.user_settings", username=current_user.username)
+                )
+
+            db.session.delete(current_user)
+            db.session.commit()
+            logout_user()
+            flash("Your account has been deleted.", "success")
+            return redirect(url_for("main.index"))
 
     # Default: Render the empty form on "GET" request
-    form = EmptyForm()
     return render_template(
         "user/user_settings.html",
         title="Settings",
         active_page="user_settings",
         year=datetime.today().year,
         user=user,
-        form=form,
+        form=empty_form,
         services=services,
         user_services=connected_services,
     )
