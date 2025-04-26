@@ -1,5 +1,3 @@
-> ⚠️ until the feature is done (along with some security considerations) in the second branch, the yutify website will be down. thank you for your understanding!
-
 <div align=center>
 
   ![Banner](https://github.com/user-attachments/assets/ce43c4c7-5716-472d-b834-588f6559048d)
