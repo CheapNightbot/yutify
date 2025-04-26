@@ -12,6 +12,7 @@ from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
+from app.common.logger import logger
 from app.common.utils import mask_string
 from config import Config
 
@@ -33,13 +34,19 @@ def create_app(config_class=Config):
 
     # Configure caching
     redis_url = os.getenv("REDIS_URI")
-    if redis_url:
-        app.config["CACHE_TYPE"] = "RedisCache"
-        app.config["CACHE_REDIS_URL"] = redis_url
+    if not app.debug:
+        if redis_url:
+            app.config["CACHE_TYPE"] = "RedisCache"
+            app.config["CACHE_REDIS_URL"] = redis_url
+            logger.info("Caching is enabled. Using redis for cache.")
+        else:
+            app.config["CACHE_TYPE"] = "null"
+            logger.info("Redis URI was not set. Caching is disabled.")
     else:
         app.config["CACHE_TYPE"] = (
             "SimpleCache"  # Use in-memory cache for local development
         )
+        logger.warning("Redis URI was not set. Using in-memory cache.")
     app.config["CACHE_DEFAULT_TIMEOUT"] = 300  # Cache timeout in seconds (5 minutes)
     cache.init_app(app)
 
