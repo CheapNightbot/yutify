@@ -3,14 +3,29 @@ from dataclasses import asdict
 import sqlalchemy as sa
 from flask import flash, redirect, url_for
 from flask_login import current_user
-from yutipy.lastfm import LastFm
-
+from yutipy.lastfm import LastFm, LastFmException
+from app.common.logger import logger
 from app import db
 from app.models import Service, UserData, UserService
 
 
+try:
+    lastfm = LastFm()
+except LastFmException as e:
+    logger.warning(
+        f"Lastfm Authentication will be disabled due to the following error:\n{e}"
+    )
+
+
 def handle_lastfm_auth(lastfm_username):
     """Handle linking Last.fm by saving the username."""
+    if not lastfm:
+        flash(
+            "Lastfm Authentication is not available! You may contact the admin(s).",
+            "error",
+        )
+        return redirect(url_for("user.user_settings", username=current_user.username))
+
     if not lastfm_username:
         flash("Last.fm username is required.", "error")
         return redirect(url_for("user.user_settings", username=current_user.username))
@@ -48,6 +63,13 @@ def handle_lastfm_auth(lastfm_username):
 
 def get_lastfm_activity():
     """Fetch the user's listening activity from Last.fm."""
+    if not lastfm:
+        flash(
+            "Lastfm Authentication is not available! You may contact the admin(s).",
+            "error",
+        )
+        return redirect(url_for("user.user_settings", username=current_user.username))
+
     lastfm_service = db.session.scalar(
         sa.select(UserService)
         .join(Service)
@@ -60,7 +82,6 @@ def get_lastfm_activity():
     if not lastfm_service:
         return None
 
-    lastfm = LastFm()
     activity = lastfm.get_currently_playing(username=lastfm_service.username)
     if activity:
         data = asdict(activity)

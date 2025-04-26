@@ -7,6 +7,7 @@ from yutipy.spotify import SpotifyAuth, SpotifyAuthException
 
 from app import db
 from app.models import Service, User, UserData, UserService
+from app.common.logger import logger
 
 
 # Over-ride `save_access_token` and `load_access_token` methods ~
@@ -69,10 +70,22 @@ class MySpotifyAuth(SpotifyAuth):
             }
 
 
-spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
+try:
+    spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
+except SpotifyAuthException as e:
+    logger.warning(
+        f"Spotify Authentication will be disabled due to following error:\n{e}"
+    )
 
 
 def handle_spotify_auth():
+    if not spotify_auth:
+        flash(
+            "Spotify Authentication is not available! You may contact the admin(s).",
+            "error",
+        )
+        return redirect(url_for("user.user_settings", username=current_user.username))
+
     spotify_auth.user = current_user
     spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
 
@@ -103,6 +116,13 @@ def handle_spotify_auth():
 
 
 def handle_spotify_callback(request):
+    if not spotify_auth:
+        flash(
+            "Spotify Authentication is not available! You may contact the admin(s).",
+            "error",
+        )
+        return redirect(url_for("user.user_settings", username=current_user.username))
+
     spotify_auth.user = current_user
     spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
 
@@ -137,6 +157,13 @@ def handle_spotify_callback(request):
 
 def get_spotify_activity():
     """Fetch the user's listening activity from Spotify."""
+    if not spotify_auth:
+        flash(
+            "Spotify Authentication is not available! You may contact the admin(s).",
+            "error",
+        )
+        return redirect(url_for("user.user_settings", username=current_user.username))
+
     spotify_service = db.session.scalar(
         sa.select(UserService)
         .join(Service)
