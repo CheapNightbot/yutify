@@ -1,23 +1,19 @@
+import logging
 import os
 from dataclasses import asdict
 
-from flask import jsonify, request
-from flask_limiter.util import get_remote_address
+from flask import request
 from flask_restful import Resource
 from yutipy import deezer, itunes, kkbox, musicyt, spotify, yutipy_music
 from yutipy.exceptions import KKBoxException, SpotifyException
-from yutipy.logger import disable_logging
+from yutipy.logger import enable_logging
 
 from app import cache
-from app.common.logger import logger
-from app.common.utils import mask_string
-from app.resources.limiter import limiter
+from app.limiter import limiter
 
-# idk, was getting two logs for same messages from yutipy
-# doing this, disables extra one from yutipy
-# however, yutipy's log messages still gets logged via
-# app.common.logger ~ _(:з)∠)_
-disable_logging()
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+enable_logging(handler=logger)
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
@@ -33,13 +29,6 @@ class YutifySearch(Resource):
     def get(self, artist, song):
         artist = artist.strip()
         song = song.strip()
-
-        # Rate-limiting is not working per user ~ it's always 127.0.0.1 !!! _(:з)∠)_
-        logger.info(
-            "Request came from: `%s`",
-            mask_string(request.headers.get("True-Client-Ip", get_remote_address())),
-        )
-
         platform = "".join(list(request.args.keys())).lower() if request.args else "all"
 
         # Check if the result is in the cache

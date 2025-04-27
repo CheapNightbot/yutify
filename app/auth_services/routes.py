@@ -1,12 +1,12 @@
 import sqlalchemy as sa
 from flask import abort, flash, redirect, request, url_for
-from flask_login import current_user, login_required, login_user, logout_user
+from flask_login import current_user, login_required
 
 from app import db
 from app.auth_services import bp
 from app.auth_services.lastfm import handle_lastfm_auth
 from app.auth_services.spotify import handle_spotify_auth, handle_spotify_callback
-from app.models import Service, UserData, UserService
+from app.models import Service, UserService
 
 
 @bp.route("/<service>", methods=["POST"])

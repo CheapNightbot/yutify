@@ -131,6 +131,7 @@ For certain configurations, it relies on environment variables that must be set 
 - `REDIS_URI`: URI for Redis (used for rate-limiting and caching). If not set:
   - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
   - Without `FLASK_DEBUG` (production mode), caching will be disabled.
+- `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging or omit it to use file based logging.
 
 **3. Run the application**:
 

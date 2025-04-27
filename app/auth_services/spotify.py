@@ -1,3 +1,4 @@
+import logging
 from dataclasses import asdict
 
 import sqlalchemy as sa
@@ -7,7 +8,9 @@ from yutipy.spotify import SpotifyAuth, SpotifyAuthException
 
 from app import db
 from app.models import Service, User, UserData, UserService
-from app.common.logger import logger
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
 
 
 # Over-ride `save_access_token` and `load_access_token` methods ~

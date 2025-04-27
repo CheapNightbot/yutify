@@ -1,13 +1,16 @@
+import logging
 from dataclasses import asdict
 
 import sqlalchemy as sa
 from flask import flash, redirect, url_for
 from flask_login import current_user
 from yutipy.lastfm import LastFm, LastFmException
-from app.common.logger import logger
+
 from app import db
 from app.models import Service, UserData, UserService
 
+# Create a logger for this module
+logger = logging.getLogger(__name__)
 
 try:
     lastfm = LastFm()

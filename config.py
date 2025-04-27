@@ -19,3 +19,4 @@ class Config:
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
     PORT = os.environ.get("PORT", 5000)
+    LOG_TO_STDOUT = os.environ.get("LOG_TO_STDOUT")

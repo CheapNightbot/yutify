@@ -11,7 +11,7 @@ from app import db
 from app.auth_services.lastfm import get_lastfm_activity
 from app.auth_services.spotify import get_spotify_activity
 from app.models import UserService
-from app.resources.limiter import limiter
+from app.limiter import limiter
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
