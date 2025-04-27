@@ -1,8 +1,9 @@
 import logging
 from dataclasses import asdict
 
+import requests
 import sqlalchemy as sa
-from flask import flash, redirect, url_for
+from flask import flash, redirect, request, url_for
 from flask_login import current_user
 from yutipy.lastfm import LastFm, LastFmException
 
@@ -87,12 +88,24 @@ def get_lastfm_activity():
 
     activity = lastfm.get_currently_playing(username=lastfm_service.username)
     if activity:
-        data = asdict(activity)
-        activity.is_playing = False
+        is_playing = activity.is_playing
+        # Dynamically determine the base URL for the /api/search endpoint
+        base_url = request.host_url.rstrip("/")  # Remove trailing slash
+        search_url = f"{base_url}/api/search/{activity.artists}:{activity.title}"
+
+        # Call the /api/search endpoint using requests
+        try:
+            response = requests.get(search_url, params={"all": ""})
+            activity = response.json()
+            activity["is_playing"] = is_playing
+        except requests.RequestException as e:
+            logger.warning(e)
+            activity = asdict(activity)
+
+        data = activity
+        activity["is_playing"] = False
         # Save the current activity to the database
-        UserData.insert_or_update_user_data(
-            lastfm_service.user_services_id, asdict(activity)
-        )
+        UserData.insert_or_update_user_data(lastfm_service.user_services_id, activity)
         return data
     else:
         # Fetch the last activity from the database if no current activity is found

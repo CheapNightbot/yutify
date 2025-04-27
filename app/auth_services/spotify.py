@@ -1,8 +1,9 @@
 import logging
 from dataclasses import asdict
 
+import requests
 import sqlalchemy as sa
-from flask import flash, redirect, session, url_for
+from flask import flash, redirect, request, session, url_for
 from flask_login import current_user
 from yutipy.spotify import SpotifyAuth, SpotifyAuthException
 
@@ -27,17 +28,17 @@ class MySpotifyAuth(SpotifyAuth):
 
         if user:
             # Fetch the service dynamically by name
-            service = db.session.scalar(
+            spotify_service = db.session.scalar(
                 sa.select(Service).where(Service.service_name.ilike("spotify"))
             )
-            if not service:
+            if not spotify_service:
                 raise ValueError("Service 'Spotify' not found in the database.")
 
             # Check if the UserService entry already exists
             user_service = db.session.scalar(
                 sa.select(UserService)
                 .where(UserService.user_id == user.user_id)
-                .where(UserService.service_id == service.service_id)
+                .where(UserService.service_id == spotify_service.service_id)
             )
 
             if user_service:
@@ -49,30 +50,45 @@ class MySpotifyAuth(SpotifyAuth):
             else:
                 # Create a new entry if it doesn't exist
                 user_service = UserService(
+                    user_id=user.user_id,
+                    service_id=spotify_service.service_id,
                     access_token=token_info.get("access_token"),
                     refresh_token=token_info.get("refresh_token"),
                     expires_in=token_info.get("expires_in"),
                     requested_at=token_info.get("requested_at"),
                 )
-                user_service.service = service
-                user_service.user = user
                 db.session.add(user_service)
-
             db.session.commit()
 
+        return None
+
     def load_access_token(self) -> dict | None:
-        user_service = db.session.scalar(
-            sa.select(UserService).where(UserService.user_id == self.user.user_id)
+        user = db.session.scalar(
+            sa.select(User).where(User.username == self.user.username)
         )
 
-        if user_service:
-            return {
-                "access_token": user_service.access_token,
-                "refresh_token": user_service.refresh_token,
-                "expires_in": user_service.expires_in,
-                "requested_at": user_service.requested_at,
-            }
+        if user:
+            # Fetch the service dynamically by name
+            spotify_service = db.session.scalar(
+                sa.select(Service).where(Service.service_name.ilike("spotify"))
+            )
+            if not spotify_service:
+                raise ValueError("Service 'Spotify' not found in the database.")
 
+            # Check if the UserService entry exists
+            user_service = db.session.scalar(
+                sa.select(UserService)
+                .where(UserService.user_id == user.user_id)
+                .where(UserService.service_id == spotify_service.service_id)
+            )
+
+            if user_service:
+                return {
+                    "access_token": user_service.access_token,
+                    "refresh_token": user_service.refresh_token,
+                    "expires_in": user_service.expires_in,
+                    "requested_at": user_service.requested_at,
+                }
         return None
 
 
@@ -186,12 +202,24 @@ def get_spotify_activity():
     spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
     activity = spotify_auth.get_currently_playing()
     if activity:
-        data = asdict(activity)
-        activity.is_playing = False
+        is_playing = activity.is_playing
+        # Dynamically determine the base URL for the /api/search endpoint
+        base_url = request.host_url.rstrip("/")  # Remove trailing slash
+        search_url = f"{base_url}/api/search/{activity.artists}:{activity.title}"
+
+        # Call the /api/search endpoint using requests
+        try:
+            response = requests.get(search_url, params={"all": ""})
+            activity = response.json()
+            activity["is_playing"] = is_playing
+        except requests.RequestException as e:
+            logger.warning(e)
+            activity = asdict(activity)
+
+        data = activity
+        activity["is_playing"] = False
         # Save the current activity to the database
-        UserData.insert_or_update_user_data(
-            spotify_service.user_services_id, asdict(activity)
-        )
+        UserData.insert_or_update_user_data(spotify_service.user_services_id, activity)
         return data
     else:
         # Fetch the last activity from the database if no current activity is found

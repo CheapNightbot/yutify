@@ -1,7 +1,6 @@
 import os
 from random import choice
 
-import requests
 import sqlalchemy as sa
 from flask import make_response, render_template, request
 from flask_login import current_user
@@ -40,26 +39,24 @@ class UserActivityResource(Resource):
         }
 
         # Fetch activity from each service
-        spotify_activity = (
-            get_spotify_activity() if "spotify" in linked_services else None
-        )
-        lastfm_activity = get_lastfm_activity() if "lastfm" in linked_services else None
+        spotify_activity = get_spotify_activity if "spotify" in linked_services else None
+        lastfm_activity = get_lastfm_activity if "lastfm" in linked_services else None
 
         # Determine which activity to return
         activity = None
         # Prioritize Spotify or Last.fm based on query parameter
         match service:
             case "spotify":
-                activity = spotify_activity
+                activity = spotify_activity() if spotify_activity else None
             case "lastfm":
-                activity = lastfm_activity
+                activity = lastfm_activity() if lastfm_activity else None
             case _:
                 if spotify_activity and lastfm_activity:
-                    activity = choice([spotify_activity, lastfm_activity])
+                    activity = choice([spotify_activity(), lastfm_activity()])
                 elif spotify_activity:
-                    activity = spotify_activity
+                    activity = spotify_activity()
                 elif lastfm_activity:
-                    activity = lastfm_activity
+                    activity = lastfm_activity()
 
         if not activity:
             return {
@@ -70,23 +67,10 @@ class UserActivityResource(Resource):
 
     def _format_response(self, activity, response_type):
         """Format the response based on the requested type."""
-        artist = activity.get("artists")
-        song = activity.get("title")
-
-        # Dynamically determine the base URL for the /api/search endpoint
-        base_url = request.host_url.rstrip("/")  # Remove trailing slash
-        search_url = f"{base_url}/api/search/{artist}:{song}"
-
-        # Call the /api/search endpoint using requests
-        try:
-            response = requests.get(search_url, params={"all": ""})
-            music_info = response.json()
-        except requests.RequestException as e:
-            music_info = activity
 
         # Handle different response types
         if response_type == "html":
-            html = render_template("user/activity_embed.html", music_info=music_info)
+            html = render_template("user/activity_embed.html", activity=activity)
             return make_response(html, 200, {"Content-Type": "text/html"})
 
-        return music_info  # defualt // json
+        return activity  # defualt // json
