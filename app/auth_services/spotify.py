@@ -13,8 +13,9 @@ from app.models import Service, User, UserData, UserService
 logger = logging.getLogger(__name__)
 
 
-# Over-ride `save_access_token` and `load_access_token` methods ~
 class MySpotifyAuth(SpotifyAuth):
+    """Custom class to ovver-ride the `save_access_token` and `load_access_token` methods ~"""
+
     def __init__(self, user=None, *args, **kwargs):
         self.user = user  # Set user before calling super().__init__
         super().__init__(*args, **kwargs, defer_load=True)  # Defer token loading
@@ -71,6 +72,8 @@ class MySpotifyAuth(SpotifyAuth):
                 "expires_in": user_service.expires_in,
                 "requested_at": user_service.requested_at,
             }
+
+        return None
 
 
 try:
