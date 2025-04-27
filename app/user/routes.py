@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import sqlalchemy as sa
 from flask import abort, flash, redirect, render_template, request, url_for
@@ -8,6 +8,13 @@ from app import db
 from app.models import Service, User, UserService
 from app.user import bp
 from app.user.forms import EditAccountForm, EditProfileForm, EmptyForm
+
+
+@bp.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.now(timezone.utc)
+        db.session.commit()
 
 
 @bp.route("/<username>", methods=["GET", "POST"])
@@ -117,9 +124,9 @@ def user_settings(username):
                     url_for("user.user_settings", username=current_user.username)
                 )
 
-            db.session.delete(current_user)
-            db.session.commit()
             logout_user()
+            db.session.delete(user)
+            db.session.commit()
             flash("Your account has been deleted.", "success")
             return redirect(url_for("main.index"))
 
