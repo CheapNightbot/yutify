@@ -44,7 +44,11 @@ def user_settings(username):
         abort(404)
 
     user = db.first_or_404(sa.select(User).where(User.username == username))
-    services = db.session.scalars(sa.select(Service)).all()  # Query all services
+    # Query all services that are not private. Service marked as private assumed to not have user authorization.
+    services = db.session.scalars(
+        sa.select(Service).where(Service.is_private.is_(False))
+    ).all()
+    print(services)
     # Query user services for the current user
     user_services = db.session.scalars(
         sa.select(UserService.service_id).where(
