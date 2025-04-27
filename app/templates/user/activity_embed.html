@@ -1,15 +1,15 @@
 <article class="user-activity">
-    {% if music_info.album_art %}
-    <img src="{{ music_info.album_art }}" alt="{{ music_info.title }} - Album Art" class="album-art">
+    {% if activity.album_art %}
+    <img src="{{ activity.album_art }}" alt="{{ activity.title }} - Album Art" class="album-art">
     {% else %}
-    <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ music_info.title }} - Album Art" class="album-art">
+    <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ activity.title }} - Album Art" class="album-art">
     {% endif %}
     <div class="user-music-info">
         <p class="music-info" style="font-size: 1.2rem;">
             <span class="material-symbols-outlined">music_note</span>
             <span class="ellipsis">
-                {% if music_info.title %}
-                {{ music_info.title }}
+                {% if activity.title %}
+                {{ activity.title }}
                 {% else %}
                 Title
                 {% endif %}
@@ -18,10 +18,10 @@
         <p class="music-info" style="font-size: 1.125rem;">
             <span class="material-symbols-outlined">album</span>
             <span class="ellipsis">
-                {% if music_info.album_title %}
-                {{ music_info.album_title }} ({{ music_info.album_type }})
-                {% elif music_info.title %}
-                {{ music_info.title }} ({{ music_info.album_type }})
+                {% if activity.album_title %}
+                {{ activity.album_title }} ({{ activity.album_type }})
+                {% elif activity.title %}
+                {{ activity.title }} ({{ activity.album_type }})
                 {% else %}
                 Album Title (Album Type)
                 {% endif %}
@@ -30,9 +30,9 @@
         <p class="music-info" style="font-size: 1.25rem; ">
             <span class="material-symbols-outlined">artist</span>
             <span class="ellipsis">
-                {% if music_info.artists %}
-                {{ music_info.artists }}
-                {% elif music_info.title %}
+                {% if activity.artists %}
+                {{ activity.artists }}
+                {% elif activity.title %}
                 Unknown
                 {% else %}
                 Artists
@@ -42,9 +42,9 @@
         <p class="music-info" style="font-size: 1rem;">
             <span class="material-symbols-outlined">genres</span>
             <span class="ellipsis">
-                {% if music_info.genre %}
-                {{ music_info.genre }}
-                {% elif music_info.title %}
+                {% if activity.genre %}
+                {{ activity.genre }}
+                {% elif activity.title %}
                 Unknown
                 {% else %}
                 Genre
