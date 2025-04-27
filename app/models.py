@@ -148,6 +148,10 @@ class Service(Base):
         sa.String(64), index=True, unique=True
     )
     service_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
+    is_private: so.Mapped[bool] = so.mapped_column(default=False)  # Whether supports user authentication
+    _access_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
+    expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
+    requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
 
     # Relationship to UserService: one-to-many
     user_services: so.Mapped["UserService"] = so.relationship(
@@ -155,6 +159,14 @@ class Service(Base):
         back_populates="service",
         cascade="all, delete",
     )
+
+    @property
+    def access_token(self):
+        return self.decrypt(self._access_token)
+
+    @access_token.setter
+    def access_token(self, value):
+        self._access_token = self.encrypt(value)
 
     def __repr__(self):
         return f"<Service: {self.service_name}>"
