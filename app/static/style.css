@@ -205,6 +205,7 @@ footer {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-align: left;
 }
 
 .music-info .material-symbols-outlined {
