@@ -48,7 +48,6 @@ def user_settings(username):
     services = db.session.scalars(
         sa.select(Service).where(Service.is_private.is_(False))
     ).all()
-    print(services)
     # Query user services for the current user
     user_services = db.session.scalars(
         sa.select(UserService.service_id).where(

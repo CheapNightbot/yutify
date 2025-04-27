@@ -153,9 +153,6 @@ class YutifySearch(Resource):
                 with yutipy_music.YutipyMusic() as py_music:
                     py_music.services["kkbox"] = MyKKBox()
                     py_music.services["spotify"] = MySpotify()
-                    logger.debug(
-                        f"Custom services set: {list(py_music.services.values())}"
-                    )
                     result = py_music.search(artist, song)
 
         if not result:
