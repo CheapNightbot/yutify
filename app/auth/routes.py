@@ -34,7 +34,11 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get("next", "")
         next_page = next_page.replace("\\", "")
-        if next_page and not urlparse(next_page).netloc and not urlparse(next_page).scheme:
+        if (
+            next_page
+            and not urlparse(next_page).netloc
+            and not urlparse(next_page).scheme
+        ):
             return redirect(next_page)
         return redirect(url_for("user.user_profile", username=current_user.username))
 
