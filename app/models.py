@@ -148,7 +148,9 @@ class Service(Base):
         sa.String(64), index=True, unique=True
     )
     service_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-    is_private: so.Mapped[bool] = so.mapped_column(default=False)  # Whether supports user authentication
+    is_private: so.Mapped[bool] = so.mapped_column(
+        default=False
+    )  # Whether supports user authentication
     _access_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
     requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
@@ -201,11 +203,19 @@ class UserService(Base):
 
     # Relationship to UserData: one-to-one
     user_data: so.Mapped["UserData"] = so.relationship(
-        "UserData",
-        back_populates="user_service",
-        cascade="all, delete",
-        uselist=False,  # Ensures one-to-one relationship
+        "UserData", back_populates="user_service", cascade="all, delete", uselist=False
     )
+
+    def __repr__(self):
+        return (
+            f"<UserService: user_id={self.user_id}, "
+            f"service_id={self.service_id}, "
+            f"username={self.username}, "
+            f"access_token_present={'Yes' if self.access_token else 'No'}, "
+            f"refresh_token_present={'Yes' if self.refresh_token else 'No'}, "
+            f"expires_in={self.expires_in}>"
+            f"requested_at={self.requested_at}>"
+        )
 
     @property
     def access_token(self):
@@ -222,17 +232,6 @@ class UserService(Base):
     @refresh_token.setter
     def refresh_token(self, value):
         self._refresh_token = self.encrypt(value)
-
-    def __repr__(self):
-        return (
-            f"<UserService: user_id={self.user_id}, "
-            f"service_id={self.service_id}, "
-            f"username={self.username}, "
-            f"access_token_present={'Yes' if self.access_token else 'No'}, "
-            f"refresh_token_present={'Yes' if self.refresh_token else 'No'}, "
-            f"expires_in={self.expires_in}>"
-            f"requested_at={self.requested_at}>"
-        )
 
 
 class UserData(Base):
