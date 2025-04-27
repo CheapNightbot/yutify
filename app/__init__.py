@@ -21,6 +21,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 login.login_view = "auth.login"
+login.login_message_category = "error"
 mail = Mail()
 api = Api()
 cors = CORS()
@@ -33,7 +34,7 @@ def create_app(config_class=Config):
 
     # Set up global logging configuration
     logging.basicConfig(
-        format="[{asctime}] [{levelname}] {filename}: {message}",
+        format="[{asctime}] [{levelname:<7}] {filename}: {message}",
         datefmt="%Y, %b %d ~ %I:%M:%S %p",
         style="{",
         level=logging.CRITICAL,
@@ -75,7 +76,7 @@ def create_app(config_class=Config):
             )
             file_handler.setFormatter(
                 logging.Formatter(
-                    fmt="[{asctime}] [{levelname}] {filename}: {message}",
+                    fmt="[{asctime}] [{levelname:<7}] {filename}: {message}",
                     datefmt="%Y, %b %d ~ %I:%M:%S %p",
                     style="{",
                 )
