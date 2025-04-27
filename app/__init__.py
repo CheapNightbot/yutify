@@ -36,7 +36,7 @@ def create_app(config_class=Config):
         format="[{asctime}] [{levelname}] {filename}: {message}",
         datefmt="%Y, %b %d ~ %I:%M:%S %p",
         style="{",
-        level=logging.NOTSET,
+        level=logging.CRITICAL,
         encoding="utf-8",
     )
     root_logger = logging.getLogger()
@@ -82,7 +82,6 @@ def create_app(config_class=Config):
             )
             root_logger.addHandler(file_handler)
 
-        root_logger.setLevel(logging.INFO)
         root_logger.info("yutify startup")
 
     db.init_app(app)
