@@ -1,5 +1,5 @@
 import os
-from random import choice
+import random
 
 import sqlalchemy as sa
 from flask import make_response, render_template, request
@@ -9,10 +9,41 @@ from flask_restful import Resource
 from app import db
 from app.auth_services.lastfm import get_lastfm_activity
 from app.auth_services.spotify import get_spotify_activity
-from app.models import UserService
 from app.limiter import limiter
+from app.models import UserService
 
 RATELIMIT = os.environ.get("RATELIMIT")
+
+
+def fetch_activity(spotify_activity_func, lastfm_activity_func):
+    """
+    Fetch and prioritize activity from Spotify and Last.fm.
+
+    Parameters
+    ----------
+    spotify_activity_func (callable)
+        Function to fetch Spotify activity.
+    lastfm_activity_func (callable)
+        Function to fetch Last.fm activity.
+
+    Returns
+    -------
+    dict
+        The selected activity or None if no activity is found.
+    """
+
+    spotify_activity = spotify_activity_func() if spotify_activity_func else None
+    lastfm_activity = lastfm_activity_func() if lastfm_activity_func else None
+
+    if spotify_activity and lastfm_activity:
+        random.seed(69)  # Ensure consistent random choice
+        return random.choice([spotify_activity, lastfm_activity])
+    elif spotify_activity:
+        return spotify_activity
+    elif lastfm_activity:
+        return lastfm_activity
+
+    return None
 
 
 class UserActivityResource(Resource):
@@ -39,7 +70,9 @@ class UserActivityResource(Resource):
         }
 
         # Fetch activity from each service
-        spotify_activity = get_spotify_activity if "spotify" in linked_services else None
+        spotify_activity = (
+            get_spotify_activity if "spotify" in linked_services else None
+        )
         lastfm_activity = get_lastfm_activity if "lastfm" in linked_services else None
 
         # Determine which activity to return
@@ -51,12 +84,7 @@ class UserActivityResource(Resource):
             case "lastfm":
                 activity = lastfm_activity() if lastfm_activity else None
             case _:
-                if spotify_activity and lastfm_activity:
-                    activity = choice([spotify_activity(), lastfm_activity()])
-                elif spotify_activity:
-                    activity = spotify_activity()
-                elif lastfm_activity:
-                    activity = lastfm_activity()
+                activity = fetch_activity(spotify_activity, lastfm_activity)
 
         if not activity:
             return {
