@@ -36,7 +36,6 @@ def fetch_activity(spotify_activity_func, lastfm_activity_func):
     lastfm_activity = lastfm_activity_func() if lastfm_activity_func else None
 
     if spotify_activity and lastfm_activity:
-        random.seed(69)  # Ensure consistent random choice
         return random.choice([spotify_activity, lastfm_activity])
     elif spotify_activity:
         return spotify_activity
