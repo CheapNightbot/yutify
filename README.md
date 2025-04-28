@@ -167,6 +167,6 @@ Any logos or trademarks displayed in this project and/or on the website remain t
 - Uses [yutipy](https://pypi.org/project/yutipy/) 🎶
 - Uses [Pico CSS](https://picocss.com/) 🎨
 - Powered by [Render](https://render.com/register) 🚀
-- User Profile Icons by [SVG Repo](https://www.svgrepo.com/) 🧑‍🎨
+- User Profile Icons by <a href="https://www.figma.com/@rrgraph?ref=svgrepo.com" target="_blank">Rrgraph</a> in CC Attribution License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a> 🧑‍🎨
 - Thanks to [OhaJoq](https://github.com/Joqnix) for inspiring this project ✨
 - Thanks to everyone who starred the repo—it means a lot! 🫂
