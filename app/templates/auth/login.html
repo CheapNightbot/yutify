@@ -23,9 +23,9 @@
     <fieldset>
         {{ form.username.label }}
         {% if form.username.errors %}
-        {{ form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true", autofocus="") }}
+        {{ form.username(autofocus="", aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
         {% else %}
-        {{ form.username(aria_label="Username", aria_describedby="username-helper", autofocus="") }}
+        {{ form.username(autofocus="", aria_label="Username", aria_describedby="username-helper") }}
         {% endif %}
         {% for error in form.username.errors %}
         <small id="username-helper">{{ error }}</small>
