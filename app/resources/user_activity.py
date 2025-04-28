@@ -2,7 +2,7 @@ import os
 import random
 
 import sqlalchemy as sa
-from flask import make_response, render_template, request
+from flask import abort, make_response, render_template, request
 from flask_login import current_user
 from flask_restful import Resource
 
@@ -98,6 +98,8 @@ class UserActivityResource(Resource):
 
         # Handle different response types
         if response_type == "html":
+            if not current_user.is_authenticated:
+                abort(400)
             html = render_template("user/activity_embed.html", activity=activity)
             return make_response(html, 200, {"Content-Type": "text/html"})
 
