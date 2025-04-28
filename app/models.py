@@ -1,6 +1,8 @@
 import hashlib
 import os
+import random
 from datetime import datetime, timezone
+from pathlib import Path
 from time import time
 from typing import Optional
 
@@ -71,6 +73,7 @@ class User(UserMixin, Base):
     user_id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(64))
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    _avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
     _email: so.Mapped[str] = so.mapped_column(sa.String(128), unique=True)
     _email_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
@@ -84,6 +87,10 @@ class User(UserMixin, Base):
     last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc)
     )
+
+    @property
+    def avatar(self):
+        return self._avatar
 
     @property
     def email(self):
@@ -103,6 +110,31 @@ class User(UserMixin, Base):
 
     def get_id(self):
         return str(self.user_id)
+
+    def set_avatar(self):
+        """Set a random avatar from the available icons in the static folder."""
+        icons_folder = Path(current_app.static_folder) / "icons"
+        try:
+            # Get all valid image files from the icons folder
+            valid_extensions = {".png", ".jpg", ".jpeg", ".svg"}
+            available_avatars = [
+                file.name
+                for file in icons_folder.iterdir()
+                if file.is_file() and file.suffix.lower() in valid_extensions
+            ]
+
+            if not available_avatars:
+                raise FileNotFoundError("No valid avatars found in the icons folder.")
+
+            # Randomly select an avatar
+            selected_avatar = random.choice(available_avatars)
+
+            # Set the avatar property (store only the relative path)
+            self._avatar = f"icons/{selected_avatar}"
+
+        except Exception as e:
+            current_app.logger.error(f"Error setting avatar: {e}")
+            self._avatar = None  # Fallback if something goes wrong
 
     @staticmethod
     def hash_email(email):

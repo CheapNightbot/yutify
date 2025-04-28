@@ -15,8 +15,9 @@
 
 {% block header %}
 <article class="profile-header">
-    <img class="profile-header-img" src="{{ url_for('static', filename='icons/grinning-face-with-big-eyes.svg') }}"
-        alt="user profile" width="128px" height="128px">
+
+    <img class="profile-header-img" src="{{ url_for('static', filename=current_user.avatar) }}"
+        alt="User Avatar" width="128px" height="128px">
 
     <div class="profile-header-info">
         <h1>{{ current_user.name or current_user.username }}</h1>

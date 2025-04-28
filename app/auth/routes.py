@@ -69,6 +69,7 @@ def signup():
             name=form.name.data, username=form.username.data, email=form.email.data
         )
         user.set_password(form.password.data)
+        user.set_avatar()
         db.session.add(user)
         db.session.commit()
         flash(
