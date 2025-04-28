@@ -382,14 +382,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Fetch activity every 30 seconds normally, but retry in 60 seconds if an error occurs
-    let fetchInterval = 30000;
+    // Fetch activity every 10 seconds normally, but retry in 30 seconds if an error occurs
+    let fetchInterval = 10000;
     function startFetchingActivity() {
         fetchActivity().catch(() => {
-            fetchInterval = 60000; // Increase interval to 60 seconds on error
+            fetchInterval = 30000; // Increase interval to 60 seconds on error
         }).finally(() => {
             setTimeout(startFetchingActivity, fetchInterval);
-            fetchInterval = 30000; // Reset interval to normal after retry
+            fetchInterval = 10000; // Reset interval to normal after retry
         });
     }
 
