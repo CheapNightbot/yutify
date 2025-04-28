@@ -96,14 +96,10 @@ For certain configurations, it relies on environment variables that must be set 
 
 ### Required: These environment variables are mandatory!
 
-- `SECRET_KEY`: Used by Flask for session management and security. To generate a secure key, you may run either of the following commands:
+- `SECRET_KEY`: Used by Flask for session management and security. To generate a secure key, you may run the following command:
 
   ```bash
-  python -c "import secrets; print(secrets.token_hex(32))"
-  ```
-  OR
-  ```bash
-  python -c "import secrets; print(secrets.token_urlsafe())"
+  python -c "import secrets; print(secrets.token_hex())"
   ```
 
 - `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting user emails at rest (in the database). To generate an encryption key, run the following command after installing dependencies:
