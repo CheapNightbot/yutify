@@ -325,6 +325,12 @@ footer {
 }
 
 /* Updated styles for user activity to ensure consistency */
+.user-activity-header {
+    margin: auto;
+    max-width: 1000px;
+    transition: all cubic-bezier(0.455, 0.03, 0.515, 0.955) 0.3s;
+}
+
 .user-activity-container {
     display: flex;
     justify-content: center;

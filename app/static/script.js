@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = html;
 
-                const newContent = tempDiv.querySelector('.user-activity');
+                const newContent = tempDiv.querySelector('#user-activity');
                 if (newContent) {
                     // Extract relevant data from the current and new activity
                     const currentTitle = activityContainer.querySelector('.music-info span.ellipsis')?.textContent.trim();
