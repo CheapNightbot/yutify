@@ -21,8 +21,9 @@
   - [Features ™️](#features-️)
   - [Available Music Platforms 📻](#available-music-platforms-)
   - [Running yutify 🧑‍💻](#running-yutify-)
-    - [Environment Variables](#environment-variables)
+    - [Environment Variables 🔐](#environment-variables)
   - [Contributing 🤝](#contributing-)
+  - [Disclaimer ⚠️](#disclaimer-️)
   - [Acknowledgement // End Note 🙃](#acknowledgement--end-note-)
 
 </details>
@@ -85,7 +86,7 @@ pip install -r requirements.txt
 
 Before running yutify, you need to take care of a few things:
 
-## Environment Variables
+## Environment Variables 🔐
 
 For certain configurations, it relies on environment variables that must be set before running yutify. Here's a brief overview:
 
@@ -152,10 +153,20 @@ We welcome contributions from everyone! Here's how you can help:
 
 Whether you're a user or a developer, your contributions are valuable and appreciated!
 
+# Disclaimer ⚠️
+
+All trademarks, logos, and content displayed in this project are the property of their respective owners.
+
+This project is open-source and is not affiliated with, endorsed by, or associated with any of the mentioned services or platforms, including but not limited to Apple Music, Spotify, KKBox, Last.fm, Deezer, and YouTube Music.
+The use of their names, trademarks, or logos is solely to indicate compatibility or integration with these platforms and to enhance the user experience.
+
+Any logos or trademarks displayed in this project and/or on the website remain the property of their respective owners.
+
 # Acknowledgement // End Note 🙃
 
 - Uses [yutipy](https://pypi.org/project/yutipy/) 🎶
 - Uses [Pico CSS](https://picocss.com/) 🎨
 - Powered by [Render](https://render.com/register) 🚀
+- User Profile Icons by [SVG Repo](https://www.svgrepo.com/) 🧑‍🎨
 - Thanks to [OhaJoq](https://github.com/Joqnix) for inspiring this project ✨
 - Thanks to everyone who starred the repo—it means a lot! 🫂
