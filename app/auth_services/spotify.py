@@ -32,7 +32,8 @@ class MySpotifyAuth(SpotifyAuth):
                 sa.select(Service).where(Service.service_name.ilike("spotify"))
             )
             if not spotify_service:
-                raise ValueError("Service 'Spotify' not found in the database.")
+                logger.warning("Service 'Spotify' not found in the database.")
+                return
 
             # Check if the UserService entry already exists
             user_service = db.session.scalar(
@@ -57,6 +58,8 @@ class MySpotifyAuth(SpotifyAuth):
                     expires_in=token_info.get("expires_in"),
                     requested_at=token_info.get("requested_at"),
                 )
+                user_service.user = user
+                user_service.service = spotify_service
                 db.session.add(user_service)
             db.session.commit()
 
@@ -73,7 +76,8 @@ class MySpotifyAuth(SpotifyAuth):
                 sa.select(Service).where(Service.service_name.ilike("spotify"))
             )
             if not spotify_service:
-                raise ValueError("Service 'Spotify' not found in the database.")
+                logger.warning("Service 'Spotify' not found in the database.")
+                return
 
             # Check if the UserService entry exists
             user_service = db.session.scalar(
@@ -216,11 +220,9 @@ def get_spotify_activity():
             logger.warning(e)
             activity = asdict(activity)
 
-        data = activity
-        activity["is_playing"] = False
         # Save the current activity to the database
-        UserData.insert_or_update_user_data(spotify_service.user_services_id, activity)
-        return data
+        UserData.insert_or_update_user_data(spotify_service, activity)
+        return activity
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(
@@ -229,6 +231,8 @@ def get_spotify_activity():
             )
         )
         if existing_data:
-            return existing_data.data
+            data = existing_data.data
+            data["is_playing"] = False
+            return data
 
     return None

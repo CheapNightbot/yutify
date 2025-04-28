@@ -8,7 +8,7 @@ from flask_login import current_user
 from yutipy.lastfm import LastFm, LastFmException
 
 from app import db
-from app.models import Service, UserData, UserService
+from app.models import Service, UserData, UserService, User
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
@@ -35,18 +35,22 @@ def handle_lastfm_auth(lastfm_username):
         return redirect(url_for("user.user_settings", username=current_user.username))
 
     # Fetch the service dynamically by name
-    service = db.session.scalar(
+    lastfm_service = db.session.scalar(
         sa.select(Service).where(Service.service_name.ilike("lastfm"))
     )
-    if not service:
+    if not lastfm_service:
         flash("Service 'Last.fm' not found in the database.", "error")
         return redirect(url_for("user.user_settings", username=current_user.username))
+
+    user = db.session.scalar(
+        sa.select(User).where(User.username == current_user.username)
+    )
 
     # Check if the UserService entry already exists
     user_service = db.session.scalar(
         sa.select(UserService)
-        .where(UserService.user_id == current_user.user_id)
-        .where(UserService.service_id == service.service_id)
+        .where(UserService.user_id == user.user_id)
+        .where(UserService.service_id == lastfm_service.service_id)
     )
 
     if user_service:
@@ -55,9 +59,11 @@ def handle_lastfm_auth(lastfm_username):
         # Create a new entry for Last.fm
         user_service = UserService(
             user_id=current_user.user_id,
-            service_id=service.service_id,
+            service_id=lastfm_service.service_id,
             username=lastfm_username,
         )
+        user_service.user = user
+        user_service.service = lastfm_service
         db.session.add(user_service)
         db.session.commit()
         flash("Successfully linked Last.fm!", "success")
@@ -102,11 +108,9 @@ def get_lastfm_activity():
             logger.warning(e)
             activity = asdict(activity)
 
-        data = activity
-        activity["is_playing"] = False
         # Save the current activity to the database
-        UserData.insert_or_update_user_data(lastfm_service.user_services_id, activity)
-        return data
+        UserData.insert_or_update_user_data(lastfm_service, activity)
+        return activity
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(

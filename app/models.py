@@ -76,10 +76,8 @@ class User(UserMixin, Base):
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
     # Relationship to UserService: one-to-many
-    user_services: so.Mapped["UserService"] = so.relationship(
-        "UserService",
-        back_populates="user",
-        cascade="all, delete",
+    user_services: so.Mapped[list["UserService"]] = so.relationship(
+        "UserService", back_populates="user", cascade="all, delete", uselist=True
     )
 
     about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(140))
@@ -250,16 +248,23 @@ class UserData(Base):
     )
 
     @staticmethod
-    def insert_or_update_user_data(user_service_id, new_data):
+    def insert_or_update_user_data(user_service, new_data):
         """Insert or update user data for a given user_service_id."""
+
         existing_data = db.session.scalar(
-            sa.select(UserData).where(UserData.user_service_id == user_service_id)
+            sa.select(UserData).where(
+                UserData.user_service_id == user_service.user_services_id
+            )
         )
 
         if existing_data:
             existing_data.data = new_data
         else:
-            new_entry = UserData(user_service_id=user_service_id, data=new_data)
+            new_entry = UserData(
+                user_service_id=user_service.user_services_id,
+                data=new_data,
+                user_service=user_service,
+            )
             db.session.add(new_entry)
 
         db.session.commit()
