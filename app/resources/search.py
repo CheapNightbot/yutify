@@ -95,7 +95,7 @@ class YutifySearch(Resource):
 
     @limiter.limit(RATELIMIT if RATELIMIT else "")
     @cache.cached(
-        timeout=300,
+        timeout=3600,  # cache for 1 hour
         key_prefix=lambda: f"search:{request.view_args['artist'].lower()}:{request.view_args['song'].lower()}:{list(request.args.keys())[0].lower() if request.args else 'all'}",
     )
     def get(self, artist, song):
