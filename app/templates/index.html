@@ -60,7 +60,7 @@
     {% endif %}
 
     <div>
-        <p class="music-info" style="font-size: 1.5rem;">
+        <p class="music-info title">
             <span class="material-symbols-outlined">music_note</span>
             {% if title_ %}
             {{ title_ }}
@@ -68,7 +68,7 @@
             Title
             {% endif %}
         </p>
-        <p class="music-info" style="font-size: 1.125rem;">
+        <p class="music-info album-title">
             <span class="material-symbols-outlined">album</span>
             {% if album_title %}
             {{ album_title }} ({{ album_type }})
@@ -78,7 +78,7 @@
             Album Title (Album Type)
             {% endif %}
         </p>
-        <p class="music-info" style="font-size: 1.25rem; ">
+        <p class="music-info artists">
             <span class="material-symbols-outlined">artist</span>
             {% if artists %}
             {{ artists }}
@@ -88,7 +88,7 @@
             Artists
             {% endif %}
         </p>
-        <p class="music-info" style="font-size: 1rem;">
+        <p class="music-info">
             <span class="material-symbols-outlined">genres</span>
             {% if genre %}
             {{ genre }}

@@ -16,7 +16,7 @@
             class="album-art">
         {% endif %}
         <div class="user-music-info">
-            <p class="music-info" style="font-size: 1.2rem;">
+            <p class="music-info title">
                 <span class="material-symbols-outlined">music_note</span>
                 <span class="ellipsis">
                     {% if activity.title %}
@@ -26,7 +26,7 @@
                     {% endif %}
                 </span>
             </p>
-            <p class="music-info" style="font-size: 1.125rem;">
+            <p class="music-info album-title">
                 <span class="material-symbols-outlined">album</span>
                 <span class="ellipsis">
                     {% if activity.album_title %}
@@ -38,7 +38,7 @@
                     {% endif %}
                 </span>
             </p>
-            <p class="music-info" style="font-size: 1.25rem; ">
+            <p class="music-info artists">
                 <span class="material-symbols-outlined">artist</span>
                 <span class="ellipsis">
                     {% if activity.artists %}
@@ -50,7 +50,7 @@
                     {% endif %}
                 </span>
             </p>
-            <p class="music-info" style="font-size: 1rem;">
+            <p class="music-info genre">
                 <span class="material-symbols-outlined">genres</span>
                 <span class="ellipsis">
                     {% if activity.genre %}

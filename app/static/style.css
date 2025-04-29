@@ -199,6 +199,22 @@ footer {
     gap: 0.5rem;
 }
 
+.music-info.title {
+    font-size: 1.5rem;
+}
+
+.music-info.album-title {
+    font-size: 1.125rem;
+}
+
+.music-info.artsits {
+    font-size: 1.25rem;
+}
+
+.music-inf0.genre {
+    font-size: 1rem;
+}
+
 .ellipsis {
     display: -webkit-box;
     line-clamp: 1;
