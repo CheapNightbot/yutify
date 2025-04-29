@@ -205,117 +205,34 @@ document.addEventListener('DOMContentLoaded', () => {
         closeProfileEditor.addEventListener('click', toggleModal);
     }
 
-
-    if (registerForm) {
-        ; (function () {
-            // all package will be available under zxcvbnts
-            const options = {
-                translations: zxcvbnts['language-en'].translations,
-                graphs: zxcvbnts['language-common'].adjacencyGraphs,
-                dictionary: {
-                    ...zxcvbnts['language-common'].dictionary,
-                    ...zxcvbnts['language-en'].dictionary,
-                },
+    const confirmPassword = () => {
+        password2Input.addEventListener('input', () => {
+            if (password2Input.value !== passwordInput.value) {
+                password2Input.setAttribute('aria-invalid', 'true');
+                passwordConfirm.textContent = 'Passwords do not match!';
+            } else {
+                password2Input.setAttribute('aria-invalid', 'false');
+                passwordConfirm.textContent = '';
             }
-            zxcvbnts.core.zxcvbnOptions.setOptions(options)
 
-            passwordInput.addEventListener('input', () => {
-                let result = zxcvbnts.core.zxcvbn(passwordInput.value, [usernameInput.value, emailInput.value]);
-                passwordStrength.textContent = result.feedback.suggestions[0] || '' + ' ' + result.feedback.warning;
+        });
 
-                if (result.score >= 3) {
-                    passwordInput.setAttribute('aria-invalid', 'false');
-                } else {
-                    passwordInput.setAttribute('aria-invalid', 'true');
-                }
-            });
+        passwordInput.addEventListener('blur', () => {
+            if (passwordInput.getAttribute('aria-invalid') === 'false') {
+                passwordInput.removeAttribute('aria-invalid');
+            }
+        });
 
-            passwordInput.addEventListener('blur', () => {
-                if (passwordInput.getAttribute('aria-invalid') === 'false') {
-                    passwordInput.removeAttribute('aria-invalid');
-                }
-            });
-
-            password2Input.addEventListener('input', () => {
-                if (password2Input.value === passwordInput.value) {
-                    password2Input.setAttribute('aria-invalid', 'false');
-                    passwordConfirm.textContent = '';
-                    if (result.score >= 3) {
-                        passwordInput.setAttribute('aria-invalid', 'false');
-                        password2Input.setAttribute('aria-invalid', 'false');
-                    } else {
-                        passwordInput.setAttribute('aria-invalid', 'true');
-                        password2Input.setAttribute('aria-invalid', 'true');
-                    }
-
-                } else {
-                    password2Input.setAttribute('aria-invalid', 'true');
-                    passwordConfirm.textContent = 'Passwords do not match!';
-                }
-            });
-
-            password2Input.addEventListener('blur', () => {
-                if (password2Input.getAttribute('aria-invalid') === 'false') {
-                    password2Input.removeAttribute('aria-invalid');
-                }
-            });
-        })()
+        password2Input.addEventListener('blur', () => {
+            if (password2Input.getAttribute('aria-invalid') === 'false') {
+                password2Input.removeAttribute('aria-invalid');
+            }
+        });
     }
 
-    if (passResetForm) {
-        ; (function () {
-            // all package will be available under zxcvbnts
-            const options = {
-                translations: zxcvbnts['language-en'].translations,
-                graphs: zxcvbnts['language-common'].adjacencyGraphs,
-                dictionary: {
-                    ...zxcvbnts['language-common'].dictionary,
-                    ...zxcvbnts['language-en'].dictionary,
-                },
-            }
-            zxcvbnts.core.zxcvbnOptions.setOptions(options)
 
-            passwordInput.addEventListener('input', () => {
-                let result = zxcvbnts.core.zxcvbn(passwordInput.value);
-                passwordStrength.textContent = result.feedback.suggestions[0] || '' + ' ' + result.feedback.warning;
-
-                if (result.score >= 3) {
-                    passwordInput.setAttribute('aria-invalid', 'false');
-                } else {
-                    passwordInput.setAttribute('aria-invalid', 'true');
-                }
-            });
-
-            passwordInput.addEventListener('blur', () => {
-                if (passwordInput.getAttribute('aria-invalid') === 'false') {
-                    passwordInput.removeAttribute('aria-invalid');
-                }
-            });
-
-            password2Input.addEventListener('input', () => {
-                if (password2Input.value === passwordInput.value) {
-                    password2Input.setAttribute('aria-invalid', 'false');
-                    passwordConfirm.textContent = '';
-                    if (result.score >= 3) {
-                        passwordInput.setAttribute('aria-invalid', 'false');
-                        password2Input.setAttribute('aria-invalid', 'false');
-                    } else {
-                        passwordInput.setAttribute('aria-invalid', 'true');
-                        password2Input.setAttribute('aria-invalid', 'true');
-                    }
-
-                } else {
-                    password2Input.setAttribute('aria-invalid', 'true');
-                    passwordConfirm.textContent = 'Passwords do not match!';
-                }
-            });
-
-            password2Input.addEventListener('blur', () => {
-                if (password2Input.getAttribute('aria-invalid') === 'false') {
-                    password2Input.removeAttribute('aria-invalid');
-                }
-            });
-        })()
+    if (registerForm || passResetForm) {
+        confirmPassword();
     }
 
     const lastfmLinkButton = document.querySelector('.link[data-service="lastfm"]');
