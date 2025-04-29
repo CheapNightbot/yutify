@@ -137,7 +137,8 @@ flask run
 ```
 
 > [!IMPORTANT]
-> Visit the application locally at: [http://localhost:5000](http://localhost:5000) or [http://127.0.0.1:5000](http://127.0.0.1:5000)
+> Visit the application locally at: [http://localhost:<PORT>](http://localhost:<PORT>) or [http://127.0.0.1:<PORT>](http://127.0.0.1:<PORT>)
+> Replace the `<PORT>` with the port number you defined in environment variable (or `.env` file) Or the default ``5000`.
 
 # Contributing 🤝
 
