@@ -22,6 +22,10 @@ body {
     transition: all ease-in-out 0.3s;
 }
 
+dialog h3 {
+    display: inline-block;
+}
+
 a {
     text-decoration: none;
 }
@@ -322,6 +326,10 @@ footer {
 
 .service-action button {
     margin: 0;
+}
+
+.custom-btn {
+    width: 100%;
 }
 
 .delete-account {

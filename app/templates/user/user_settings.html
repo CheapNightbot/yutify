@@ -68,13 +68,16 @@
     <small id="password-helper">{{ error }}</small>
     {% endfor %}
     {{ form.submit() }}
+    <a role="button" class="secondary custom-btn" href="{{ url_for('user.user_settings', username=current_user.username) }}">
+        Cancel
+    </a>
     {% endif %}
 
 </form>
 
 
 {% if form.__class__.__name__ == "EmptyForm" %}
-<button class="secondary delete-account" onclick="openDeleteAccountDialog();">Delete Account</button>
+<button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete Account</button>
 {% endif %}
 
 {% if form.__class__.__name__ == "EmptyForm" %}
@@ -83,8 +86,7 @@
 {% for service in services %}
 <article class="service-item">
     <div class="service-info">
-        <a href="{{ service.service_url }}" rel="noopener noreferrer" target="_blank"
-            onclick="window.confirm('You are about to leave this site. Do you want to continue and open: {{ service.service_url }}?');">
+        <a href="{{ service.service_url }}" rel="noopener noreferrer" target="_blank">
             <img class="service-logo"
                 src="{{ url_for('static', filename='logos/' + service.service_name.lower() + '.svg') }}"
                 alt="{{ service.service_name }} Logo">
@@ -101,8 +103,7 @@
     <div class="service-action">
         {% if service.service_id in user_services %}
         <!-- Unlink Form -->
-        <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post"
-            onsubmit="return confirm('Are you sure you want to unlink {{ service.service_name }}?');">
+        <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post">
             {{ form.hidden_tag() }}
             <button type="submit" class="secondary unlink">Unlink</button>
         </form>
@@ -111,7 +112,7 @@
         <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post">
             {{ form.hidden_tag() }}
             <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm'
-                %}data-service="lastfm" {% endif %}>Link</button>
+                %} data-service="lastfm" data-target="lastfm-link-modal" {% endif %}>Link</button>
         </form>
         {% endif %}
     </div>
@@ -124,12 +125,14 @@
 {% endif %}
 {% endif %}
 
-<dialog id="lastfm-username-modal">
+{% if services %}
+{% for service in services %}
+{% if service.service_id not in user_services and service.service_name.lower() == 'lastfm' %}
+<dialog id="lastfm-link-modal">
     <article>
         <header>
             <h3>Link Last.fm</h3>
-            <button id="close-lastfm-modal" aria-label="Close" class="close"
-                data-target="lastfm-username-modal"></button>
+            <button id="close-lastfm-modal" aria-label="Close" class="close" data-target="lastfm-link-modal"></button>
         </header>
         <form action="{{ url_for('auth_services.service', service='lastfm') }}" method="post">
             {{ form.hidden_tag() }}
@@ -142,10 +145,15 @@
         </form>
     </article>
 </dialog>
+{% endif %}
+{% endfor %}
+{% endif %}
 
 <dialog id="delete-account-modal">
     <article>
-        <h3>Confirm Account Deletion</h3>
+        <header>
+            <h3>Confirm Account Deletion</h3>
+        </header>
         <p>To delete your account, please enter your password below:</p>
         <form method="post" action="">
             {{ form.hidden_tag() }}
@@ -153,16 +161,10 @@
             <input type="password" id="password" name="password" required>
             <footer role="group">
                 {{ form.submit(value="Delete Account", class="secondary delete-account") }}
-                <button type="button" onclick="document.getElementById('delete-account-modal').close();">Cancel</button>
+                <button id="close-account-del" type="button" data-target="delete-account-modal">Cancel</button>
             </footer>
         </form>
     </article>
 </dialog>
-
-<script>
-    function openDeleteAccountDialog() {
-        document.getElementById('delete-account-modal').showModal();
-    }
-</script>
 
 {% endblock %}

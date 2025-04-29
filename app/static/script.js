@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const searchForm = document.querySelector('#search-form');
-    const showLyrics = document.querySelector("#show-lyrics");
-    const closeLyrics = document.querySelector("#close-lyrics");
     const lyricsModal = document.querySelector("#lyrics");
     const themeBtn = document.querySelector('#themeBtn');
     const themeBtnIcon = document.querySelector('#theme-btn');
@@ -22,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const password2Input = document.querySelector('#password2');
     const passwordStrength = document.querySelector('#password-strength');
     const passwordConfirm = document.querySelector('#password-confirm');
-    const showProfileEditor = document.querySelector('#edit-profile-btn');
-    const closeProfileEditor = document.querySelector('#close-edit-profile');
     const editProfileModal = document.querySelector('#edit-profile-modal');
     const passResetForm = document.querySelector('#reset_password');
+    const lastfmLinkModal = document.querySelector('#lastfm-link-modal')
+    const accountDelBtm = document.querySelector('.delete-account');
 
     themeBtn.addEventListener("click", () => {
         const currentIcon = themeBtnIcon.innerText;
@@ -196,11 +194,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (lyricsModal) {
+        const showLyrics = document.querySelector("#show-lyrics");
+        const closeLyrics = document.querySelector("#close-lyrics");
         showLyrics.addEventListener('click', toggleModal);
         closeLyrics.addEventListener('click', toggleModal);
     }
 
     if (editProfileModal) {
+        const showProfileEditor = document.querySelector('#edit-profile-btn');
+        const closeProfileEditor = document.querySelector('#close-edit-profile');
         showProfileEditor.addEventListener('click', toggleModal);
         closeProfileEditor.addEventListener('click', toggleModal);
     }
@@ -235,21 +237,12 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmPassword();
     }
 
-    const lastfmLinkButton = document.querySelector('.link[data-service="lastfm"]');
-    const lastfmModal = document.querySelector('#lastfm-username-modal');
-    const closeLastfmModal = document.querySelector('#close-lastfm-modal');
 
-    if (lastfmLinkButton) {
-        lastfmLinkButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            lastfmModal.showModal();
-        });
-    }
-
-    if (closeLastfmModal) {
-        closeLastfmModal.addEventListener('click', () => {
-            lastfmModal.close();
-        });
+    if (lastfmLinkModal) {
+        const lastfmLinkButton = document.querySelector('.link[data-service="lastfm"]');
+        const closeLastfmModal = document.querySelector('#close-lastfm-modal');
+        lastfmLinkButton.addEventListener('click', toggleModal);
+        closeLastfmModal.addEventListener('click', toggleModal);
     }
 
     async function fetchActivity() {
@@ -311,4 +304,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     startFetchingActivity();
+
+    if (accountDelBtm) {
+        const showDelAccount = document.querySelector('#show-account-del');
+        const closeDelAccount = document.querySelector('#close-account-del');
+        showDelAccount.addEventListener('click', toggleModal);
+        closeDelAccount.addEventListener('click', toggleModal);
+    }
 });
