@@ -289,6 +289,10 @@ footer {
     justify-content: space-between;
 }
 
+.text-in-article {
+    padding: 1rem 0 0 1rem;
+}
+
 .service-info {
     display: flex;
     align-items: center;
