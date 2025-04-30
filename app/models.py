@@ -220,6 +220,9 @@ class UserService(Base):
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
     requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
     username: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
+    profile_url: so.Mapped[Optional[str]] = so.mapped_column(
+        sa.String(64), nullable=True
+    )
 
     __table_args__ = (
         sa.UniqueConstraint("user_id", "service_id", name="uq_user_service"),
