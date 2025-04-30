@@ -83,7 +83,7 @@ class User(UserMixin, Base):
         "UserService", back_populates="user", cascade="all, delete", uselist=True
     )
 
-    about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(140))
+    about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(128))
     last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc)
     )
