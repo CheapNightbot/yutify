@@ -11,8 +11,9 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 
-from app.common.utils import mask_string
+from app.common.utils import mask_string, relative_timestamp
 from config import Config
 
 load_dotenv()
@@ -26,6 +27,7 @@ mail = Mail()
 api = Api()
 cors = CORS()
 cache = Cache()
+csrf = CSRFProtect()
 
 
 def create_app(config_class=Config):
@@ -89,6 +91,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
     mail.init_app(app)
+    csrf.init_app(app)
     api.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -111,6 +114,7 @@ def create_app(config_class=Config):
     app.register_blueprint(user_bp, url_prefix="/u")
 
     app.jinja_env.filters["mask_string"] = mask_string
+    app.jinja_env.filters["relative_timestamp"] = relative_timestamp
 
     # Configure caching
     redis_url = os.getenv("REDIS_URI")

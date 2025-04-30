@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timezone
 
 
 def is_valid_string(string: str) -> bool:
@@ -101,6 +102,34 @@ def _mask_with_char_bounds(
             result[i] = mask
 
     return "".join(result)
+
+
+def relative_timestamp(timestamp):
+
+    now = datetime.now(timezone.utc)
+    diff = now - datetime.fromtimestamp(timestamp, timezone.utc)
+    seconds = diff.total_seconds()
+
+    intervals = (
+        ("year", 31536000),  # 365 * 24 * 60 * 60
+        ("month", 2592000),  # 30 * 24 * 60 * 60
+        ("day", 86400),  # 24 * 60 * 60
+        ("hour", 3600),
+        ("minute", 60),
+        ("second", 1),
+    )
+
+    # less than a minute similar to "a few seconds ago"
+    if seconds < 60:
+        return "a few seconds ago"
+
+    for name, count in intervals:
+        value = int(seconds // count)
+        if value:
+            if value == 1:
+                return f"{value} {name} ago"
+            else:
+                return f"{value} {name}s ago"
 
 
 if __name__ == "__main__":
