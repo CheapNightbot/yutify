@@ -29,8 +29,8 @@ class BaseOverride:
     Only works for Client Credential grant type/flow.
     """
 
-    SERVICE_NAME: str = None
-    SERVICE_URL: str = None
+    SERVICE_NAME: str
+    SERVICE_URL: str
     IS_PRIVATE: bool = False
 
     def __init__(self, *args, **kwargs):
@@ -150,9 +150,9 @@ class YutifySearch(Resource):
                 with musicyt.MusicYT() as youtube_music:
                     result = youtube_music.search(artist, song)
             case _:
-                with yutipy_music.YutipyMusic() as py_music:
-                    py_music.services["kkbox"] = MyKKBox()
-                    py_music.services["spotify"] = MySpotify()
+                with yutipy_music.YutipyMusic(
+                    custom_kkbox_class=MyKKBox, custom_spotify_class=MySpotify
+                ) as py_music:
                     result = py_music.search(artist, song)
 
         if not result:
