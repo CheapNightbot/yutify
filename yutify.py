@@ -21,10 +21,10 @@ def make_shell_context():
     }
 
 
-# Content Security Policy (CSP)
-# https://flask.palletsprojects.com/en/stable/web-security/#content-security-policy-csp
+# https://flask.palletsprojects.com/en/stable/web-security/
 @app.after_request
-def set_csp_header(response):
+def set_security_headers(response):
+    response.headers["Strict-Transport-Security"] = "max-age=31536000"
     response.headers["Content-Security-Policy"] = (
         "script-src-attr 'none'; "
         "style-src-attr 'none'; "
@@ -33,8 +33,16 @@ def set_csp_header(response):
         "https://fonts.googleapis.com/; "
         "font-src 'self' https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/; "
     )
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+
     return response
 
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+)
 
 if __name__ == "__main__":
     serve(app, host="0.0.0.0", port=app.config["PORT"] or 5000)
