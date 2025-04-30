@@ -255,8 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newContent = tempDiv.querySelector('#user-activity');
                 if (newContent) {
                     // Extract relevant data from the current and new activity
-                    const currentStatus = activityContainer.querySelector('.user-activity-header h4')?.textContent.trim();
-                    const newStatus = newContent.querySelector('.user-activity-header h4')?.textContent.trim();
+                    const currentStatusTxt = activityContainer.querySelector('.user-activity-header h4')?.textContent.trim();
+                    const newStatusTxt = newContent.querySelector('.user-activity-header h4')?.textContent.trim();
 
                     const currentTitle = activityContainer.querySelector('.music-info span.ellipsis')?.textContent.trim();
                     const newTitle = newContent.querySelector('.music-info span.ellipsis')?.textContent.trim();
@@ -265,7 +265,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newArtists = newContent.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
 
                     // Compare relevant fields to avoid unnecessary updates
-                    if (currentStatus !== newStatus || currentTitle !== newTitle || currentArtists !== newArtists) {
+                    if (currentStatusTxt !== newStatusTxt) {
+                        const currentStatusEl = activityContainer.querySelector('.user-activity-header');
+                        if (currentStatusEl) {
+                            currentStatusEl.replaceWith(newContent.querySelector('.user-activity-header'));
+                        }
+                    }
+
+                    if (currentTitle !== newTitle || currentArtists !== newArtists) {
                         // Add fade-out effect before replacing content
                         activityContainer.style.opacity = '0';
                         setTimeout(() => {
