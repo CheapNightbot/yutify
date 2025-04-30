@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Convert UTC timestamp to local timezone
-    const lastListenedElements = document.querySelectorAll('.last-listened');
-    lastListenedElements.forEach(element => {
-        const utcTime = element.textContent;
-        const localTime = new Date(utcTime).toLocaleString();
-        element.textContent = localTime;
-    });
-
     const searchForm = document.querySelector('#search-form');
     const lyricsModal = document.querySelector("#lyrics");
     const themeBtn = document.querySelector('#themeBtn');
@@ -246,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchActivity() {
-        const activityContainer = document.querySelector('.user-activity-container') || document.querySelector('.user-activity');
+        const activityContainer = document.querySelector('.user-activity-container') || document.querySelector('#user-activity');
 
         if (!activityContainer) {
             return;
@@ -263,6 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newContent = tempDiv.querySelector('#user-activity');
                 if (newContent) {
                     // Extract relevant data from the current and new activity
+                    const currentStatus = activityContainer.querySelector('.user-activity-header h4')?.textContent.trim();
+                    const newStatus = newContent.querySelector('.user-activity-header h4')?.textContent.trim();
+
                     const currentTitle = activityContainer.querySelector('.music-info span.ellipsis')?.textContent.trim();
                     const newTitle = newContent.querySelector('.music-info span.ellipsis')?.textContent.trim();
 
@@ -270,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newArtists = newContent.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
 
                     // Compare relevant fields to avoid unnecessary updates
-                    if (currentTitle !== newTitle || currentArtists !== newArtists) {
+                    if (currentStatus !== newStatus || currentTitle !== newTitle || currentArtists !== newArtists) {
                         // Add fade-out effect before replacing content
                         activityContainer.style.opacity = '0';
                         setTimeout(() => {
@@ -288,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 activityContainer.innerHTML = `<p>${errorData.error}</p>`;
             }
         } catch (error) {
-            console.error(error);
+            // ignore the error ~
         }
     }
 
@@ -296,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let fetchInterval = 10000;
     function startFetchingActivity() {
         fetchActivity().catch(() => {
-            fetchInterval = 30000; // Increase interval to 60 seconds on error
+            fetchInterval = 60000; // Increase interval to 60 seconds on error
         }).finally(() => {
             setTimeout(startFetchingActivity, fetchInterval);
             fetchInterval = 10000; // Reset interval to normal after retry

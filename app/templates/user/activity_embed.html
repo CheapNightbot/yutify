@@ -4,7 +4,7 @@
         {% if activity.is_playing %}
         <h4>Currently Playing:</h4>
         {% else %}
-        <h4>Last Played:</h4>
+        <h4>Last Played: <span id="timestamp">{{ activity.timestamp | int | relative_timestamp }}</span></h4>
         {% endif %}
     </div>
 
