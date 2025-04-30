@@ -38,6 +38,7 @@ def set_security_headers(response):
 
     return response
 
+
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
@@ -45,4 +46,10 @@ app.config.update(
 )
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=app.config["PORT"] or 5000)
+    serve(
+        app,
+        host="0.0.0.0",
+        port=app.config["PORT"] or 5000,
+        url_scheme="https",
+        ident="yutify",
+    )
