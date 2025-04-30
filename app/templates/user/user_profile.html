@@ -21,7 +21,7 @@
 
     <div class="profile-header-info">
         <h1>{{ current_user.name or current_user.username }}</h1>
-        {% if user.about_me %}<p>{{ user.about_me.replace('\n', '<br>') | safe }}</p>{% endif %}
+        {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
     </div>
     <div class="profile-header-edit">
         {% if user == current_user %}
