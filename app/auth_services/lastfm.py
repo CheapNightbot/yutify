@@ -10,6 +10,7 @@ from yutipy.lastfm import LastFm, LastFmException
 from app import db
 from app.models import Service, UserData, UserService, User
 
+
 # Create a logger for this module
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,7 @@ except LastFmException as e:
     logger.warning(
         f"Lastfm Authentication will be disabled due to the following error:\n{e}"
     )
+    lastfm = None
 
 
 def handle_lastfm_auth(lastfm_username):
@@ -28,10 +30,6 @@ def handle_lastfm_auth(lastfm_username):
             "Lastfm Authentication is not available! You may contact the admin(s).",
             "error",
         )
-        return redirect(url_for("user.user_settings", username=current_user.username))
-
-    if not lastfm_username:
-        flash("Last.fm username is required.", "error")
         return redirect(url_for("user.user_settings", username=current_user.username))
 
     # Fetch the service dynamically by name
@@ -56,11 +54,20 @@ def handle_lastfm_auth(lastfm_username):
     if user_service:
         flash("You have already linked Last.fm.", "success")
     else:
+        # Try to fetch the user profile with provided username in the form
+        result = lastfm.get_user_profile(lastfm_username)
+        if "error" in result:
+            flash(result.get("error") + " Make sure the username is correct!", "error")
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
+
         # Create a new entry for Last.fm
         user_service = UserService(
-            user_id=current_user.user_id,
+            user_id=user.user_id,
             service_id=lastfm_service.service_id,
-            username=lastfm_username,
+            username=result.get("username"),
+            profile_url=result.get("url"),
         )
         user_service.user = user
         user_service.service = lastfm_service
@@ -95,6 +102,8 @@ def get_lastfm_activity():
     activity = lastfm.get_currently_playing(username=lastfm_service.username)
     if activity:
         is_playing = activity.is_playing
+        timestamp = activity.timestamp
+
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = request.host_url.rstrip("/")  # Remove trailing slash
         search_url = f"{base_url}/api/search/{activity.artists}:{activity.title}"
@@ -104,6 +113,7 @@ def get_lastfm_activity():
             response = requests.get(search_url, params={"all": ""})
             activity = response.json()
             activity["is_playing"] = is_playing
+            activity["timestamp"] = timestamp
         except requests.RequestException as e:
             logger.warning(e)
             activity = asdict(activity)
@@ -119,6 +129,10 @@ def get_lastfm_activity():
             )
         )
         if existing_data:
-            return existing_data.data
+            data = existing_data.data
+            data["is_playing"] = False
+            if not data.get("timestamp"):
+                data["timestamp"] = existing_data.updated_at.timestamp()
+            return data
 
     return None

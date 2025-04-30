@@ -20,8 +20,7 @@
 {% block content %}
 
 <form action="" method="post">
-
-    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
     {% if form.__class__.__name__ == "EmptyForm" %}
     <fieldset>
         <label>
@@ -68,7 +67,8 @@
     <small id="password-helper">{{ error }}</small>
     {% endfor %}
     {{ form.submit() }}
-    <a role="button" class="secondary custom-btn" href="{{ url_for('user.user_settings', username=current_user.username) }}">
+    <a role="button" class="secondary custom-btn"
+        href="{{ url_for('user.user_settings', username=current_user.username) }}">
         Cancel
     </a>
     {% endif %}
@@ -77,7 +77,8 @@
 
 
 {% if form.__class__.__name__ == "EmptyForm" %}
-<button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete Account</button>
+<button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete
+    Account</button>
 {% endif %}
 
 {% if form.__class__.__name__ == "EmptyForm" %}
@@ -93,26 +94,32 @@
         </a>
         <div>
             <strong>{{ service.service_name }}</strong>
-            {% if service.service_id in user_services %}
-            <p class="status connected">Linked</p>
+            {% if service.service_id in connected_services %}
+            {% for user_service in user.user_services %}
+            {% if service.service_id == user_service.service_id %}
+            <p class="status connected">Linked: <a href="{{ user_service.profile_url }}" rel="noopener noreferrer"
+                    target="_blank">{{ user_service.username }}</a></p>
+            {% endif %}
+            {% endfor %}
+
             {% else %}
             <p class="status not-connected">Not Linked</p>
             {% endif %}
         </div>
     </div>
     <div class="service-action">
-        {% if service.service_id in user_services %}
+        {% if service.service_id in connected_services %}
         <!-- Unlink Form -->
         <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post">
-            {{ form.hidden_tag() }}
+            {{ form.csrf_token(id="csrf_token_unlink_" +  service.service_name.lower() ) }}
             <button type="submit" class="secondary unlink">Unlink</button>
         </form>
         {% else %}
         <!-- Link Form -->
         <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post">
-            {{ form.hidden_tag() }}
-            <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm'
-                %} data-service="lastfm" data-target="lastfm-link-modal" {% endif %}>Link</button>
+            {{ form.csrf_token(id="csrf_token_link_" +  service.service_name.lower() ) }}
+            <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm' %}
+                data-service="lastfm" data-target="lastfm-link-modal" {% endif %}>Link</button>
         </form>
         {% endif %}
     </div>
@@ -127,7 +134,7 @@
 
 {% if services %}
 {% for service in services %}
-{% if service.service_id not in user_services and service.service_name.lower() == 'lastfm' %}
+{% if service.service_id not in connected_services and service.service_name.lower() == 'lastfm' %}
 <dialog id="lastfm-link-modal">
     <article>
         <header>
@@ -135,13 +142,12 @@
             <button id="close-lastfm-modal" aria-label="Close" class="close" data-target="lastfm-link-modal"></button>
         </header>
         <form action="{{ url_for('auth_services.service', service='lastfm') }}" method="post">
-            {{ form.hidden_tag() }}
+            {{ lastfm_link_form.csrf_token(id="csrf_token_lastfm") }}
             <fieldset>
-                <label for="lastfm-username">Last.fm Username</label>
-                <input type="text" id="lastfm-username" name="lastfm_username" placeholder="Enter your Last.fm username"
-                    required autofocus>
+                {{ lastfm_link_form.lastfm_username.label }}
+                {{ lastfm_link_form.lastfm_username(placeholder="Enter your Last.fm username", autofocus="") }}
             </fieldset>
-            <p><button type="submit" class="primary">Link</button></p>
+            {{ lastfm_link_form.submit() }}
         </form>
     </article>
 </dialog>
@@ -149,22 +155,31 @@
 {% endfor %}
 {% endif %}
 
+{% if form.__class__.__name__ == "EmptyForm" %}
 <dialog id="delete-account-modal">
     <article>
         <header>
             <h3>Confirm Account Deletion</h3>
         </header>
         <p>To delete your account, please enter your password below:</p>
-        <form method="post" action="">
-            {{ form.hidden_tag() }}
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+        <form action="" method="post">
+            {{ delete_account_form.csrf_token(id="csrf_token_account_del") }}
+            {{ delete_account_form.password.label }}
+            {% if delete_account_form.password.errors %}
+            {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+            {% else %}
+            {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+            {% endif %}
+            {% for error in delete_account_form.password.errors %}
+            <small id="password-helper">{{ error }}</small>
+            {% endfor %}
             <footer role="group">
-                {{ form.submit(value="Delete Account", class="secondary delete-account") }}
+                {{ delete_account_form.submit(id="delete_account", class="secondary delete-account") }}
                 <button id="close-account-del" type="button" data-target="delete-account-modal">Cancel</button>
             </footer>
         </form>
     </article>
 </dialog>
+{% endif %}
 
 {% endblock %}

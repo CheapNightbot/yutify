@@ -7,6 +7,7 @@ from app.auth_services import bp
 from app.auth_services.lastfm import handle_lastfm_auth
 from app.auth_services.spotify import handle_spotify_auth, handle_spotify_callback
 from app.models import Service, UserService
+from app.user.forms import LastfmLinkForm
 
 
 @bp.route("/<service>", methods=["POST"])
@@ -16,8 +17,14 @@ def service(service):
         case "spotify":
             return handle_spotify_auth()
         case "lastfm":
-            lastfm_username = request.form.get("lastfm_username")
-            return handle_lastfm_auth(lastfm_username)
+            form = LastfmLinkForm()
+            if form.validate_on_submit():
+                lastfm_username = form.lastfm_username.data.strip()
+                return handle_lastfm_auth(lastfm_username)
+            flash("Last.fm username is required.", "error")
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
         case _:
             abort(404, description="Service not supported.")
 

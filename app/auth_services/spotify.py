@@ -49,6 +49,11 @@ class MySpotifyAuth(SpotifyAuth):
                 user_service.expires_in = token_info.get("expires_in")
                 user_service.requested_at = token_info.get("requested_at")
             else:
+                result = self.get_user_profile()
+                if result:
+                    username = result.get("display_name")
+                    profile_url = result.get("url")
+
                 # Create a new entry if it doesn't exist
                 user_service = UserService(
                     user_id=user.user_id,
@@ -57,6 +62,8 @@ class MySpotifyAuth(SpotifyAuth):
                     refresh_token=token_info.get("refresh_token"),
                     expires_in=token_info.get("expires_in"),
                     requested_at=token_info.get("requested_at"),
+                    username=username,
+                    profile_url=profile_url,
                 )
                 user_service.user = user
                 user_service.service = spotify_service
@@ -102,6 +109,7 @@ except SpotifyAuthException as e:
     logger.warning(
         f"Spotify Authentication will be disabled due to following error:\n{e}"
     )
+    spotify_auth = None
 
 
 def handle_spotify_auth():
@@ -207,6 +215,8 @@ def get_spotify_activity():
     activity = spotify_auth.get_currently_playing()
     if activity:
         is_playing = activity.is_playing
+        timestamp = activity.timestamp
+
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = request.host_url.rstrip("/")  # Remove trailing slash
         search_url = f"{base_url}/api/search/{activity.artists}:{activity.title}"
@@ -216,6 +226,7 @@ def get_spotify_activity():
             response = requests.get(search_url, params={"all": ""})
             activity = response.json()
             activity["is_playing"] = is_playing
+            activity["timestamp"] = timestamp
         except requests.RequestException as e:
             logger.warning(e)
             activity = asdict(activity)
@@ -233,6 +244,8 @@ def get_spotify_activity():
         if existing_data:
             data = existing_data.data
             data["is_playing"] = False
+            if not data.get("timestamp"):
+                data["timestamp"] = existing_data.updated_at.timestamp()
             return data
 
     return None

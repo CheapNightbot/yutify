@@ -7,6 +7,11 @@ from app import db
 from app.models import User
 
 
+class DeleteAccountForm(FlaskForm):
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Delete Account")
+
+
 class EmptyForm(FlaskForm):
     submit = SubmitField("Submit")
 
@@ -52,3 +57,8 @@ class EditAccountForm(FlaskForm):
 
         if not user.check_password(password.data):
             raise ValidationError("Incorrect password.")
+
+
+class LastfmLinkForm(FlaskForm):
+    lastfm_username = StringField("Last.fm Username", validators=[DataRequired()])
+    submit = SubmitField("Link")
