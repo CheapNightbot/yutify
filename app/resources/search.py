@@ -124,14 +124,14 @@ class YutifySearch(Resource):
         match platform:
             case "deezer":
                 with deezer.Deezer() as deezer_music:
-                    result = deezer_music.search(artist, song)
+                    result = deezer_music.search(artist, song, 3)
             case "itunes" | "apple-music":
                 with itunes.Itunes() as apple_music:
-                    result = apple_music.search(artist, song)
+                    result = apple_music.search(artist, song, 3)
             case "kkbox":
                 try:
                     with MyKKBox() as kkbox_music:
-                        result = kkbox_music.search(artist, song)
+                        result = kkbox_music.search(artist, song, 3)
                 except KKBoxException as e:
                     logger.warning(
                         f"KKBox Search is disabled due to following error:\n{e}"
@@ -140,7 +140,7 @@ class YutifySearch(Resource):
             case "spotify":
                 try:
                     with MySpotify() as spotify_music:
-                        result = spotify_music.search(artist, song)
+                        result = spotify_music.search(artist, song, 3)
                 except SpotifyException as e:
                     logger.warning(
                         f"Spotify Search is disabled due to following error:\n{e}"
@@ -148,12 +148,12 @@ class YutifySearch(Resource):
                     result = None
             case "ytmusic":
                 with musicyt.MusicYT() as youtube_music:
-                    result = youtube_music.search(artist, song)
+                    result = youtube_music.search(artist, song, 3)
             case _:
                 with yutipy_music.YutipyMusic(
                     custom_kkbox_class=MyKKBox, custom_spotify_class=MySpotify
                 ) as py_music:
-                    result = py_music.search(artist, song)
+                    result = py_music.search(artist, song, 3)
 
         if not result:
             result = {
