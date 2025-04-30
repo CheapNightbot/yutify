@@ -34,7 +34,7 @@ def user_profile(username):
     form = EditProfileForm(obj=user)
     if form.validate_on_submit():
         current_user.name = form.name.data.strip()
-        current_user.about_me = form.about_me.data.strip()
+        current_user.about_me = " ".join(form.about_me.data.split())
         db.session.commit()
         flash("Your changes have been saved.", "success")
         return redirect(url_for("user.user_profile", username=current_user.username))
