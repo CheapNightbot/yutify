@@ -244,67 +244,76 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        try {
-            const response = await fetch('/api/me?type=html');
-            if (response.ok && response.status === 200) {
-                const html = await response.text();
+        const response = await fetch('/api/me?type=html');
 
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
+        if (!response.ok) {
+            activityContainer.removeAttribute('aria-busy');
+            const errorData = await response.json();
+            activityContainer.innerHTML = `<p class="text-in-article">${errorData.error}</p>`;
+            throw new Error();
+        }
 
-                const newContent = tempDiv.querySelector('#user-activity');
-                if (newContent) {
-                    // Extract relevant data from the current and new activity
-                    const currentStatusTxt = activityContainer.querySelector('.user-activity-header h4')?.textContent.trim();
-                    const newStatusTxt = newContent.querySelector('.user-activity-header h4')?.textContent.trim();
+        if (response.ok) {
+            const html = await response.text();
 
-                    const currentTitle = activityContainer.querySelector('.music-info span.ellipsis')?.textContent.trim();
-                    const newTitle = newContent.querySelector('.music-info span.ellipsis')?.textContent.trim();
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
 
-                    const currentArtists = activityContainer.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
-                    const newArtists = newContent.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
+            const newContent = tempDiv.querySelector('#user-activity');
+            if (newContent) {
+                // Extract relevant data from the current and new activity
+                const currentStatusTxt = activityContainer.querySelector('.user-activity-header h4')?.textContent.trim();
+                const newStatusTxt = newContent.querySelector('.user-activity-header h4')?.textContent.trim();
 
-                    // Compare relevant fields to avoid unnecessary updates
-                    if (currentStatusTxt !== newStatusTxt) {
-                        const currentStatusEl = activityContainer.querySelector('.user-activity-header');
-                        if (currentStatusEl) {
-                            currentStatusEl.replaceWith(newContent.querySelector('.user-activity-header'));
-                        }
-                    }
+                const currentTitle = activityContainer.querySelector('.music-info span.ellipsis')?.textContent.trim();
+                const newTitle = newContent.querySelector('.music-info span.ellipsis')?.textContent.trim();
 
-                    if (currentTitle !== newTitle || currentArtists !== newArtists) {
-                        // Add fade-out effect before replacing content
-                        activityContainer.style.opacity = '0';
-                        setTimeout(() => {
-                            activityContainer.replaceWith(newContent);
-                            newContent.style.opacity = '0';
-                            setTimeout(() => {
-                                newContent.style.opacity = '1';
-                            }, 50); // Delay to trigger fade-in
-                        }, 300); // Match fade-out duration
+                const currentArtists = activityContainer.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
+                const newArtists = newContent.querySelector('.music-info:nth-child(3) span.ellipsis')?.textContent.trim();
+
+                // Compare relevant fields to avoid unnecessary updates
+                if (currentStatusTxt !== newStatusTxt) {
+                    const currentStatusEl = activityContainer.querySelector('.user-activity-header');
+                    if (currentStatusEl) {
+                        currentStatusEl.replaceWith(newContent.querySelector('.user-activity-header'));
                     }
                 }
-            } else {
-                activityContainer.removeAttribute('aria-busy');
-                const errorData = await response.json();
-                activityContainer.innerHTML = `<p>${errorData.error}</p>`;
+
+                if (currentTitle !== newTitle || currentArtists !== newArtists) {
+                    // Add fade-out effect before replacing content
+                    activityContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        activityContainer.replaceWith(newContent);
+                        newContent.style.opacity = '0';
+                        setTimeout(() => {
+                            newContent.style.opacity = '1';
+                        }, 50); // Delay to trigger fade-in
+                    }, 300); // Match fade-out duration
+                }
             }
-        } catch (error) {
-            // ignore the error ~
         }
     }
 
     // Fetch activity every 10 seconds normally, but retry in 30 seconds if an error occurs
-    let fetchInterval = 10000;
+    let fetchInterval = 10000; // Normal interval is 10 seconds
+
     function startFetchingActivity() {
-        fetchActivity().catch(() => {
-            fetchInterval = 60000; // Increase interval to 60 seconds on error
-        }).finally(() => {
-            setTimeout(startFetchingActivity, fetchInterval);
-            fetchInterval = 10000; // Reset interval to normal after retry
-        });
+        fetchActivity()
+            .then(() => {
+                // Reset interval to normal after a successful fetch
+                fetchInterval = 10000;
+            })
+            .catch(() => {
+                // Increase interval to 60 seconds on error
+                fetchInterval = 60000;
+            })
+            .finally(() => {
+                // Schedule the next fetch
+                setTimeout(startFetchingActivity, fetchInterval);
+            });
     }
 
+    // Start the fetching process
     startFetchingActivity();
 
     if (accountDelBtm) {
