@@ -294,6 +294,8 @@ class UserData(Base):
 
         if existing_data:
             existing_data.data = new_data
+            so.attributes.flag_modified(existing_data, "data")
+            db.session.add(existing_data)
         else:
             new_entry = UserData(
                 user_service_id=user_service.user_services_id,

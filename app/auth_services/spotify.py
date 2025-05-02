@@ -246,6 +246,9 @@ def get_spotify_activity():
             data["is_playing"] = False
             if not data.get("timestamp"):
                 data["timestamp"] = existing_data.updated_at.timestamp()
+
+            # Update the activity in the database
+            UserData.insert_or_update_user_data(spotify_service, data)
             return data
 
     return None
