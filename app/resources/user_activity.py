@@ -74,7 +74,7 @@ class UserActivityResource(Resource):
 
         return activity  # defualt // json
 
-    def _fetch_activity(spotify_activity_func, lastfm_activity_func):
+    def _fetch_activity(self, spotify_activity_func, lastfm_activity_func):
         """
         Fetch and prioritize activity from Spotify and Last.fm.
 
