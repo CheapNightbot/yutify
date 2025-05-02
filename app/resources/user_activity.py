@@ -15,36 +15,6 @@ from app.models import UserService
 RATELIMIT = os.environ.get("RATELIMIT")
 
 
-def fetch_activity(spotify_activity_func, lastfm_activity_func):
-    """
-    Fetch and prioritize activity from Spotify and Last.fm.
-
-    Parameters
-    ----------
-    spotify_activity_func (callable)
-        Function to fetch Spotify activity.
-    lastfm_activity_func (callable)
-        Function to fetch Last.fm activity.
-
-    Returns
-    -------
-    dict
-        The selected activity or None if no activity is found.
-    """
-
-    spotify_activity = spotify_activity_func() if spotify_activity_func else None
-    lastfm_activity = lastfm_activity_func() if lastfm_activity_func else None
-
-    if spotify_activity and lastfm_activity:
-        return random.choice([spotify_activity, lastfm_activity])
-    elif spotify_activity:
-        return spotify_activity
-    elif lastfm_activity:
-        return lastfm_activity
-
-    return None
-
-
 class UserActivityResource(Resource):
 
     @limiter.limit(RATELIMIT if RATELIMIT else "")
@@ -83,7 +53,7 @@ class UserActivityResource(Resource):
             case "lastfm":
                 activity = lastfm_activity() if lastfm_activity else None
             case _:
-                activity = fetch_activity(spotify_activity, lastfm_activity)
+                activity = self._fetch_activity(spotify_activity, lastfm_activity)
 
         if not activity:
             return {
@@ -103,3 +73,32 @@ class UserActivityResource(Resource):
             return make_response(html, 200, {"Content-Type": "text/html"})
 
         return activity  # defualt // json
+
+    def _fetch_activity(spotify_activity_func, lastfm_activity_func):
+        """
+        Fetch and prioritize activity from Spotify and Last.fm.
+
+        Parameters
+        ----------
+        spotify_activity_func (callable)
+            Function to fetch Spotify activity.
+        lastfm_activity_func (callable)
+            Function to fetch Last.fm activity.
+
+        Returns
+        -------
+        dict
+            The selected activity or None if no activity is found.
+        """
+
+        spotify_activity = spotify_activity_func() if spotify_activity_func else None
+        lastfm_activity = lastfm_activity_func() if lastfm_activity_func else None
+
+        if spotify_activity and lastfm_activity:
+            return random.choice([spotify_activity, lastfm_activity])
+        elif spotify_activity:
+            return spotify_activity
+        elif lastfm_activity:
+            return lastfm_activity
+
+        return None
