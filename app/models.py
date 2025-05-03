@@ -3,29 +3,30 @@ import os
 import random
 from datetime import datetime, timezone
 from pathlib import Path
-from time import time
 from typing import Optional
 
-import jwt
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from cryptography.exceptions import InvalidKey
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 from flask import current_app
-from flask_login import UserMixin
+from flask_security.models import fsqla_v3 as fsqla
 from sqlalchemy.event import listens_for
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import db, login
+from app import db
 
 load_dotenv()
 
 key = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
 cipher = Fernet(key)
 
+fsqla.FsModels.set_db_info(
+    db, user_table_name="users", role_table_name="roles", webauthn_table_name="webauthn"
+)
 
-class Base(db.Model):
+
+class BaseWithTimestamp(db.Model):
     """Base model that includes created_at and updated_at timestamps."""
 
     __abstract__ = True
@@ -36,6 +37,18 @@ class Base(db.Model):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc),
     )
+
+
+@listens_for(BaseWithTimestamp, "before_update", named=True)
+def update_timestamps(mapper, connection, target):
+    """Update the updated_at timestamp before an update."""
+    target.updated_at = datetime.now(timezone.utc)
+
+
+class BaseWithEncryption(db.Model):
+    """Base model that includes encrypt and decrypt static methods."""
+
+    __abstract__ = True
 
     @staticmethod
     def encrypt(data: str):
@@ -60,32 +73,35 @@ class Base(db.Model):
             return None
 
 
-@listens_for(Base, "before_update", named=True)
-def update_timestamps(mapper, connection, target):
-    """Update the updated_at timestamp before an update."""
-    target.updated_at = datetime.now(timezone.utc)
+class Role(db.Model, fsqla.FsRoleMixin):
+    """Role model representing a role in the application."""
+
+    __tablename__ = "roles"
 
 
-class User(UserMixin, Base):
+class WebAuthn(db.Model, fsqla.FsWebAuthnMixin):
+    """WebAuthn model representing web auth information associated with a user."""
+
+    __tablename__ = "webauthn"
+
+
+class User(BaseWithEncryption, fsqla.FsUserMixin):
     """User model representing a user in the application."""
 
     __tablename__ = "users"
-    user_id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    name: so.Mapped[str] = so.mapped_column(sa.String(64))
-    username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
-    _avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64))
-    _email: so.Mapped[str] = so.mapped_column(sa.String(128), unique=True)
-    _email_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), index=True)
-    password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
+    name: so.Mapped[str] = so.mapped_column(sa.String(32), nullable=False)
+    about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
+    _avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
+    _email: so.Mapped[str] = so.mapped_column(
+        sa.String(256), unique=True, nullable=False
+    )
+    _email_hash: so.Mapped[str] = so.mapped_column(
+        sa.String(256), index=True, nullable=False
+    )
 
     # Relationship to UserService: one-to-many
     user_services: so.Mapped[list["UserService"]] = so.relationship(
         "UserService", back_populates="user", cascade="all, delete", uselist=True
-    )
-
-    about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(128))
-    last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
-        default=lambda: datetime.now(timezone.utc)
     )
 
     @property
@@ -105,11 +121,12 @@ class User(UserMixin, Base):
         self._email_hash = self.hash_email(value)
         self._email = self.encrypt(value)
 
+    @staticmethod
+    def hash_email(email):
+        return hashlib.sha256(email.encode()).hexdigest()
+
     def __repr__(self):
         return f"<User: {self.name}@{self.username}>"
-
-    def get_id(self):
-        return str(self.user_id)
 
     def set_avatar(self):
         """Set a random avatar from the available icons in the static folder."""
@@ -136,54 +153,23 @@ class User(UserMixin, Base):
             current_app.logger.error(f"Error setting avatar: {e}")
             self._avatar = None  # Fallback if something goes wrong
 
-    @staticmethod
-    def hash_email(email):
-        return hashlib.sha256(email.encode()).hexdigest()
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def get_reset_password_token(self, expires_in=600):
-        return jwt.encode(
-            {"reset_password": self.user_id, "exp": time() + expires_in},
-            current_app.config["SECRET_KEY"],
-            algorithm="HS256",
-        )
-
-    @staticmethod
-    def verify_reset_password_token(token):
-        try:
-            user_id = jwt.decode(
-                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
-            )["reset_password"]
-        except Exception:
-            return
-        return db.session.get(User, user_id)
-
-
-@login.user_loader
-def load_user(user_id):
-    return db.session.get(User, int(user_id))
-
-
-class Service(Base):
+class Service(BaseWithEncryption, BaseWithTimestamp):
     """Service model representing an external service integrated with the application."""
 
     __tablename__ = "services"
-    service_id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    service_name: so.Mapped[str] = so.mapped_column(
-        sa.String(64), index=True, unique=True
+    id: so.Mapped[int] = so.mapped_column(sa.Integer(), primary_key=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(64), index=True, unique=True)
+    url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), nullable=True)
+    # Whether this service supports user authentication
+    is_private: so.Mapped[bool] = so.mapped_column(sa.Boolean(), default=False)
+    _access_token: so.Mapped[Optional[str]] = so.mapped_column(
+        sa.String(256), nullable=True
     )
-    service_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-    is_private: so.Mapped[bool] = so.mapped_column(
-        default=False
-    )  # Whether supports user authentication
-    _access_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
-    expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
-    requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
+    expires_in: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer(), nullable=True)
+    requested_at: so.Mapped[Optional[float]] = so.mapped_column(
+        sa.Float(), nullable=True
+    )
 
     # Relationship to UserService: one-to-many
     user_services: so.Mapped["UserService"] = so.relationship(
@@ -201,27 +187,29 @@ class Service(Base):
         self._access_token = self.encrypt(value)
 
     def __repr__(self):
-        return f"<Service: {self.service_name}>"
+        return f"<Service: {self.name}@{self.url}>"
 
 
-class UserService(Base):
+class UserService(BaseWithEncryption, BaseWithTimestamp):
     """UserService model representing the association between users and services."""
 
     __tablename__ = "user_services"
-    user_services_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    id: so.Mapped[int] = so.mapped_column(sa.Integer(), primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey(User.user_id, ondelete="CASCADE"), index=True
+        sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
     )
     service_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey(Service.service_id, ondelete="CASCADE"), index=True
+        sa.ForeignKey(Service.id, ondelete="CASCADE"), index=True
+    )
+    username: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), nullable=True)
+    profile_url: so.Mapped[Optional[str]] = so.mapped_column(
+        sa.String(256), nullable=True
     )
     _access_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
     _refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
-    expires_in: so.Mapped[Optional[int]] = so.mapped_column(nullable=True)
-    requested_at: so.Mapped[Optional[float]] = so.mapped_column(nullable=True)
-    username: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
-    profile_url: so.Mapped[Optional[str]] = so.mapped_column(
-        sa.String(64), nullable=True
+    expires_in: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer(), nullable=True)
+    requested_at: so.Mapped[Optional[float]] = so.mapped_column(
+        sa.Float(), nullable=True
     )
 
     __table_args__ = (
@@ -267,13 +255,13 @@ class UserService(Base):
         self._refresh_token = self.encrypt(value)
 
 
-class UserData(Base):
+class UserData(BaseWithTimestamp):
     """UserData model representing the most recent music metadata for a user's listening activity."""
 
     __tablename__ = "users_data"
-    user_data_id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    id: so.Mapped[int] = so.mapped_column(sa.Integer(), primary_key=True)
     user_service_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey(UserService.user_services_id, ondelete="CASCADE"), unique=True
+        sa.ForeignKey(UserService.id, ondelete="CASCADE"), unique=True
     )
     data: so.Mapped[dict] = so.mapped_column(sa.JSON)
 
