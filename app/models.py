@@ -1,5 +1,5 @@
-import hashlib
 import os
+import pickle
 import random
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,15 +18,39 @@ from app import db
 
 load_dotenv()
 
-key = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
-cipher = Fernet(key)
+
+class Encrypted(sa.TypeDecorator):
+    impl = sa.Text
+    cache_ok = True
+
+    def __init__(self, encryption_key: str = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.encryption_key = encryption_key or os.environ.get("ENCRYPTION_KEY")
+        self.fernet = Fernet(self.encryption_key.encode())
+
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            try:
+                value = self.fernet.encrypt(pickle.dumps(value)).decode()
+            except InvalidKey as e:
+                current_app.logger.critical(f"Encryption Error: {e}")
+        return value
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            try:
+                value = pickle.loads(self.fernet.decrypt(value.encode()))
+            except InvalidKey as e:
+                current_app.logger.warning(f"Decryption Error: {e}")
+        return value
+
 
 fsqla.FsModels.set_db_info(
     db, user_table_name="users", role_table_name="roles", webauthn_table_name="webauthn"
 )
 
 
-class BaseWithTimestamp(db.Model):
+class Base(db.Model):
     """Base model that includes created_at and updated_at timestamps."""
 
     __abstract__ = True
@@ -39,38 +63,10 @@ class BaseWithTimestamp(db.Model):
     )
 
 
-@listens_for(BaseWithTimestamp, "before_update", named=True)
+@listens_for(Base, "before_update", named=True)
 def update_timestamps(mapper, connection, target):
     """Update the updated_at timestamp before an update."""
     target.updated_at = datetime.now(timezone.utc)
-
-
-class BaseWithEncryption(db.Model):
-    """Base model that includes encrypt and decrypt static methods."""
-
-    __abstract__ = True
-
-    @staticmethod
-    def encrypt(data: str):
-        if not data:
-            return None
-
-        try:
-            return cipher.encrypt(data.encode())
-        except InvalidKey as e:
-            print(f"Encryption error: {e}")
-            return None
-
-    @staticmethod
-    def decrypt(data: str):
-        if not data:
-            return None
-
-        try:
-            return cipher.decrypt(data).decode()
-        except InvalidKey as e:
-            print(f"Decryption error: {e}")
-            return None
 
 
 class Role(db.Model, fsqla.FsRoleMixin):
@@ -85,45 +81,20 @@ class WebAuthn(db.Model, fsqla.FsWebAuthnMixin):
     __tablename__ = "webauthn"
 
 
-class User(BaseWithEncryption, fsqla.FsUserMixin):
+class User(db.Model, fsqla.FsUserMixin):
     """User model representing a user in the application."""
 
     __tablename__ = "users"
-    name: so.Mapped[str] = so.mapped_column(sa.String(32), nullable=False)
+    name: so.Mapped[str] = so.mapped_column(sa.String(64), nullable=True)
     about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
-    _avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
-    _email: so.Mapped[str] = so.mapped_column(
-        sa.String(256), unique=True, nullable=False
-    )
-    _email_hash: so.Mapped[str] = so.mapped_column(
-        sa.String(256), index=True, nullable=False
-    )
+    avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
+    username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True, nullable=False)
+    email: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255), unique=True, nullable=True)
 
     # Relationship to UserService: one-to-many
     user_services: so.Mapped[list["UserService"]] = so.relationship(
         "UserService", back_populates="user", cascade="all, delete", uselist=True
     )
-
-    @property
-    def avatar(self):
-        return self._avatar
-
-    @property
-    def email(self):
-        return self.decrypt(self._email)
-
-    @property
-    def email_hash(self):
-        return self._email_hash
-
-    @email.setter
-    def email(self, value):
-        self._email_hash = self.hash_email(value)
-        self._email = self.encrypt(value)
-
-    @staticmethod
-    def hash_email(email):
-        return hashlib.sha256(email.encode()).hexdigest()
 
     def __repr__(self):
         return f"<User: {self.name}@{self.username}>"
@@ -147,14 +118,14 @@ class User(BaseWithEncryption, fsqla.FsUserMixin):
             selected_avatar = random.choice(available_avatars)
 
             # Set the avatar property (store only the relative path)
-            self._avatar = f"icons/{selected_avatar}"
+            self.avatar = f"icons/{selected_avatar}"
 
         except Exception as e:
-            current_app.logger.error(f"Error setting avatar: {e}")
-            self._avatar = None  # Fallback if something goes wrong
+            current_app.logger.warning(f"Error setting avatar: {e}")
+            self.avatar = "favicon.svg"  # Fallback if something goes wrong
 
 
-class Service(BaseWithEncryption, BaseWithTimestamp):
+class Service(Base):
     """Service model representing an external service integrated with the application."""
 
     __tablename__ = "services"
@@ -163,8 +134,8 @@ class Service(BaseWithEncryption, BaseWithTimestamp):
     url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256), nullable=True)
     # Whether this service supports user authentication
     is_private: so.Mapped[bool] = so.mapped_column(sa.Boolean(), default=False)
-    _access_token: so.Mapped[Optional[str]] = so.mapped_column(
-        sa.String(256), nullable=True
+    access_token: so.Mapped[Optional[str]] = so.mapped_column(
+        Encrypted(), nullable=True
     )
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer(), nullable=True)
     requested_at: so.Mapped[Optional[float]] = so.mapped_column(
@@ -178,19 +149,11 @@ class Service(BaseWithEncryption, BaseWithTimestamp):
         cascade="all, delete",
     )
 
-    @property
-    def access_token(self):
-        return self.decrypt(self._access_token)
-
-    @access_token.setter
-    def access_token(self, value):
-        self._access_token = self.encrypt(value)
-
     def __repr__(self):
         return f"<Service: {self.name}@{self.url}>"
 
 
-class UserService(BaseWithEncryption, BaseWithTimestamp):
+class UserService(Base):
     """UserService model representing the association between users and services."""
 
     __tablename__ = "user_services"
@@ -205,8 +168,8 @@ class UserService(BaseWithEncryption, BaseWithTimestamp):
     profile_url: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(256), nullable=True
     )
-    _access_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
-    _refresh_token: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=True)
+    access_token: so.Mapped[str] = so.mapped_column(Encrypted(), nullable=True)
+    refresh_token: so.Mapped[str] = so.mapped_column(Encrypted(), nullable=True)
     expires_in: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer(), nullable=True)
     requested_at: so.Mapped[Optional[float]] = so.mapped_column(
         sa.Float(), nullable=True
@@ -238,24 +201,8 @@ class UserService(BaseWithEncryption, BaseWithTimestamp):
             f"requested_at={self.requested_at}>"
         )
 
-    @property
-    def access_token(self):
-        return self.decrypt(self._access_token)
 
-    @access_token.setter
-    def access_token(self, value):
-        self._access_token = self.encrypt(value)
-
-    @property
-    def refresh_token(self):
-        return self.decrypt(self._refresh_token)
-
-    @refresh_token.setter
-    def refresh_token(self, value):
-        self._refresh_token = self.encrypt(value)
-
-
-class UserData(BaseWithTimestamp):
+class UserData(Base):
     """UserData model representing the most recent music metadata for a user's listening activity."""
 
     __tablename__ = "users_data"

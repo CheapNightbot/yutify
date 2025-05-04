@@ -1,17 +1,18 @@
 """initial migration
 
-Revision ID: 32230eeca3ea
+Revision ID: 6db1ebf1724a
 Revises:
-Create Date: 2025-05-04 00:45:29.214503
+Create Date: 2025-05-05 03:26:18.297407
 
 """
-from alembic import op
+import flask_security as fs
 import sqlalchemy as sa
-import flask_security
+from alembic import op
 
+import app.models as mo
 
 # revision identifiers, used by Alembic.
-revision = '32230eeca3ea'
+revision = '6db1ebf1724a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,7 +24,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=80), nullable=False),
     sa.Column('description', sa.String(length=255), nullable=True),
-    sa.Column('permissions', flask_security.datastore.AsaList(), nullable=True),
+    sa.Column('permissions', fs.datastore.AsaList(), nullable=True),
     sa.Column('update_datetime', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
@@ -33,7 +34,7 @@ def upgrade():
     sa.Column('name', sa.String(length=64), nullable=False),
     sa.Column('url', sa.String(length=256), nullable=True),
     sa.Column('is_private', sa.Boolean(), nullable=False),
-    sa.Column('_access_token', sa.String(length=256), nullable=True),
+    sa.Column('access_token', mo.Encrypted(), nullable=True),
     sa.Column('expires_in', sa.Integer(), nullable=True),
     sa.Column('requested_at', sa.Float(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
@@ -45,40 +46,36 @@ def upgrade():
 
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=32), nullable=False),
+    sa.Column('name', sa.String(length=64), nullable=True),
     sa.Column('about_me', sa.String(length=64), nullable=True),
-    sa.Column('_avatar', sa.String(length=64), nullable=True),
-    sa.Column('username', sa.String(length=255), nullable=True),
-    sa.Column('_email', sa.String(length=256), nullable=False),
-    sa.Column('_email_hash', sa.String(length=256), nullable=False),
+    sa.Column('avatar', sa.String(length=64), nullable=True),
+    sa.Column('username', sa.String(length=64), nullable=False),
+    sa.Column('email', sa.String(length=255), nullable=True),
     sa.Column('password', sa.String(length=255), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=False),
-    sa.Column('fs_webauthn_user_handle', sa.String(length=64), nullable=True),
-    sa.Column('mf_recovery_codes', flask_security.datastore.AsaList(), nullable=True),
-    sa.Column('us_phone_number', sa.String(length=128), nullable=True),
-    sa.Column('us_totp_secrets', sa.Text(), nullable=True),
-    sa.Column('fs_uniquifier', sa.String(length=64), nullable=False),
     sa.Column('confirmed_at', sa.DateTime(), nullable=True),
     sa.Column('last_login_at', sa.DateTime(), nullable=True),
     sa.Column('current_login_at', sa.DateTime(), nullable=True),
     sa.Column('last_login_ip', sa.String(length=64), nullable=True),
     sa.Column('current_login_ip', sa.String(length=64), nullable=True),
     sa.Column('login_count', sa.Integer(), nullable=True),
+    sa.Column('fs_uniquifier', sa.String(length=64), nullable=False),
     sa.Column('tf_primary_method', sa.String(length=64), nullable=True),
+    sa.Column('mf_recovery_codes', fs.datastore.AsaList(), nullable=True),
     sa.Column('tf_totp_secret', sa.String(length=255), nullable=True),
+    sa.Column('us_totp_secrets', sa.Text(), nullable=True),
     sa.Column('tf_phone_number', sa.String(length=128), nullable=True),
+    sa.Column('us_phone_number', sa.String(length=128), nullable=True),
+    sa.Column('fs_webauthn_user_handle', sa.String(length=64), nullable=True),
     sa.Column('create_datetime', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('update_datetime', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('_email'),
+    sa.UniqueConstraint('email'),
     sa.UniqueConstraint('fs_uniquifier'),
     sa.UniqueConstraint('fs_webauthn_user_handle'),
     sa.UniqueConstraint('us_phone_number'),
     sa.UniqueConstraint('username')
     )
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_users__email_hash'), ['_email_hash'], unique=False)
-
     op.create_table('roles_users',
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('role_id', sa.Integer(), nullable=True),
@@ -91,8 +88,8 @@ def upgrade():
     sa.Column('service_id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=256), nullable=True),
     sa.Column('profile_url', sa.String(length=256), nullable=True),
-    sa.Column('_access_token', sa.String(length=256), nullable=True),
-    sa.Column('_refresh_token', sa.String(length=256), nullable=True),
+    sa.Column('access_token', mo.Encrypted(), nullable=True),
+    sa.Column('refresh_token', mo.Encrypted(), nullable=True),
     sa.Column('expires_in', sa.Integer(), nullable=True),
     sa.Column('requested_at', sa.Float(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
@@ -111,7 +108,7 @@ def upgrade():
     sa.Column('credential_id', sa.LargeBinary(length=1024), nullable=False),
     sa.Column('public_key', sa.LargeBinary(), nullable=False),
     sa.Column('sign_count', sa.Integer(), nullable=True),
-    sa.Column('transports', flask_security.datastore.AsaList(), nullable=True),
+    sa.Column('transports', fs.datastore.AsaList(), nullable=True),
     sa.Column('backup_state', sa.Boolean(), nullable=False),
     sa.Column('device_type', sa.String(length=64), nullable=False),
     sa.Column('extensions', sa.String(length=255), nullable=True),
@@ -152,9 +149,6 @@ def downgrade():
 
     op.drop_table('user_services')
     op.drop_table('roles_users')
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_users__email_hash'))
-
     op.drop_table('users')
     with op.batch_alter_table('services', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_services_name'))
