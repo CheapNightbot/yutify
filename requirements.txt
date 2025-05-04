@@ -1,3 +1,4 @@
+celery==5.5.2
 cryptography==44.0.2
 Flask==3.1.0
 Flask-Caching==2.3.1
@@ -5,7 +6,7 @@ flask-cors==5.0.1
 Flask-Limiter[redis]==3.12
 Flask-Migrate==4.1.0
 Flask-RESTful==0.3.10
-flask-security[common,fsqla,mfa]==5.6.1
+Flask-Security[common,fsqla,mfa]==5.6.2
 Flask-SQLAlchemy==3.1.1
 python-dotenv==1.1.0
 requests==2.32.3
