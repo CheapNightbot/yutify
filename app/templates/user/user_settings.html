@@ -1,3 +1,4 @@
+{% set title = title|default('Settings') %}
 {% extends "base.html" %}
 {% block metadata %}
 <meta property="og:url" content="https://yutify.onrender.com/">
@@ -13,12 +14,16 @@
 <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
 {% block header %}
-<h1>{{ title }}</h1>
+<h1 id="header-title">{{ title }}</h1>
 {% endblock %}
 
 {% block content %}
-
+<main class="container">
 <form action="" method="post">
     {{ form.csrf_token }}
     {% if form.__class__.__name__ == "EmptyForm" %}
@@ -87,16 +92,16 @@
 {% for service in services %}
 <article class="service-item">
     <div class="service-info">
-        <a href="{{ service.service_url }}" rel="noopener noreferrer" target="_blank">
+        <a href="{{ service.url }}" rel="noopener noreferrer" target="_blank">
             <img class="service-logo"
-                src="{{ url_for('static', filename='logos/' + service.service_name.lower() + '.svg') }}"
-                alt="{{ service.service_name }} Logo">
+                src="{{ url_for('static', filename='logos/' + service.name.lower() + '.svg') }}"
+                alt="{{ service.name }} Logo">
         </a>
         <div>
-            <strong>{{ service.service_name }}</strong>
-            {% if service.service_id in connected_services %}
+            <strong>{{ service.name }}</strong>
+            {% if service.id in connected_services %}
             {% for user_service in user.user_services %}
-            {% if service.service_id == user_service.service_id %}
+            {% if service.id == user_service.service_id %}
             <p class="status connected">Linked: <a href="{{ user_service.profile_url }}" rel="noopener noreferrer"
                     target="_blank">{{ user_service.username }}</a></p>
             {% endif %}
@@ -108,17 +113,17 @@
         </div>
     </div>
     <div class="service-action">
-        {% if service.service_id in connected_services %}
+        {% if service.id in connected_services %}
         <!-- Unlink Form -->
-        <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post">
-            {{ form.csrf_token(id="csrf_token_unlink_" +  service.service_name.lower() ) }}
+        <form action="{{ url_for('auth_services.unlink', service=service.name.lower()) }}" method="post">
+            {{ form.csrf_token(id="csrf_token_unlink_" +  service.name.lower() ) }}
             <button type="submit" class="secondary unlink">Unlink</button>
         </form>
         {% else %}
         <!-- Link Form -->
-        <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post">
-            {{ form.csrf_token(id="csrf_token_link_" +  service.service_name.lower() ) }}
-            <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm' %}
+        <form action="{{ url_for('auth_services.service', service=service.name.lower()) }}" method="post">
+            {{ form.csrf_token(id="csrf_token_link_" +  service.name.lower() ) }}
+            <button type="submit" class="primary link" {% if service.name.lower()=='lastfm' %}
                 data-service="lastfm" data-target="lastfm-link-modal" {% endif %}>Link</button>
         </form>
         {% endif %}
@@ -134,7 +139,7 @@
 
 {% if services %}
 {% for service in services %}
-{% if service.service_id not in connected_services and service.service_name.lower() == 'lastfm' %}
+{% if service.id not in connected_services and service.name.lower() == 'lastfm' %}
 <dialog id="lastfm-link-modal">
     <article>
         <header>
@@ -181,5 +186,5 @@
     </article>
 </dialog>
 {% endif %}
-
+</main>
 {% endblock %}

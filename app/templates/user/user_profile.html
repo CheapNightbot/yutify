@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block content %}
-
+<main class="container">
 <article class="user-activity-container" aria-busy="true"></article>
 
 {% if user == current_user %}
@@ -70,4 +70,5 @@
     </article>
 </dialog>
 {% endif %}
+</main>
 {% endblock %}

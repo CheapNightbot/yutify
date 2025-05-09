@@ -1,3 +1,4 @@
+{% set title = title|default('Terms of Service') %}
 {% extends "base.html" %}
 {% block metadata %}
 <meta property="og:url" content="https://yutify.onrender.com/privacy-policy">
@@ -13,7 +14,12 @@
 <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
 {% block content %}
+<main class="container">
 <div>
     <h1>Terms of Service</h1>
 
@@ -100,4 +106,5 @@
 
     <p>Last updated: [Insert Date]</p>
 </div>
+</main>
 {% endblock %}
