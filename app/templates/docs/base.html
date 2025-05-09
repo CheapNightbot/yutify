@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/docs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: API Documentation">
+<meta property="og:description" content="Read the docs for yutify, simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/docs">
+<meta name="twitter:title" content="yutify: API Documentation">
+<meta name="twitter:description" content="Read the docs for yutify, simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block content %}
+<section class="sect-with-aside">
+    <aside>
+        <nav id="aside-nav">
+            <ul>
+                <li class="{% if aside_active == 'overview' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.index') }}">Overview</a>
+                </li>
+                <li class="{% if aside_active == 'get-started' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.get_started') }}">Get Started</a>
+                </li>
+                <li class="{% if aside_active == 'tutorials' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.tutorials') }}">Tutorials</a>
+                </li>
+                <li>REFERENCE</li>
+                <li class="{% if aside_active == 'search' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.reference_search') }}">Search</a>
+                </li>
+                <li class="{% if aside_active == 'activity' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.reference_activity') }}">Activity</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    {% block main %}{% endblock %}
+</section>
+{% endblock %}

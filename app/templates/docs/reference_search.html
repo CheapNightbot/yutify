@@ -1,0 +1,123 @@
+{% extends "docs/base.html" %}
+
+{% block nav_title %}
+API Documentation
+{% endblock %}
+
+{% block main %}
+<main class="container">
+    <h1>Search for Music</h1>
+    <p>Get information about music that match provided artist and song name.</p>
+
+    <div class="flex-row padding-r">
+        <select id="methods" name="methods">
+            <option value="get">GET</option>
+        </select>
+        <input class="endpoint" type="text" value="/api/search/&lt;ARTIST&gt;:&lt;SONG&gt;" readonly>
+        <span data-tooltip="Authorization Not Required" data-placement="left">
+            <i class="fa-solid fa-unlock"></i>
+        </span>
+    </div>
+
+    <h3>Request</h3>
+    <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>&lt;ARTIST&gt;</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Required</mark>
+            </div>
+        </div>
+        <p>
+            The artist(s) name to search for.
+        </p>
+        <p>
+            <b>Example</b>: <code>/api/search/<ins>Madeon</ins>:Song</code>
+        </p>
+    </div>
+
+    <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>&lt;Song&gt;</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Required</mark>
+            </div>
+        </div>
+        <p>
+            The song or album name to search for.
+        </p>
+        <p>
+            <b>Example</b>: <code>/api/search/Madeon:<ins>Shelter</ins></code>
+        </p>
+    </div>
+
+    <blockquote>The artist name and song name must be separated by a colon (<code>:</code>)</blockquote>
+
+    <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>platform</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            The music platform to retrieve music information/metadata from.
+        </p>
+        <p>
+            If provided, music information/metadata will be retrieved (only) from this music platform. If it is not
+            provided or does not contain allowed values, it will be simply ignored and music information/metadata will
+            be retrieved from all the available music platforms.
+        </p>
+        <p>
+            <b>Default</b>: <code>"all"</code> <br>
+            <b>Allowed values</b>: <code>"all"</code>, <code>"deezer"</code>, <code>"itunes"</code> (or
+            <code>"apple-music"</code>),
+            <code>"kkbox"</code>, <code>"spotify"</code>, <code>"ytmusic"</code> <br>
+            <b>Note</b>: The query parameter for <code>platform</code> is NOT <code>?platform=&lt;name&gt;</code>
+            &lpar;key-value pair&rpar;! Instead, you just provide the platform name directly as a key. <br>
+            <b>Example</b>: <code>/api/search/Madeon:Shelter<ins>?spotify</ins></code>
+        </p>
+    </div>
+
+    <div class="flex-row left">
+        <h3>Response</h3>
+        <nav role="tab-control">
+            <ul>
+                <li><label for="tab1">200</label></li>
+                <li><label for="tab2">404</label></li>
+                <li><label for="tab3">429</label></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="container">
+        <div role="tabs">
+            <section>
+                <input hidden="hidden" type="radio" name="tabs" id="tab1" checked="checked" />
+                <figure>
+                    Search response
+                </figure>
+
+                <input hidden="hidden" type="radio" name="tabs" id="tab2" />
+
+                <figure>
+                    Music not found
+                </figure>
+
+                <input hidden="hidden" type="radio" name="tabs" id="tab3" />
+
+                <figure>
+                    Rate limit exceeded
+                </figure>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

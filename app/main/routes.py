@@ -1,19 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 import requests
 from flask import render_template, request
-from flask_login import current_user
 
-from app import db
 from app.main import bp
 from app.main.forms import SearchForm
-
-
-@bp.before_request
-def before_request():
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.now(timezone.utc)
-        db.session.commit()
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -81,14 +72,6 @@ def index():
     )
 
 
-@bp.route("/docs")
-def docs():
-    """Render the API documentation page."""
-    return render_template(
-        "docs.html", title="Docs", active_page="docs", year=datetime.today().year
-    )
-
-
 @bp.route("/privacy-policy")
 def privacy_policy():
     """Render the privacy policy page."""
@@ -98,6 +81,7 @@ def privacy_policy():
         active_page="privacy_policy",
         year=datetime.today().year,
     )
+
 
 @bp.route("/terms-of-service")
 def terms_of_service():
