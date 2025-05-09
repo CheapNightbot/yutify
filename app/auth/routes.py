@@ -7,12 +7,17 @@ from app.auth import bp
 @bp.route("/login")  # , methods=["GET", "POST"]
 def login():
     """
-    View to handle redirect to user's profile after successful login handled in `security.login` view.
+    View to handle redirect to user's profile or admin page after successful login handled in `security.login` view.
 
     set this to `SECURITY_POST_LOGIN_VIEW` variable in config.py for Flask-Security.
     """
     if current_user.is_authenticated:
-        flash("You've logged in successfully!", "success")
+        flash(
+            f"Welcome {current_user.name}, you've been logged in successfully!",
+            "success",
+        )
+        if current_user.has_role("admin"):
+            return redirect(url_for("admin.dashboard"))
         return redirect(url_for("user.user_profile", username=current_user.username))
 
 
@@ -27,7 +32,7 @@ def logout():
     """
     if current_user.is_authenticated:
         return redirect(url_for("security.logout"))
-    flash("You have been logged out successfully!", "success")
+    flash("You've been logged out successfully!", "success")
     return redirect(url_for("main.index"))
 
 
