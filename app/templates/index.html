@@ -13,20 +13,36 @@
 <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 
+{% block nav_title %}
+yutify
+{% endblock %}
+
 {% block header %}
-<h1 id="brand">yutify</h1>
+
+<h1 id="header-title" class="brand">yutify</h1>
 <p>Simple RESTful API for retrieving music info for various steaming platforms.</p>
 {% endblock %}
 
 {% block content %}
+<main class="container">
+<div id="app">
+    <div class="flex-row margin-btm">
+        <select class="customized" name="methods" id="methods">
+            <option value="get">GET</option>
+        </select>
+        <a :href="computedEndpoint" class="endpoint" @click="copyEndpointUrl">
+            <input name="endpoint-url" class="endpoint-url" type="text" readonly :value="computedEndpoint" />
+        </a>
+    </div>
+
 <form id="search-form" action="" method="post" class="content">
     {{ form.hidden_tag() }}
     {% if artist %}
-    {{ form.artist(autofocus="", placeholder="Enter artist name", value=artist, aria_label="Artist Name", aria_describedby="artist-helper") }}
+    <input v-model="artist" aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" value="{{ artist }}">
     {% elif form.artist.errors %}
-    {{ form.artist(autofocus="", placeholder="Enter artist name", aria_label="Artist Name", aria_describedby="artist-helper", aria_invalid="true") }}
+    <input v-model="artist" aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" aria-invalid="true">
     {% else %}
-    {{ form.artist(autofocus="", placeholder="Enter artist name", aria_label="Artist Name", aria_describedby="artist-helper") }}
+    <input v-model="artist" aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search">
     {% endif %}
     {% for error in form.artist.errors %}
     <small id="artist-helper">{{ error }}</small>
@@ -34,24 +50,24 @@
 
     <fieldset role="search" aria-describedby="song-helper">
         {% if song %}
-        {{ form.song(placeholder="Enter song name", value=song, aria_label="Song Name", aria_describedby="song-helper") }}
+        <input v-model="song" aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" value="{{ song }}">
         {% elif form.song.errors %}
-        {{ form.song(placeholder="Enter song name", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+        <input v-model="song" aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" aria-invalid="true">
         {% else %}
-        {{ form.song(placeholder="Enter song name", aria_label="Song Name", aria_describedby="song-helper") }}
+        <input v-model="song" aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search">
         {% endif %}
         <button type="submit" id="search">Search</button>
     </fieldset>
-    {% if form.song.errors %}
-    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
-    {% else %}
-    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper") }}
-    {% endif %}
-    {% for error in form.song.errors %}
-    <small id="song-helper">{{ error }}</small>
-    {% endfor %}
 </form>
-
+{% if form.song.errors %}
+{{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+{% else %}
+{{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper") }}
+{% endif %}
+{% for error in form.song.errors %}
+<small id="song-helper">{{ error }}</small>
+{% endfor %}
+</div>
 <article class="result-container">
     {% if album_art %}
     <img src="{{ album_art }}" alt="{{ title_ }} - Album Art" class="album-art">
@@ -186,5 +202,9 @@
         </article>
     </dialog>
 </article>
+</main>
+{% endblock %}
 
+{% block script %}
+<script src="{{ url_for('static', filename='index.js')}}" type="module"></script>
 {% endblock %}
