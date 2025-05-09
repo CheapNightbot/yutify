@@ -3,7 +3,7 @@ import random
 
 import sqlalchemy as sa
 from flask import abort, make_response, render_template, request
-from flask_login import current_user
+from flask_security import current_user
 from flask_restful import Resource
 
 from app import db
@@ -25,7 +25,7 @@ class UserActivityResource(Resource):
 
         # Fetch user services from the database
         user_services = db.session.scalars(
-            sa.select(UserService).where(UserService.user_id == current_user.user_id)
+            sa.select(UserService).where(UserService.user_id == current_user.id)
         ).all()
 
         if not user_services:
@@ -35,7 +35,7 @@ class UserActivityResource(Resource):
 
         # Determine which services are linked
         linked_services = {
-            service.service.service_name.lower(): service for service in user_services
+            service.service.name.lower(): service for service in user_services
         }
 
         # Fetch activity from each service
