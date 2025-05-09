@@ -8,6 +8,10 @@ from app.errors import bp
 def page_not_found(error):
     return render_template("errors/404.html"), 404
 
+@bp.app_errorhandler(403)
+def page_not_found(error):
+    return render_template("errors/403.html"), 403
+
 
 @bp.app_errorhandler(500)
 def internal_server_error(error):
