@@ -14,7 +14,7 @@ from flask import current_app
 from flask_security.models import fsqla_v3 as fsqla
 from sqlalchemy.event import listens_for
 
-from app import db
+from app.extensions import db
 
 load_dotenv()
 

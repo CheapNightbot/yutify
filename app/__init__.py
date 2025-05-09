@@ -4,27 +4,17 @@ from logging.handlers import RotatingFileHandler, SMTPHandler
 
 from dotenv import load_dotenv
 from flask import Flask, current_app
-from flask_caching import Cache
-from flask_cors import CORS
-from flask_migrate import Migrate
-from flask_restful import Api
-from flask_security import hash_password
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
-from flask_mailman import Mail
+from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 
-from app.common.utils import mask_string, relative_timestamp
+from app.common.helpers import mask_string, relative_timestamp
+from app.common.utils import MyUsernameUtil
+from app.email import MyMailUtil
+from app.extensions import api, cache, cors, csrf, db, mail, migrate
+from app.models import Role, User, WebAuthn
 from config import Config
+from app.auth.forms import RegistrationForm
 
 load_dotenv()
-
-db = SQLAlchemy()
-migrate = Migrate()
-api = Api()
-cors = CORS()
-cache = Cache()
-csrf = CSRFProtect()
-mail = Mail()
 
 
 def create_app(config_class=Config):
@@ -45,7 +35,10 @@ def create_app(config_class=Config):
         if app.config.get("MAIL_SERVER"):
             auth = None
             if app.config.get("MAIL_USERNAME") or app.config.get("MAIL_PASSWORD"):
-                auth = (app.config.get("MAIL_USERNAME"), app.config.get("MAIL_PASSWORD"))
+                auth = (
+                    app.config.get("MAIL_USERNAME"),
+                    app.config.get("MAIL_PASSWORD"),
+                )
             secure = None
             if app.config.get("MAIL_USE_TLS"):
                 secure = ()
@@ -86,8 +79,16 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
-    mail.init_app(app)
     # csrf.init_app(app)
+    mail.init_app(app)
+    user_datastore = SQLAlchemyUserDatastore(db, User, Role, WebAuthn)
+    app.security = Security(
+        app,
+        user_datastore,
+        mail_util_cls=MyMailUtil,
+        username_util_cls=MyUsernameUtil,
+        register_form=RegistrationForm,
+    )
     api.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -143,7 +144,6 @@ def create_app(config_class=Config):
         app.logger.info("Ratelimit is disabled.")
 
     from app.limiter import limiter
-
     limiter.init_app(app)
 
     return app
@@ -160,7 +160,9 @@ def create_users():
         # Create default roles and permissions
         security.datastore.find_or_create_role(
             name="admin",
-            permissions=sorted({"admin-read", "admin-write", "user-read", "user-write"}),
+            permissions=sorted(
+                {"admin-read", "admin-write", "user-read", "user-write"}
+            ),
         )
         security.datastore.find_or_create_role(
             name="user", permissions=sorted({"user-read", "user-write"})
@@ -179,8 +181,6 @@ def create_users():
                 roles=["admin"],
             )
         admin_user.set_avatar()
-
         security.datastore.db.session.commit()
-
 
 from app import models
