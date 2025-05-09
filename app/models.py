@@ -89,7 +89,6 @@ class User(db.Model, fsqla.FsUserMixin):
     about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
     avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True, nullable=False)
-    email: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255), unique=True, nullable=True)
 
     # Relationship to UserService: one-to-many
     user_services: so.Mapped[list["UserService"]] = so.relationship(

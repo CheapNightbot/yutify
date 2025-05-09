@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 6db1ebf1724a
+Revision ID: 73a4b0ac5707
 Revises:
-Create Date: 2025-05-05 03:26:18.297407
+Create Date: 2025-05-05 04:36:10.417603
 
 """
 import flask_security as fs
@@ -12,7 +12,7 @@ from alembic import op
 import app.models as mo
 
 # revision identifiers, used by Alembic.
-revision = '6db1ebf1724a'
+revision = '73a4b0ac5707'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -50,7 +50,7 @@ def upgrade():
     sa.Column('about_me', sa.String(length=64), nullable=True),
     sa.Column('avatar', sa.String(length=64), nullable=True),
     sa.Column('username', sa.String(length=64), nullable=False),
-    sa.Column('email', sa.String(length=255), nullable=True),
+    sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=False),
     sa.Column('confirmed_at', sa.DateTime(), nullable=True),
