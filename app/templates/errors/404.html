@@ -1,3 +1,4 @@
+{% set title = title|default('404 - NOT FOUND') %}
 {% extends "base.html" %}
 {% block metadata %}
 <meta property="og:url" content="https://yutify.onrender.com/404">
@@ -16,8 +17,16 @@
 {% endblock %}
 
 {% block content %}
-<h1>404 - NOT FOUND</h1>
-<p>It seems like you're lost... Why not go back <a href="{{ url_for('main.index') }}">Home</a>?</p>
-<p>Or if you think we have made some mistake, feel free to open an issue on Github <a
-        href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !</p>
-{% endblock %}
+<main class="container">
+<div class="grid error-container">
+    <img src="{{ url_for('static', filename='errors/404.gif') }}" alt="imnota-cat-fubuki" width="404px">
+    <div>
+        <h1>{{ title }}</h1>
+        <p>It seems like you're lost... Why not go back <a href="{{ url_for('main.index') }}">Home</a>?</p>
+        <p>Or if you think we have made some mistake, feel free to open an issue on Github
+            <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !
+        </p>
+    </div>
+</div>
+</main>
+{% endblock content %}

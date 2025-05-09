@@ -1,3 +1,4 @@
+{% set title = title|default('500 - Internal Server Error') %}
 {% extends "base.html" %}
 {% block metadata %}
 <meta property="og:url" content="https://yutify.onrender.com/404">
@@ -15,10 +16,21 @@
 <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 
+{% block header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
 {% block content %}
-<h1>500 - Internal Server Error</h1>
-<p>Oops~ the server fainted. Why not go back <a href="{{ url_for('main.index') }}">Home</a>?</p>
-<p>If this keep happening, feel free to open an issue on Github <a
-        href="https://github.com/CheapNightbot/yutify/issues">HERE</a> ! Make sure to provide the input that caused this
-    error.</p>
+<main class="container">
+<div class="grid error-container">
+    <img class="error-img" src="{{ url_for('static', filename='errors/500.gif') }}" alt="anime-satania" width="500px">
+    <div>
+        <p>Oops~ the server fainted. Why not go back <a href="{{ url_for('main.index') }}">Home</a>?</p>
+        <p>If this keep happening, feel free to open an issue on Github
+            <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !
+            Make sure to provide the input that caused this error.
+        </p>
+    </div>
+</div>
+</main>
 {% endblock %}
