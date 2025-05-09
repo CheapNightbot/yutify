@@ -24,11 +24,12 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # MAIL_SERVER = os.environ.get("MAIL_SERVER")
-    # MAIL_PORT = int(os.environ.get("MAIL_PORT") or 25)
-    # MAIL_USE_TLS = bool(os.environ.get("MAIL_USE_TLS", 0))
-    # MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
-    # MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
+    MAIL_DEBUG = False
+    MAIL_SERVER = os.environ.get("MAIL_SERVER")
+    MAIL_PORT = int(os.environ.get("MAIL_PORT") or 25)
+    MAIL_USE_TLS = bool(os.environ.get("MAIL_USE_TLS", 0))
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
     PORT = os.environ.get("PORT", 5000)
     LOG_TO_STDOUT = bool(os.environ.get("LOG_TO_STDOUT", 0))
@@ -55,21 +56,17 @@ class Config:
     SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS")}
     SECURITY_TOTP_ISSUER = APP
 
-    # # ### Core - rarely need changing ###
-    # SECURITY_CLI_USERS_NAME = False
-    # SECURITY_CLI_ROLES_NAME = False
+    # ### Core - rarely need changing ###
+    SECURITY_CLI_USERS_NAME = False
+    SECURITY_CLI_ROLES_NAME = False
 
     # # ### Login/Logout ###
-    # SECURITY_LOGOUT_METHODS = ["POST"]
     SECURITY_POST_LOGIN_VIEW = "auth.login"
     SECURITY_POST_LOGOUT_VIEW = "auth.logout"
-    # # SECURITY_UNAUTHORIZED_VIEW = callable !!
-    # SECURITY_LOGIN_USER_TEMPLATE = "auth/login.html"
-    # # SECURITY_VERIFY_TEMPLATE = "verify.html" !
 
     # # ### Registerable ###
     SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", 0))
-    SECURITY_SEND_REGISTER_EMAIL = False
+    SECURITY_SEND_REGISTER_EMAIL = True
     # SECURITY_REGISTER_USER_TEMPLATE = "auth/signup.html"
     SECURITY_REGISTER_URL = "/signup"
     SECURITY_USERNAME_ENABLE = True
@@ -88,6 +85,9 @@ class Config:
     SECURITY_RESET_URL = "/reset-password"
     # # SECURITY_RESET_PASSWORD_TEMPLATE = "reset_password.html"
     # # SECURITY_FORGOT_PASSWORD_TEMPLATE = "forgot_password.html"
+
+    # ### Confirmable ###
+    SECURITY_CONFIRMABLE = True
 
     # # ### Two-Factor ###
     SECURITY_TWO_FACTOR = True
