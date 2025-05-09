@@ -1,8 +1,14 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 import sqlalchemy as sa
-from flask import abort, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required, logout_user
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
+from flask_security import (
+    auth_required,
+    current_user,
+    logout_user,
+    permissions_required,
+)
+from flask_security.utils import verify_password
 
 from app import db
 from app.models import Service, User, UserService
@@ -16,15 +22,9 @@ from app.user.forms import (
 )
 
 
-@bp.before_request
-def before_request():
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.now(timezone.utc)
-        db.session.commit()
-
-
 @bp.route("/<username>", methods=["GET", "POST"])
-@login_required
+@auth_required()
+@permissions_required("user-read", "user-write")
 def user_profile(username):
     """Render user profile page."""
     if username != current_user.username:
@@ -50,12 +50,14 @@ def user_profile(username):
 
 
 @bp.route("/<username>/settings", methods=["GET", "POST"])
-@login_required
+@auth_required()
+@permissions_required("user-read", "user-write")
 def user_settings(username):
     """Render user settings page."""
     if username != current_user.username:
         abort(404)
 
+    security = current_app.security
     user = db.first_or_404(sa.select(User).where(User.username == username))
     # Query all services that are not private. Service marked as private assumed to not have user authorization.
     services = db.session.scalars(
@@ -63,9 +65,7 @@ def user_settings(username):
     ).all()
     # Query user services for the current user
     user_services = db.session.scalars(
-        sa.select(UserService.service_id).where(
-            UserService.user_id == current_user.user_id
-        )
+        sa.select(UserService.service_id).where(UserService.user_id == current_user.id)
     ).all()
 
     # Create a dictionary to mark connected services
@@ -128,16 +128,16 @@ def user_settings(username):
         and request.form["submit"] == "Delete Account"
     ):
         if delete_account_form.validate_on_submit():
-            password = request.form.get("password")
-            if not password or not user.check_password(password):
+            password = security.password_util.normalize(request.form.get("password"))
+            if not password or not verify_password(password, user.password):
                 flash("Invalid password. Please try again.", "error")
                 return redirect(
                     url_for("user.user_settings", username=current_user.username)
                 )
 
             logout_user()
-            db.session.delete(user)
-            db.session.commit()
+            security.datastore.delete_user(user)
+            security.datastore.db.session.commit()
             flash("Your account has been deleted.", "success")
             return redirect(url_for("main.index"))
 

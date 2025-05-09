@@ -4,7 +4,7 @@ from dataclasses import asdict
 import requests
 import sqlalchemy as sa
 from flask import flash, redirect, request, session, url_for
-from flask_login import current_user
+from flask_security import current_user
 from yutipy.spotify import SpotifyAuth, SpotifyAuthException
 
 from app import db
@@ -29,7 +29,7 @@ class MySpotifyAuth(SpotifyAuth):
         if user:
             # Fetch the service dynamically by name
             spotify_service = db.session.scalar(
-                sa.select(Service).where(Service.service_name.ilike("spotify"))
+                sa.select(Service).where(Service.name.ilike("spotify"))
             )
             if not spotify_service:
                 logger.warning("Service 'Spotify' not found in the database.")
@@ -38,8 +38,8 @@ class MySpotifyAuth(SpotifyAuth):
             # Check if the UserService entry already exists
             user_service = db.session.scalar(
                 sa.select(UserService)
-                .where(UserService.user_id == user.user_id)
-                .where(UserService.service_id == spotify_service.service_id)
+                .where(UserService.user_id == user.id)
+                .where(UserService.service_id == spotify_service.id)
             )
 
             if user_service:
@@ -56,8 +56,8 @@ class MySpotifyAuth(SpotifyAuth):
 
                 # Create a new entry if it doesn't exist
                 user_service = UserService(
-                    user_id=user.user_id,
-                    service_id=spotify_service.service_id,
+                    user_id=user.id,
+                    service_id=spotify_service.id,
                     access_token=token_info.get("access_token"),
                     refresh_token=token_info.get("refresh_token"),
                     expires_in=token_info.get("expires_in"),
@@ -80,7 +80,7 @@ class MySpotifyAuth(SpotifyAuth):
         if user:
             # Fetch the service dynamically by name
             spotify_service = db.session.scalar(
-                sa.select(Service).where(Service.service_name.ilike("spotify"))
+                sa.select(Service).where(Service.name.ilike("spotify"))
             )
             if not spotify_service:
                 logger.warning("Service 'Spotify' not found in the database.")
@@ -89,8 +89,8 @@ class MySpotifyAuth(SpotifyAuth):
             # Check if the UserService entry exists
             user_service = db.session.scalar(
                 sa.select(UserService)
-                .where(UserService.user_id == user.user_id)
-                .where(UserService.service_id == spotify_service.service_id)
+                .where(UserService.user_id == user.id)
+                .where(UserService.service_id == spotify_service.id)
             )
 
             if user_service:
@@ -125,7 +125,7 @@ def handle_spotify_auth():
 
     # Fetch the service dynamically by name
     service = db.session.scalar(
-        sa.select(Service).where(Service.service_name.ilike("spotify"))
+        sa.select(Service).where(Service.name.ilike("spotify"))
     )
     if not service:
         flash("Service 'Spotify' not found in the database.", "error")
@@ -133,8 +133,8 @@ def handle_spotify_auth():
 
     user_service = db.session.scalar(
         sa.select(UserService)
-        .where(UserService.user_id == current_user.user_id)
-        .where(UserService.service_id == service.service_id)
+        .where(UserService.user_id == current_user.id)
+        .where(UserService.service_id == service.id)
     )
 
     if user_service:
@@ -202,8 +202,8 @@ def get_spotify_activity():
         sa.select(UserService)
         .join(Service)
         .where(
-            UserService.user_id == current_user.user_id,
-            Service.service_name.ilike("spotify"),
+            UserService.user_id == current_user.id,
+            Service.name.ilike("spotify"),
         )
     )
 
@@ -237,9 +237,7 @@ def get_spotify_activity():
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(
-            sa.select(UserData).where(
-                UserData.user_service_id == spotify_service.user_services_id
-            )
+            sa.select(UserData).where(UserData.user_service_id == spotify_service.id)
         )
         if existing_data:
             data = existing_data.data

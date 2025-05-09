@@ -1,0 +1,92 @@
+{% set title = title|default('Sign Up') %}
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="yutify: Account">
+<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="yutify.onrender.com">
+<meta property="twitter:url" content="https://yutify.onrender.com/">
+<meta name="twitter:title" content="yutify: Login">
+<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+{% endblock %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+{% include "security/_messages.html" %}
+<form action="{{ url_for_security('register') }}" method="post" name="register_user_form" id="register_user_form">
+    {{ register_user_form.hidden_tag() }}
+    <fieldset>
+        {{ register_user_form.name.label }}
+        {% if register_user_form.name.errors %}
+        {{ register_user_form.name(autofocus="", aria_label="Name", aria_describedby="name-helper", aria_invalid="true") }}
+        {% else %}
+        {{ register_user_form.name(autofocus="", aria_label="Name", aria_describedby="name-helper") }}
+        {% endif %}
+        {% for error in register_user_form.name.errors %}
+        <small id="name-helper">{{ error }}</small>
+        {% endfor %}
+
+        {{ register_user_form.username.label }}
+        {% if register_user_form.username.errors %}
+        {{ register_user_form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+        {% else %}
+        {{ register_user_form.username(aria_label="Username", aria_describedby="username-helper") }}
+        {% endif %}
+        {% for error in register_user_form.username.errors %}
+        <small id="username-helper">{{ error }}</small>
+        {% endfor %}
+
+        {{ register_user_form.email.label }}
+        {% if register_user_form.email.errors %}
+        {{ register_user_form.email(aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
+        {% else %}
+        {{ register_user_form.email(aria_label="Email", aria_describedby="email-helper") }}
+        {% endif %}
+        {% for error in register_user_form.email.errors %}
+        <small id="email-helper">{{ error }}</small>
+        {% endfor %}
+
+        <div class="password-box">
+        {{ register_user_form.password.label }}
+        {% if register_user_form.password.errors %}
+        {{ register_user_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+        {% else %}
+        {{ register_user_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+        <small id="password-helper">Use a combination of uppercase and lowercase letters, numbers, and special characters (like !, @, #, $)</small>
+        {% endif %}
+        {% for error in register_user_form.password.errors %}
+        <small id="password-helper">{{ error }}</small>
+        {% endfor %}
+        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+        </div>
+
+        {{ register_user_form.password_confirm.label('Confirm Password') }}
+        {% if register_user_form.password_confirm.errors %}
+        {{ register_user_form.password_confirm(aria_label="Password_confirm", aria_describedby="password_confirm-helper", aria_invalid="true") }}
+        {% else %}
+        {{ register_user_form.password_confirm(aria_label="Password_confirm", aria_describedby="password_confirm-helper password-confirm") }}
+        {% endif %}
+        {% for error in register_user_form.password_confirm.errors %}
+        <small id="password2-helper">{{ error }}</small>
+        {% endfor %}
+        <small id="password-confirm"></small>
+        </div>
+
+    </fieldset>
+    {{ register_user_form.submit(value='Sign Up') }}
+</form>
+<p>Already got an account? <a href="{{ url_for_security('login') }}">Login here!</a></p>
+</main>
+{% endblock content %}

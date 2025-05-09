@@ -4,12 +4,11 @@ from dataclasses import asdict
 import requests
 import sqlalchemy as sa
 from flask import flash, redirect, request, url_for
-from flask_login import current_user
+from flask_security import current_user
 from yutipy.lastfm import LastFm, LastFmException
 
 from app import db
-from app.models import Service, UserData, UserService, User
-
+from app.models import Service, User, UserData, UserService
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
@@ -34,7 +33,7 @@ def handle_lastfm_auth(lastfm_username):
 
     # Fetch the service dynamically by name
     lastfm_service = db.session.scalar(
-        sa.select(Service).where(Service.service_name.ilike("lastfm"))
+        sa.select(Service).where(Service.name.ilike("lastfm"))
     )
     if not lastfm_service:
         flash("Service 'Last.fm' not found in the database.", "error")
@@ -47,8 +46,8 @@ def handle_lastfm_auth(lastfm_username):
     # Check if the UserService entry already exists
     user_service = db.session.scalar(
         sa.select(UserService)
-        .where(UserService.user_id == user.user_id)
-        .where(UserService.service_id == lastfm_service.service_id)
+        .where(UserService.user_id == user.id)
+        .where(UserService.id == lastfm_service.id)
     )
 
     if user_service:
@@ -64,8 +63,8 @@ def handle_lastfm_auth(lastfm_username):
 
         # Create a new entry for Last.fm
         user_service = UserService(
-            user_id=user.user_id,
-            service_id=lastfm_service.service_id,
+            user_id=user.id,
+            service_id=lastfm_service.id,
             username=result.get("username"),
             profile_url=result.get("url"),
         )
@@ -91,8 +90,8 @@ def get_lastfm_activity():
         sa.select(UserService)
         .join(Service)
         .where(
-            UserService.user_id == current_user.user_id,
-            Service.service_name.ilike("lastfm"),
+            UserService.user_id == current_user.id,
+            Service.name.ilike("lastfm"),
         )
     )
 
@@ -124,9 +123,7 @@ def get_lastfm_activity():
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(
-            sa.select(UserData).where(
-                UserData.user_service_id == lastfm_service.user_services_id
-            )
+            sa.select(UserData).where(UserData.user_service_id == lastfm_service.id)
         )
         if existing_data:
             data = existing_data.data
