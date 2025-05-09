@@ -105,6 +105,8 @@ def _mask_with_char_bounds(
 
 
 def relative_timestamp(timestamp):
+    if isinstance(timestamp, datetime):
+        timestamp = timestamp.timestamp()
 
     now = datetime.now(timezone.utc)
     diff = now - datetime.fromtimestamp(timestamp, timezone.utc)
