@@ -61,7 +61,8 @@ class Config:
 
     # # ### Login/Logout ###
     # SECURITY_LOGOUT_METHODS = ["POST"]
-    # SECURITY_POST_LOGIN_VIEW = "/"
+    SECURITY_POST_LOGIN_VIEW = "auth.login"
+    SECURITY_POST_LOGOUT_VIEW = "auth.logout"
     # # SECURITY_UNAUTHORIZED_VIEW = callable !!
     # SECURITY_LOGIN_USER_TEMPLATE = "auth/login.html"
     # # SECURITY_VERIFY_TEMPLATE = "verify.html" !

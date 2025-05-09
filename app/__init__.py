@@ -97,8 +97,8 @@ def create_app(config_class=Config):
     from app.resources import bp as api_bp
     app.register_blueprint(api_bp, url_prefix="/api")
 
-    # from app.auth import bp as auth_bp
-    # app.register_blueprint(auth_bp, url_prefix="/auth")
+    from app.auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix="/auth")
 
     from app.auth_services import bp as auth_services_bp
     app.register_blueprint(auth_services_bp, url_prefix="/auth_services")

@@ -1,60 +1,34 @@
-# from datetime import datetime
-# from urllib.parse import urlparse
+from flask import flash, redirect, url_for
+from flask_security import current_user
 
-# import sqlalchemy as sa
-# from flask import flash, redirect, render_template, request, url_for
-# from flask_login import current_user, login_user, logout_user
-
-# from app import db
-# from app.auth import bp
-# from app.auth.forms import (
-#     LoginForm,
-#     RegistrationForm,
-#     ResetPasswordForm,
-#     ResetPasswordRequestForm,
-# )
-# from app.models import User
+from app.auth import bp
 
 
-# @bp.route("/login", methods=["GET", "POST"])
-# def login():
-#     """Render the login page."""
-#     if current_user.is_authenticated:
-#         return redirect(url_for("user.user_profile", username=current_user.username))
+@bp.route("/login")  # , methods=["GET", "POST"]
+def login():
+    """
+    View to handle redirect to user's profile after successful login handled in `security.login` view.
 
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         user = db.session.scalar(
-#             sa.select(User).where(User.username == form.username.data)
-#         )
-#         if user is None or not user.check_password(form.password.data):
-#             flash("Invalid username or password", "error")
-#             return redirect(url_for("auth.login"))
-#         login_user(user, remember=form.remember_me.data)
-#         next_page = request.args.get("next", "")
-#         next_page = next_page.replace("\\", "")
-#         if (
-#             next_page
-#             and not urlparse(next_page).netloc
-#             and not urlparse(next_page).scheme
-#         ):
-#             return redirect(next_page)
-#         return redirect(url_for("user.user_profile", username=current_user.username))
-
-#     return render_template(
-#         "auth/login.html",
-#         title="Login",
-#         active_page="login",
-#         year=datetime.today().year,
-#         form=form,
-#     )
+    set this to `SECURITY_POST_LOGIN_VIEW` variable in config.py for Flask-Security.
+    """
+    if current_user.is_authenticated:
+        flash("You've logged in successfully!", "success")
+        return redirect(url_for("user.user_profile", username=current_user.username))
 
 
-# @bp.route("/logout")
-# def logout():
-#     logout_user()
-#     flash("You have been logged out successfully!", "success")
-#     return redirect(url_for("main.index"))
+@bp.route("/logout")
+def logout():
+    """
+    View to handle redirect to home page after user logout handled in `security.logout` view with custom flash message.
+
+    If user is logged in, it will redirect back to `security.logout`.
+
+    set this to `SECURITY_POST_LOGOUT_VIEW` variable in config.py for Flask-Security.
+    """
+    if current_user.is_authenticated:
+        return redirect(url_for("security.logout"))
+    flash("You have been logged out successfully!", "success")
+    return redirect(url_for("main.index"))
 
 
 # @bp.route("/signup", methods=["GET", "POST"])
