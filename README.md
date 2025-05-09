@@ -120,7 +120,7 @@ For certain configurations, it relies on environment variables that must be set 
 - Variables for sending emails (used for error logs and password resets):
   - `MAIL_SERVER`: The mail server address (e.g., `smtp.gmail.com`).
   - `MAIL_PORT`: The port to use for the mail server (e.g., `587` for TLS).
-  - `MAIL_USE_TLS`: Whether to use TLS for secure email communication. Set this variable to `1` to enable TLS or omit it to disable TLS.
+  - `MAIL_USE_TLS`: Whether to use TLS for secure email communication. Set this variable to `1` to enable TLS and `0` or omit it to disable TLS.
   - `MAIL_USERNAME`: The email address to use for sending emails.
   - `MAIL_PASSWORD`: The password or app-specific password for the email account.
   - `ADMIN_EMAIL`: The administrator's email address to receive error logs or notifications.
@@ -128,7 +128,7 @@ For certain configurations, it relies on environment variables that must be set 
 - `REDIS_URI`: URI for Redis (used for rate-limiting and caching). If not set:
   - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
   - Without `FLASK_DEBUG` (production mode), caching will be disabled.
-- `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging or omit it to use file based logging.
+- `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging and `0` or omit it to use file based logging.
 
 **3. Run the application**:
 
