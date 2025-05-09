@@ -3,19 +3,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const lyricsModal = document.querySelector("#lyrics");
     const themeBtn = document.querySelector('#themeBtn');
     const themeBtnIcon = document.querySelector('#theme-btn');
-    const brandHeading = document.querySelector('#brand');
-    const brandHeaderText = document.querySelector('.brand');
-    const registerForm = document.querySelector('#register-form');
+    const navTitle = document.querySelector('#nav-title');
+    const headerTitle = document.querySelector('#header-title');
+    const loginForm = document.querySelector('#login_user_form');
+    const registerForm = document.querySelector('#register_user_form');
     const usernameInput = document.querySelector('#username');
     const emailInput = document.querySelector('#email');
     const passwordInput = document.querySelector('#password');
-    const password2Input = document.querySelector('#password2');
-    const passwordStrength = document.querySelector('#password-strength');
+    const passwordConfirmInput = document.querySelector('#password_confirm');
     const passwordConfirm = document.querySelector('#password-confirm');
+    const authKey = document.querySelector('#auth-key');
     const editProfileModal = document.querySelector('#edit-profile-modal');
     const passResetForm = document.querySelector('#reset_password');
     const lastfmLinkModal = document.querySelector('#lastfm-link-modal')
     const accountDelBtm = document.querySelector('.delete-account');
+    const editRoleForm = document.querySelector('[name="edit_role_form"]');
+    const editServicesForm = document.querySelector('[name="edit_service_form"]');
+    const editUserForm = document.querySelector('[name="edit_user_form"]');
+    const tabControl = document.querySelector('[role="tab-control"]');
 
     themeBtn.addEventListener("click", () => {
         const currentIcon = themeBtnIcon.innerText;
@@ -62,22 +67,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    if (brandHeading) {
+    if (headerTitle && navTitle) {
         document.addEventListener('scroll', () => {
             if (window.scrollY > 100) {
-                brandHeading.style.opacity = '0';
-                brandHeaderText.style.visibility = 'visible';
-                brandHeaderText.style.opacity = '1';
+                headerTitle.style.opacity = '0';
+                navTitle.style.visibility = 'visible';
+                navTitle.style.opacity = '1';
             } else {
-                brandHeaderText.style.opacity = '0';
-                brandHeaderText.style.visibility = 'hidden';
-                brandHeading.style.opacity = '1';
+                navTitle.style.opacity = '0';
+                navTitle.style.visibility = 'hidden';
+                headerTitle.style.opacity = '1';
             }
         });
+    } else {
+        navTitle.style.visibility = 'visible';
+        navTitle.style.opacity = '1';
     }
 
-    if (brandHeaderText) {
-        brandHeaderText.addEventListener('click', () => {
+    if (navTitle) {
+        navTitle.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
@@ -200,12 +208,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const confirmPassword = () => {
-        password2Input.addEventListener('input', () => {
-            if (password2Input.value !== passwordInput.value) {
-                password2Input.setAttribute('aria-invalid', 'true');
+        passwordConfirmInput.addEventListener('input', () => {
+            if (passwordConfirmInput.value !== passwordInput.value) {
+                passwordConfirmInput.setAttribute('aria-invalid', 'true');
                 passwordConfirm.textContent = 'Passwords do not match!';
             } else {
-                password2Input.setAttribute('aria-invalid', 'false');
+                passwordConfirmInput.setAttribute('aria-invalid', 'false');
                 passwordConfirm.textContent = '';
             }
 
@@ -217,9 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        password2Input.addEventListener('blur', () => {
-            if (password2Input.getAttribute('aria-invalid') === 'false') {
-                password2Input.removeAttribute('aria-invalid');
+        passwordConfirmInput.addEventListener('blur', () => {
+            if (passwordConfirmInput.getAttribute('aria-invalid') === 'false') {
+                passwordConfirmInput.removeAttribute('aria-invalid');
             }
         });
     }
@@ -228,6 +236,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm || passResetForm) {
         confirmPassword();
     }
+
+    if (loginForm || registerForm || authKey) {
+        const passwordField = document.querySelector("#password, #auth-key");
+        const togglePassword = document.querySelector(".password-toggle-icon i");
+
+        if (passwordField.getAttribute('aria-invalid') === 'true') {
+            togglePassword.style.display = 'none';
+
+            passwordField.addEventListener("input", () => {
+                const passHelper = document.querySelector('#password-helper');
+                if (passHelper) {
+                    if (!registerForm) {
+                        passHelper.innerHTML = '<a href="/reset-password">Forgot Password?</a>';
+                    }
+                }
+                passwordField.removeAttribute('aria-invalid');
+                togglePassword.style.display = 'initial';
+            });
+        }
+
+        togglePassword.addEventListener("click", () => {
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                togglePassword.classList.remove("fa-eye");
+                togglePassword.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                togglePassword.classList.remove("fa-eye-slash");
+                togglePassword.classList.add("fa-eye");
+            }
+        });
+    }
+
 
 
     if (lastfmLinkModal) {
@@ -321,5 +362,105 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeDelAccount = document.querySelector('#close-account-del');
         showDelAccount.addEventListener('click', toggleModal);
         closeDelAccount.addEventListener('click', toggleModal);
+    }
+
+    if (editRoleForm || editServicesForm || editUserForm) {
+        let currentlyEditingRow = null; // Track the currently editing row
+
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const row = event.target.parentElement.parentElement;
+
+                // If another row is being edited, reset it
+                if (currentlyEditingRow && currentlyEditingRow !== row) {
+                    resetRow(currentlyEditingRow);
+                }
+
+                const inputs = row.querySelectorAll("input[type='text'], input[type='url'], input[type='checkbox']");
+                const saveButton = row.querySelector("input[name='edit_service'], input[name='edit_user'], input[name='edit_role']");
+                const editButton = event.target;
+                const cancelButton = row.querySelector(".cancel-btn");
+                const deleteButton = row.querySelector(".delete-btn");
+
+                // Toggle edit mode
+                inputs.forEach(input => { if (input.hasAttribute('readonly')) { input.readOnly = false; } });
+                inputs.forEach(input => { if (input.hasAttribute('disabled')) { input.disabled = false; } });
+
+                // Toggle button visibility
+                saveButton.style.display = "inline-block";
+                cancelButton.style.display = "inline-block";
+                editButton.style.display = "none";
+                deleteButton.style.display = "none";
+
+                // Set focus to the first input field
+                const firstInput = row.querySelector("input[type='text'], input[type='url']");
+                if (firstInput) {
+                    firstInput.focus();
+                }
+
+                // Track the currently editing row
+                currentlyEditingRow = row;
+            });
+        });
+
+        document.querySelectorAll(".cancel-btn").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const row = event.target.parentElement.parentElement;
+                resetRow(row);
+
+                // Clear the currently editing row
+                currentlyEditingRow = null;
+            });
+        });
+
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const name = editRoleForm ? "role" : editServicesForm ? "service" : "user";
+                const confirmation = confirm(`Are you sure you want to delete this ${name}?`);
+                if (!confirmation) {
+                    event.preventDefault(); // Prevent form submission if the user cancels
+                }
+            });
+        });
+
+        function resetRow(row) {
+            const inputs = row.querySelectorAll("input[type='text'], input[type='url'], input[type='checkbox']");
+            const saveButton = row.querySelector("input[name='edit_service'], input[name='edit_user'], input[name='edit_role']");
+            const editButton = row.querySelector(".edit-btn");
+            const cancelButton = row.querySelector(".cancel-btn");
+            const deleteButton = row.querySelector(".delete-btn");
+
+            // Revert inputs to readonly/disabled
+            inputs.forEach(input => {
+                if (input.type === 'text' || input.type === 'url') { input.readOnly = true; }
+                if (input.type === 'checkbox') { input.disabled = true; }
+            });
+
+            // Toggle button visibility
+            saveButton.style.display = "none";
+            cancelButton.style.display = "none";
+            editButton.style.display = "inline-block";
+            deleteButton.style.display = "inline-block";
+        }
+    }
+
+    // source/credit: https://codepen.io/vardumper/pen/VwdJoyE
+    if (tabControl) {
+        const nodeList = document.querySelectorAll('nav[role="tab-control"] label');
+        const eventListenerCallback = setActiveState.bind(null, nodeList);
+
+        nodeList[0].classList.add('active-tab'); /** add active class to first node  */
+
+        nodeList.forEach((node) => {
+            node.addEventListener("click", eventListenerCallback); /** add click event listener to all nodes */
+        });
+
+        /** the click handler */
+        function setActiveState(nodeList, event) {
+            nodeList.forEach((node) => {
+                node.classList.remove("active-tab"); /** remove active class from all nodes */
+            });
+            event.target.classList.add("active-tab"); /* set active class on current node */
+        }
     }
 });

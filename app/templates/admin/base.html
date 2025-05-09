@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="sect-with-aside">
+    <aside>
+        <nav id="aside-nav">
+            <ul>
+                <li>DASHBOARD</li>
+                <li class="{% if aside_active == 'manage-roles'%}aside-active{% endif %}"><a
+                        href="{{ url_for('admin.manage_roles') }}">Manage Roles</a></li>
+                <li class="{% if aside_active == 'manage-users'%}aside-active{% endif %}"><a
+                        href="{{ url_for('admin.manage_users') }}">Manage Users</a></li>
+                <li class="{% if aside_active == 'manage-services'%}aside-active{% endif %}"><a
+                        href="{{ url_for('admin.manage_services') }}">Manage Services</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    {% block main %}{% endblock %}
+</section>
+{% endblock %}

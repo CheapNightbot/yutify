@@ -1,0 +1,79 @@
+{% set title = title|default('Manage Users') %}
+{% extends "admin/base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block main %}
+<main class="container">
+    <div class="overflow-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Roles</th>
+                    <th>2FA Enabled</th>
+                    <th>Registered</th>
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            {% if users %}
+            <tbody>
+                {% for user in users %}
+                {% set form = "edit_user_form_" + user.id | string %}
+                <form action="" method="post" name="edit_user_form" id="{{ form }}">
+                    {{ edit_user_form.csrf_token }}
+                    {{ edit_user_form.user_id(value=user.id) }}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email | mask_string(mask='*', mask_special_char=True, mask_till_char='@', exclude_bounds=True) }}
+                        </td>
+                        <td>
+                            <ul id="roles">
+                                {% for field_name, value in edit_user_form.data.items() %}
+                                {% if field_name == 'roles' %}
+                                {% for role in edit_user_form[field_name] %}
+                                <li>
+
+                                    <label>
+                                        {{ role(id=role.data + user.id | string, checked=user.has_role(role.data), disabled='', form=form) }}
+                                        {{ role.data }}
+                                    </label>
+                                </li>
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ "Yes" if user.tf_primary_method else "No" }}</td>
+                        <td>{{ user.create_datetime | relative_timestamp }}</td>
+                        <td>{{ "Yes" if user.is_active else "No" }}</td>
+                        <td class="flex-column">
+                            <input type="button" class="edit-btn" value="Edit">
+                            {{ edit_user_form.edit_user(class="save-btn", form=form) }}
+                            <input type="button" class="secondary cancel-btn" value="Cancel">
+                            {{ edit_user_form.delete_user(class="secondary delete-btn", form=form) }}
+                        </td>
+                    </tr>
+                </form>
+                {% endfor %}
+            </tbody>
+            {% else %}
+            <tfoot>
+                <tr>
+                    <td>No users found..</td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</main>
+{% endblock %}

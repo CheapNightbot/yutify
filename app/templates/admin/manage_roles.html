@@ -1,0 +1,68 @@
+{% set title = title|default('Manage Roles') %}
+{% extends "admin/base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block main %}
+<main class="container">
+    <div class="overflow-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Permissions</th>
+                    <th></th>
+                </tr>
+                <!-- Add new role -->
+                <form action="" method="post" name="add_role_form" id="add_role_form">
+                    {{ add_role_form.csrf_token }}
+                    <tr>
+                        <td></td>
+                        <td>{{ add_role_form.name }}</td>
+                        <td>{{ add_role_form.description }}</td>
+                        <td>{{ add_role_form.permissions }}</td>
+                        <td>{{ add_role_form.add_role }}</td>
+                    </tr>
+                </form>
+            </thead>
+
+            <!-- Existing roles -->
+            {% if roles %}
+            <tbody>
+                {% for role in roles %}
+                {% set form = "edit_role_form_" + role.id | string %}
+                <form action="" method="post" name="edit_role_form" id="{{ form }}">
+                    {{ edit_role_form.csrf_token }}
+                    {{ edit_role_form.role_id(value=role.id) }}
+                    <tr>
+                        <td>{{ role.id }}</td>
+                        <td>{{ edit_role_form.name(value=role.name, id="name" + role.id | string, form=form) }}</td>
+                        <td>{{ edit_role_form.description(value=role.description if role.description else '', placeholder='No description available..', id="description" + role.id | string, form=form) }}
+                        </td>
+                        <td>{{ edit_role_form.permissions(value=", ".join(role.permissions), id="is_private" + role.id | string, form=form) }}
+                        </td>
+                        <td class="flex-row">
+                            <input type="button" class="edit-btn" value="Edit">
+                            {{ edit_role_form.edit_role(class="save-btn", form=form) }}
+                            <input type="button" class="secondary cancel-btn" value="Cancel">
+                            {{ edit_role_form.delete_role(class="secondary delete-btn", form=form) }}
+                        </td>
+                    </tr>
+                </form>
+                {% endfor %}
+            </tbody>
+            {% else %}
+            <tfoot>
+                <tr>
+                    <td>No roles available..</td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</main>
+{% endblock %}
