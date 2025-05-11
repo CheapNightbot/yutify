@@ -48,13 +48,13 @@ class Config:
     SECURITY_FRESHNESS = timedelta(minutes=10)
     SECURITY_FRESHNESS_GRACE_PERIOD = timedelta(minutes=5)
 
-    # # ### Core - Passwords and Tokens ###
+    # ### Core - Passwords and Tokens ###
     SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT", "6663629")
     SECURITY_PASSWORD_LENGTH_MIN = 16
     SECURITY_PASSWORD_COMPLEXITY_CHECKER = "zxcvbn"
     SECURITY_PASSWORD_CONFIRM_REQUIRED = True
 
-    # # ### Core - Multi-factor ###
+    # ### Core - Multi-factor ###
     SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS")}
     SECURITY_TOTP_ISSUER = APP
 
@@ -62,11 +62,11 @@ class Config:
     SECURITY_CLI_USERS_NAME = False
     SECURITY_CLI_ROLES_NAME = False
 
-    # # ### Login/Logout ###
+    # ### Login/Logout ###
     SECURITY_POST_LOGIN_VIEW = "auth.login"
     SECURITY_POST_LOGOUT_VIEW = "auth.logout"
 
-    # # ### Registerable ###
+    # ### Registerable ###
     SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", 0))
     SECURITY_EMAIL_SUBJECT_REGISTER = f"[{APP}] Verify Email Address!"
     SECURITY_POST_REGISTER_VIEW = "auth.signup"
@@ -86,14 +86,20 @@ class Config:
     SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] EMAIL SUBJECT CONFIRM!"
     SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
 
-    # # ### Changeable ###
+    # ### Changeable ###
     # #
 
-    # # ### Recoverable ###
+    # ### Recoverable ###
     SECURITY_RECOVERABLE = True
     SECURITY_RESET_URL = "/reset-password"
 
-    # # ### Two-Factor ###
+    # ### Change-Email ###
+    SECURITY_CHANGE_EMAIL = True
+    SECURITY_CHANGE_EMAIL_SUBJECT = f"[{APP}] Confirm your new email address!"
+    SECURITY_POST_CHANGE_EMAIL_VIEW = "user.email_changed"
+    SECURITY_CHANGE_EMAIL_ERROR_VIEW = "user.email_changed"
+
+    # ### Two-Factor ###
     SECURITY_TWO_FACTOR = True
     SECURITY_TWO_FACTOR_REQUIRED = False
     SECURITY_TWO_FACTOR_ENABLED_METHODS = ["email", "authenticator"]
@@ -101,10 +107,11 @@ class Config:
         "code": "flask_security.twofactor.CodeTfPlugin"
     }
 
-    # # ### Change Username ###
+    # ### Change Username ###
     SECURITY_CHANGE_USERNAME = True
     SECURITY_POST_CHANGE_USERNAME_VIEW = "user.username_changed"
+    SECURITY_CHANGE_USERNAME_TEMPLATE = "user/user_settings.html"
 
-    # # ### Recovery Codes ###
+    # ### Recovery Codes ###
     SECURITY_MULTI_FACTOR_RECOVERY_CODES = True
     SECURITY_MULTI_FACTOR_RECOVERY_CODES_KEYS = [ENCRYPTION_KEY]

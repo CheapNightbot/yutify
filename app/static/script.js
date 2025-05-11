@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const editRoleForm = document.querySelector('[name="edit_role_form"]');
     const editServicesForm = document.querySelector('[name="edit_service_form"]');
     const manageUserAccountForm = document.querySelector('[name="manage_user_account_form"]');
-    const changeUsernameForm = document.querySelector('[name="change_username_form"]')
     const tabControl = document.querySelector('[role="tab-control"]');
 
     function convertToUserTimezone(datetimeString) {
@@ -455,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeDelAccount.addEventListener('click', toggleModal);
     }
 
-    if (editRoleForm || editServicesForm || manageUserAccountForm || changeUsernameForm) {
+    if (editRoleForm || editServicesForm || manageUserAccountForm) {
         let currentlyEditingRow = null; // Track the currently editing row
 
         document.querySelectorAll(".edit-btn").forEach(button => {

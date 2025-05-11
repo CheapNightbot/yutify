@@ -308,6 +308,12 @@ footer {
     gap: .3rem;
 }
 
+.container.user-settings {
+    margin: auto;
+    max-width: 1000px;
+    min-height: 200px;
+}
+
 .profile-header {
     position: relative;
     display: flex;

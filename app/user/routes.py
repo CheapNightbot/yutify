@@ -8,14 +8,15 @@ from flask_security import (
     logout_user,
     permissions_required,
     send_mail,
+    url_for_security,
 )
-from flask_security.change_username import ChangeUsernameForm
 from flask_security.utils import verify_password
 
 from app import db
 from app.models import Service, User, UserService
 from app.user import bp
 from app.user.forms import (
+    ChangeUsernameForm,
     DeleteAccountForm,
     EditProfileForm,
     EmptyForm,
@@ -74,61 +75,25 @@ def user_settings(username):
     connected_services = {service_id for service_id in user_services}
 
     # Forms ~
-    change_username_form = ChangeUsernameForm()
+    email_form = EmptyForm()
+    username_form = EmptyForm()
     delete_account_form = DeleteAccountForm()
     service_action_form = EmptyForm()
     lastfm_link_form = None if "lastfm" in connected_services else LastfmLinkForm()
 
-    # # Check if the "Edit Account Details" button was clicked
-    # if (
-    #     request.method == "POST"
-    #     and "submit" in request.form
-    #     and request.form["submit"] == "Edit Account Details"
-    # ):
-    #     # Render the EditAccountForm when user clicks on "Edit Account Details" button
-    #     return render_template(
-    #         "user/user_settings.html",
-    #         title="Edit Account",
-    #         active_page="user_settings",
-    #         year=datetime.today().year,
-    #         user=user,
-    #         change_username_form=change_username_form,
-    #     )
+    # User clicked on "Change" button for username
+    if (
+        username_form.validate_on_submit()
+        and username_form.form_name.data == "change_username"
+    ):
+        return redirect(url_for_security("change_username"))
 
-    # # Check if user clicked on "Save Account Details" after filling `EditAccountForm` form
-    # elif (
-    #     request.method == "POST"
-    #     and "submit" in request.form
-    #     and request.form["submit"] == "Save Account Details"
-    # ):
-    #     if edit_account_form.validate_on_submit():
-    #         current_user.username = edit_account_form.username.data
-    #         current_user.email = edit_account_form.email.data
-    #         db.session.commit()
-    #         flash("Your changes have been saved.", "success")
-    #         return redirect(
-    #             url_for("user.user_settings", username=current_user.username)
-    #         )
-    #     # EditAccountForm with errors as above if statement was False
-    #     else:
-    #         flash(
-    #             "Something went wrong while saving changes! Please try again.", "error"
-    #         )
-    #         return render_template(
-    #             "user/user_settings.html",
-    #             title="Edit Account",
-    #             active_page="user_settings",
-    #             year=datetime.today().year,
-    #             user=user,
-    #             form=edit_account_form,
-    #         )
+    # User clicked on "Change" button for email
+    if email_form.validate_on_submit() and email_form.form_name.data == "change_email":
+        return redirect(url_for_security("change_email"))
 
     # User clicked on "Delete Account" button
-    if (
-        request.method == "POST"
-        and "submit" in request.form
-        and request.form["submit"] == "Delete Account"
-    ):
+    if delete_account_form.validate_on_submit():
         if delete_account_form.validate_on_submit():
             password = security.password_util.normalize(request.form.get("password"))
             if not password or not verify_password(password, user.password):
@@ -161,7 +126,8 @@ def user_settings(username):
         user=user,
         services=services,
         connected_services=connected_services,
-        change_username_form=change_username_form,
+        email_form=email_form,
+        username_form=username_form,
         delete_account_form=delete_account_form,
         service_action_form=service_action_form,
         lastfm_link_form=lastfm_link_form,
@@ -173,4 +139,12 @@ def user_settings(username):
 @permissions_required("user-read", "user-write")
 def username_changed():
     """Handle redirect back to user settings page on successful username change."""
+    return redirect(url_for("user.user_settings", username=current_user.username))
+
+
+@bp.route("/email-changed")
+@auth_required()
+@permissions_required("user-read", "user-write")
+def email_changed():
+    """Handle redirect back to user settings page on successful email change."""
     return redirect(url_for("user.user_settings", username=current_user.username))
