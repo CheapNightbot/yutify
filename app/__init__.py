@@ -46,7 +46,7 @@ def create_app(config_class=Config):
                 mailhost=(app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT")),
                 fromaddr="no-reply@" + app.config.get("MAIL_SERVER"),
                 toaddrs=app.config.get("ADMIN_EMAIL"),
-                subject="yutify Failure",
+                subject="[yutify] Failure!",
                 credentials=auth,
                 secure=secure,
             )
