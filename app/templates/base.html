@@ -58,15 +58,15 @@
                         <summary>Account&nbsp;</summary>
                         <ul dir="rtl">
                             {% if current_user.is_anonymous %}
-                            <li><a href="{{ url_for('security.login') }}">Login</a></li>
-                            <li><a href="{{ url_for('security.register') }}">Sign Up</a></li>
+                            <li><a href="{{ url_for_security('login') }}">Login</a></li>
+                            <li><a href="{{ url_for_security('register') }}">Sign Up</a></li>
                             {% else %}
                             <li><a href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a>
                             </li>
                             <li><a
                                     href="{{ url_for('user.user_settings', username=current_user.username) }}">Settings</a>
                             </li>
-                            <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
+                            <li><a href="{{ url_for_security('logout') }}">Logout</a></li>
                             {% endif %}
                         </ul>
                     </details>
@@ -78,7 +78,7 @@
     {% if messages %}
     {% for category, message in messages %}
     <div id="flashMessage" class="flash-message {{ category }}">
-        <span role="alert">{{ message }}</span>
+        <span role="alert">{{ message | safe }}</span>
         <button class="flash-close-btn"></button>
     </div>
     {% endfor %}
