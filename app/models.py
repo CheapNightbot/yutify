@@ -88,7 +88,16 @@ class User(db.Model, fsqla.FsUserMixin):
     name: so.Mapped[str] = so.mapped_column(sa.String(64), nullable=True)
     about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
     avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
-    username: so.Mapped[str] = so.mapped_column(sa.String(64), unique=True, nullable=False)
+    username: so.Mapped[str] = so.mapped_column(
+        sa.String(64), unique=True, nullable=False
+    )
+    create_datetime: so.Mapped[datetime] = so.mapped_column(
+        default=lambda: datetime.now(timezone.utc)
+    )
+    update_datetime: so.Mapped[datetime] = so.mapped_column(
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
     # Relationship to UserService: one-to-many
     user_services: so.Mapped[list["UserService"]] = so.relationship(
@@ -222,7 +231,7 @@ class UserData(Base):
 
         existing_data = db.session.scalar(
             sa.select(UserData).where(
-                UserData.user_service_id == user_service.user_services_id
+                UserData.user_service_id == user_service.id
             )
         )
 
@@ -232,7 +241,7 @@ class UserData(Base):
             db.session.add(existing_data)
         else:
             new_entry = UserData(
-                user_service_id=user_service.user_services_id,
+                user_service_id=user_service.id,
                 data=new_data,
                 user_service=user_service,
             )
