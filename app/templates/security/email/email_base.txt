@@ -1,0 +1,4 @@
+{% block content %}{% endblock %}
+
+Sincerely,
+yutify team

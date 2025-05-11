@@ -1,3 +1,5 @@
+{% extends "security/email/email_base.txt" %}
+{% block content %}
 {% if security.confirmable %}
   Heyo {{ user.name }} ~
 
@@ -10,7 +12,4 @@
   Heyo {{ user.name }} !!
 
   Welcome to yutify ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔
-{% endif %}
-
-Sincerely,
-yutify team
+{% endif %}{% endblock %}
