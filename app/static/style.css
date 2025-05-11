@@ -537,6 +537,11 @@ td button,
     background-color: #dc3545 !important;
 }
 
+[role=group] .edit-btn {
+    border-top-right-radius: var(--pico-border-radius) !important;
+    border-bottom-right-radius: var(--pico-border-radius) !important;
+}
+
 #roles {
     margin: 0;
     padding: 0;

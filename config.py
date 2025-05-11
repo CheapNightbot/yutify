@@ -12,6 +12,7 @@ APP = "yutify"
 class Config:
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.environ.get("RATELIMIT")
+    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(os.environ.get("YUTIFY_ACCOUNT_DELETE_EMAIL", True))
 
     # SESSION_COOKIE_SECURE = True
     # SESSION_COOKIE_HTTPONLY = True
@@ -96,20 +97,14 @@ class Config:
     SECURITY_TWO_FACTOR = True
     SECURITY_TWO_FACTOR_REQUIRED = False
     SECURITY_TWO_FACTOR_ENABLED_METHODS = ["email", "authenticator"]
-    # SECURITY_TWO_FACTOR_RESCUE_MAIL = ADMIN_EMAIL
-    # # SECURITY_TWO_FACTOR_VERIFY_CODE_TEMPLATE = "two_factor_verify_code.html"
-    # # SECURITY_TWO_FACTOR_SETUP_TEMPLATE = "two_factor_setup.html"
     SECURITY_TWO_FACTOR_IMPLEMENTATIONS = {
         "code": "flask_security.twofactor.CodeTfPlugin"
     }
 
     # # ### Change Username ###
     SECURITY_CHANGE_USERNAME = True
-    # # SECURITY_POST_CHANGE_USERNAME_VIEW = "user_settings" or maybe "user_profile" ?
-    # SECURITY_CHANGE_USERNAME_TEMPLATE = "chanage_username.html"
+    SECURITY_POST_CHANGE_USERNAME_VIEW = "user.username_changed"
 
     # # ### Recovery Codes ###
     SECURITY_MULTI_FACTOR_RECOVERY_CODES = True
-    # # SECURITY_MULTI_FACTOR_RECOVERY_CODES_TEMPLATE = "mf_recovery_codes.html"
-    # # SECURITY_MULTI_FACTOR_RECOVERY_TEMPLATE = "mf_recovery.html"
     SECURITY_MULTI_FACTOR_RECOVERY_CODES_KEYS = [ENCRYPTION_KEY]
