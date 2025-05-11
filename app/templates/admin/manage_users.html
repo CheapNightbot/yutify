@@ -26,23 +26,25 @@
             {% if users %}
             <tbody>
                 {% for user in users %}
-                {% set form = "edit_user_form_" + user.id | string %}
-                <form action="" method="post" name="edit_user_form" id="{{ form }}">
-                    {{ edit_user_form.csrf_token }}
-                    {{ edit_user_form.user_id(value=user.id) }}
+                {% set form = "manage_user_account_form_" + user.id | string %}
+                <form action="" method="post" name="manage_user_account_form" id="{{ form }}">
+                    {{ manage_user_account_form.csrf_token }}
+                    {{ manage_user_account_form.user_id(value=user.id) }}
                     <tr>
                         <td>{{ user.id }}</td>
                         <td>{{ user.name }}</td>
                         <td>{{ user.username }}</td>
-                        <td>{{ user.email | mask_string(mask='*', mask_special_char=True, mask_till_char='@', exclude_bounds=True) }}
+                        <td>
+                            <span data-tooltip="{{ 'Verified' if user.confirmed_at else 'Unverified' }}">
+                                {{ user.email | mask_string(mask='*', mask_special_char=True, mask_till_char='@', exclude_bounds=True) }}
+                            </span>
                         </td>
                         <td>
                             <ul id="roles">
-                                {% for field_name, value in edit_user_form.data.items() %}
+                                {% for field_name, value in manage_user_account_form.data.items() %}
                                 {% if field_name == 'roles' %}
-                                {% for role in edit_user_form[field_name] %}
+                                {% for role in manage_user_account_form[field_name] %}
                                 <li>
-
                                     <label>
                                         {{ role(id=role.data + user.id | string, checked=user.has_role(role.data), disabled='', form=form) }}
                                         {{ role.data }}
@@ -54,15 +56,31 @@
                             </ul>
                         </td>
                         <td>{{ "Yes" if user.tf_primary_method else "No" }}</td>
-                        <td>{{ user.create_datetime | relative_timestamp }}</td>
+                        <td>
+                            <span class="datetime">{{ user.create_datetime }}</span>
+                        </td>
                         <td>{{ "Yes" if user.is_active else "No" }}</td>
                         <td class="flex-column">
                             <input type="button" class="edit-btn" value="Edit">
-                            {{ edit_user_form.edit_user(class="save-btn", form=form) }}
+                            {{ manage_user_account_form.edit_user(class="save-btn", form=form) }}
                             <input type="button" class="secondary cancel-btn" value="Cancel">
-                            {{ edit_user_form.delete_user(class="secondary delete-btn", form=form) }}
+                            <input type="button" class="secondary delete-btn" value="Delete"
+                                data-target="{{ 'delete-user-modal' + user.id | string }}">
                         </td>
                     </tr>
+                    <dialog id="{{ 'delete-user-modal' + user.id | string }}">
+                        <article>
+                            <header>
+                                <h3>Delete User "{{ user.name }}" Account</h3>
+                            </header>
+                            <fieldset>
+                                {{ manage_user_account_form.notify_deletion(id="notify_deletion" + user.id | string, form=form) }}
+                                {{ manage_user_account_form.notify_deletion.label(for="notify_deletion" + user.id | string, class="margin-btm") }}
+                                {{ manage_user_account_form.reason_for_deletion(placeholder="Reason for deleting account...", form=form, disabled="") }}
+                                {{ manage_user_account_form.delete_user(class="delete-user-account", form=form) }}
+                            </fieldset>
+                        </article>
+                    </dialog>
                 </form>
                 {% endfor %}
             </tbody>

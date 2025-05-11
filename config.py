@@ -1,5 +1,5 @@
 import os
-
+from datetime import timedelta
 from dotenv import load_dotenv
 from flask_security.utils import uia_username_mapper
 
@@ -40,17 +40,18 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "senpai-likes-small-potatoes")
     ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
     SECURITY_EMAIL_VALIDATOR_ARGS = {"check_deliverability": False}
-    # # SECURITY_CSRF_COOKIE_NAME = "XSRF-TOKEN"
-    # SECURITY_EMAIL_SENDER = "no-reply@localhost"
-    # SECURITY_RETURN_GENERIC_RESPONSES = True
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
     ]
+    SECURITY_RETURN_GENERIC_RESPONSES = True
+    SECURITY_FRESHNESS = timedelta(minutes=10)
+    SECURITY_FRESHNESS_GRACE_PERIOD = timedelta(minutes=5)
 
     # # ### Core - Passwords and Tokens ###
     SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT", "6663629")
-    SECURITY_PASSWORD_LENGTH_MIN = 8
+    SECURITY_PASSWORD_LENGTH_MIN = 16
     SECURITY_PASSWORD_COMPLEXITY_CHECKER = "zxcvbn"
+    SECURITY_PASSWORD_CONFIRM_REQUIRED = True
 
     # # ### Core - Multi-factor ###
     SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS")}
@@ -66,8 +67,8 @@ class Config:
 
     # # ### Registerable ###
     SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", 0))
-    SECURITY_SEND_REGISTER_EMAIL = True
-    # SECURITY_REGISTER_USER_TEMPLATE = "auth/signup.html"
+    SECURITY_EMAIL_SUBJECT_REGISTER = f"[{APP}] Verify Email Address!"
+    SECURITY_POST_REGISTER_VIEW = "auth.signup"
     SECURITY_REGISTER_URL = "/signup"
     SECURITY_USERNAME_ENABLE = True
     # SECURITY_MSG_USERNAME_DISALLOWED_CHARACTERS = (
@@ -77,17 +78,19 @@ class Config:
     SECURITY_USERNAME_REQUIRED = True
     SECURITY_USE_REGISTER_V2 = True
 
+    # ### Confirmable ###
+    SECURITY_CONFIRMABLE = True
+    SECURITY_CONFIRM_URL = "/verify-email"
+    # SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] Verify Email Address!"
+    SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] EMAIL SUBJECT CONFIRM!"
+    SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
+
     # # ### Changeable ###
     # #
 
     # # ### Recoverable ###
     SECURITY_RECOVERABLE = True
     SECURITY_RESET_URL = "/reset-password"
-    # # SECURITY_RESET_PASSWORD_TEMPLATE = "reset_password.html"
-    # # SECURITY_FORGOT_PASSWORD_TEMPLATE = "forgot_password.html"
-
-    # ### Confirmable ###
-    SECURITY_CONFIRMABLE = True
 
     # # ### Two-Factor ###
     SECURITY_TWO_FACTOR = True

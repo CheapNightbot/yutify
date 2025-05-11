@@ -49,7 +49,7 @@ a {
 }
 
 .margin-btm {
-    margin-bottom: var(--pico-spacing);
+    margin-bottom: var(--pico-spacing) !important;
 }
 
 .padding-r {
@@ -196,6 +196,7 @@ header {
     max-width: 512px;
     margin: auto;
     display: block;
+    pointer-events: none;
 }
 
 #methods {
@@ -311,6 +312,7 @@ footer {
     position: relative;
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
     margin: auto;
     max-width: 1000px;
@@ -336,6 +338,16 @@ footer {
     justify-content: center;
     text-align: left;
     flex: 1;
+    gap: 0.6rem;
+}
+
+.profile-header-info h2,
+.profile-header-info p {
+    margin-bottom: 0 !important;
+}
+
+.profile-header-info small {
+    opacity: 0.5;
 }
 
 .profile-header-edit {
@@ -398,11 +410,13 @@ footer {
     width: 100%;
 }
 
+.delete-user-account,
 .delete-account {
     width: 100%;
     background-color: #a71d2a !important;
 }
 
+.delete-user-account,
 .delete-account:hover {
     background-color: #dc3545;
 }
@@ -546,17 +560,15 @@ td button,
 }
 
 /* -------------- */
-.password-box {
-    position: relative;
-}
-
 .password-toggle-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
+    opacity: 0;
+    height: 0;
+    width: 0;
+    position: relative;
+    float: right;
+    transform: translate(-2rem, 0.8rem);
     cursor: pointer;
-    margin: .2rem .2rem 0 .2rem;
+    transition: .3s all cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
 
 .password-toggle-icon i {
@@ -655,6 +667,10 @@ nav[role="tab-control"] label {
 nav[role="tab-control"] label.active-tab {
     color: var(--pico-primary);
     border-bottom: 0.5px solid;
+}
+
+td [data-tooltip]:not(a, button, input, [role=button]) {
+    border: none;
 }
 
 @media (max-width: 1024px) {

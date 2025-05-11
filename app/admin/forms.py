@@ -5,6 +5,7 @@ from wtforms import (
     SelectMultipleField,
     StringField,
     SubmitField,
+    TextAreaField,
     URLField,
     widgets,
 )
@@ -84,8 +85,12 @@ class EditServiceForm(Form):
     delete_service = SubmitField("Delete")
 
 
-class EditUserRoles(Form):
+class ManageUserAccount(Form):
     user_id = HiddenField(name="user_id")
     roles = MultiCheckboxField("Roles")
+    notify_deletion = BooleanField(
+        "Send email to notify user about their account deletion?"
+    )
+    reason_for_deletion = TextAreaField("Reason")
     edit_user = SubmitField("Save")
     delete_user = SubmitField("Delete")

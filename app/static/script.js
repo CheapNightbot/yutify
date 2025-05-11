@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.querySelector('#login_user_form');
     const registerForm = document.querySelector('#register_user_form');
     const usernameInput = document.querySelector('#username');
+    const usernameHelper = document.querySelector('#username-helper');
     const emailInput = document.querySelector('#email');
     const passwordInput = document.querySelector('#password');
+    const passwordHelper = document.querySelector('#password-helper');
     const passwordConfirmInput = document.querySelector('#password_confirm');
     const passwordConfirm = document.querySelector('#password-confirm');
     const authKey = document.querySelector('#auth-key');
@@ -19,8 +21,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const accountDelBtm = document.querySelector('.delete-account');
     const editRoleForm = document.querySelector('[name="edit_role_form"]');
     const editServicesForm = document.querySelector('[name="edit_service_form"]');
-    const editUserForm = document.querySelector('[name="edit_user_form"]');
+    const manageUserAccountForm = document.querySelector('[name="manage_user_account_form"]');
     const tabControl = document.querySelector('[role="tab-control"]');
+
+    function convertToUserTimezone(datetimeString) {
+        // Get the parts
+        const [Y, M, D, H, m] = datetimeString.split(/\D/);
+        // Create a Date object from the datetime string
+        const date = new Date(Date.UTC(Y, M - 1, D, H, m));
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        // Convert hours from 24-hour to 12-hour format
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+
+        // Format minutes to always be two digits
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+        // Get month name
+        const options = { month: 'long' };
+        const month = new Intl.DateTimeFormat('en-US', options).format(date);
+
+        // Construct the final formatted string
+        const formattedDate = `${date.getFullYear()}, ${date.getDate()} ${month}`;
+        const formattedTime = `${hours}:${minutes} ${ampm}`
+        return [formattedDate, formattedTime];
+    }
+
+    // Get the datetime from the element or data-tooltip attribute
+    const datatimeElements = document.querySelectorAll('.datetime');
+    if (datatimeElements) {
+        datatimeElements.forEach(datatimeElement => {
+            // Convert and display the formatted date
+            const formattedDateTime = convertToUserTimezone(datatimeElement.innerText);
+            datatimeElement.innerText = formattedDateTime[0];
+            datatimeElement.setAttribute('data-tooltip', 'at ' + formattedDateTime[1])
+        });
+    }
+
+    function isValidUsername(username) {
+        // Regular expression to match the criteria
+        const regex = /^[A-Za-z0-9-]*$/; // Allows letters, numbers, and hyphen (-)
+        // const hyphenCount = (username.match(/-/g) || []).length; // Count hyphens
+
+        // Check if the input matches the regex and contains at most one hyphen
+        return regex.test(username) // && hyphenCount <= 1;
+    }
+
 
     themeBtn.addEventListener("click", () => {
         const currentIcon = themeBtnIcon.innerText;
@@ -208,13 +257,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const confirmPassword = () => {
-        passwordConfirmInput.addEventListener('input', () => {
-            if (passwordConfirmInput.value !== passwordInput.value) {
-                passwordConfirmInput.setAttribute('aria-invalid', 'true');
-                passwordConfirm.textContent = 'Passwords do not match!';
+        if (usernameInput) {
+            usernameInput.addEventListener('input', () => {
+                if (usernameInput.value.length < 4) {
+                    usernameInput.setAttribute('aria-invalid', true);
+                    usernameHelper.textContent = 'Username must be at least 4 characters long!';
+                } else if (!isValidUsername(usernameInput.value)) {
+                    usernameInput.setAttribute('aria-invalid', true);
+                    usernameHelper.textContent = 'Username can contain only letters, numbers and hyphen (-)';
+                } else {
+                    usernameInput.setAttribute('aria-invalid', false);
+                    usernameHelper.textContent = '';
+                }
+            });
+
+            usernameInput.addEventListener('blur', () => {
+                usernameInput.removeAttribute('aria-invalid');
+                usernameHelper.textContent = '';
+            });
+        }
+        const showPassToggle = document.querySelector('.password-toggle-icon');
+        showPassToggle.style.opacity = '1';
+        passwordInput.addEventListener('input', () => {
+            if (passwordInput.getAttribute('aria-invalid') === 'true') {
+                showPassToggle.style.opacity = '1';
+            }
+            if (passwordInput.value.length < 16) {
+                passwordInput.setAttribute('aria-invalid', true);
+                passwordHelper.textContent = 'Password must be at least 16 characters long!';
             } else {
-                passwordConfirmInput.setAttribute('aria-invalid', 'false');
-                passwordConfirm.textContent = '';
+                showPassToggle.style.marginTop = '0';
+                showPassToggle.style.marginRight = '0';
+                passwordInput.setAttribute('aria-invalid', false);
+                passwordHelper.textContent = '';
+            }
+        });
+
+        passwordConfirmInput.addEventListener('input', () => {
+            if (passwordConfirmInput.value.length > 8) {
+                if (passwordConfirmInput.value !== passwordInput.value) {
+                    passwordConfirmInput.setAttribute('aria-invalid', 'true');
+                    passwordConfirm.textContent = 'Passwords do not match!';
+                } else {
+                    showPassToggle.style.opacity = '0';
+                    passwordConfirmInput.setAttribute('aria-invalid', 'false');
+                    passwordConfirm.textContent = '';
+                }
             }
 
         });
@@ -222,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordInput.addEventListener('blur', () => {
             if (passwordInput.getAttribute('aria-invalid') === 'false') {
                 passwordInput.removeAttribute('aria-invalid');
+                passwordHelper.textContent = '';
             }
         });
 
@@ -290,7 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!response.ok) {
             activityContainer.removeAttribute('aria-busy');
             const errorData = await response.json();
-            activityContainer.innerHTML = `<p class="text-in-article">${errorData.error}</p>`;
+            const img = '<img src="/static/errors/no.gif" alt="shiroi-suna-no-aquatop" width="404px">'
+            activityContainer.innerHTML = `<div class="error-container"><p class="text-in-article">${errorData.error}</p>${img}</div>`;
             throw new Error();
         }
 
@@ -364,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeDelAccount.addEventListener('click', toggleModal);
     }
 
-    if (editRoleForm || editServicesForm || editUserForm) {
+    if (editRoleForm || editServicesForm || manageUserAccountForm) {
         let currentlyEditingRow = null; // Track the currently editing row
 
         document.querySelectorAll(".edit-btn").forEach(button => {
@@ -413,10 +503,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        document.querySelectorAll(".delete-btn").forEach(button => {
+        document.querySelectorAll(".secondary.delete-btn").forEach(button => {
             button.addEventListener("click", (event) => {
                 const name = editRoleForm ? "role" : editServicesForm ? "service" : "user";
                 const confirmation = confirm(`Are you sure you want to delete this ${name}?`);
+
+                if (confirmation && manageUserAccountForm) {
+                    event.preventDefault();
+                    const modal = document.getElementById(button.dataset.target);
+                    if (!modal) return;
+                    modal && (modal.open ? closeModal(modal) : openModal(modal));
+                }
+
                 if (!confirmation) {
                     event.preventDefault(); // Prevent form submission if the user cancels
                 }
@@ -442,6 +540,18 @@ document.addEventListener('DOMContentLoaded', () => {
             editButton.style.display = "inline-block";
             deleteButton.style.display = "inline-block";
         }
+
+        const userNotifyOnDelete = document.querySelectorAll("input[name='notify_deletion'");
+        userNotifyOnDelete.forEach(notifyDeletion => {
+            notifyDeletion.addEventListener('change', function () {
+                if (this.checked) {
+                    this.nextElementSibling.nextElementSibling.disabled = false;
+                } else {
+                    this.nextElementSibling.nextElementSibling.value = '';
+                    this.nextElementSibling.nextElementSibling.disabled = true;
+                }
+            });
+        });
     }
 
     // source/credit: https://codepen.io/vardumper/pen/VwdJoyE
