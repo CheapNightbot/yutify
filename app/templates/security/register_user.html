@@ -43,6 +43,7 @@
         {{ register_user_form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
         {% else %}
         {{ register_user_form.username(aria_label="Username", aria_describedby="username-helper") }}
+        <small id="username-helper">{{ error }}</small>
         {% endif %}
         {% for error in register_user_form.username.errors %}
         <small id="username-helper">{{ error }}</small>
@@ -53,35 +54,35 @@
         {{ register_user_form.email(aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
         {% else %}
         {{ register_user_form.email(aria_label="Email", aria_describedby="email-helper") }}
+        <small id="email-helper">{{ error }}</small>
         {% endif %}
         {% for error in register_user_form.email.errors %}
         <small id="email-helper">{{ error }}</small>
         {% endfor %}
 
-        <div class="password-box">
         {{ register_user_form.password.label }}
         {% if register_user_form.password.errors %}
+        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
         {{ register_user_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
         {% else %}
+        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
         {{ register_user_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
-        <small id="password-helper">Use a combination of uppercase and lowercase letters, numbers, and special characters (like !, @, #, $)</small>
+        <small id="password-helper"></small>
         {% endif %}
         {% for error in register_user_form.password.errors %}
         <small id="password-helper">{{ error }}</small>
         {% endfor %}
-        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
-        </div>
 
         {{ register_user_form.password_confirm.label('Confirm Password') }}
         {% if register_user_form.password_confirm.errors %}
         {{ register_user_form.password_confirm(aria_label="Password_confirm", aria_describedby="password_confirm-helper", aria_invalid="true") }}
         {% else %}
         {{ register_user_form.password_confirm(aria_label="Password_confirm", aria_describedby="password_confirm-helper password-confirm") }}
+        <small id="password-confirm"></small>
         {% endif %}
         {% for error in register_user_form.password_confirm.errors %}
         <small id="password2-helper">{{ error }}</small>
         {% endfor %}
-        <small id="password-confirm"></small>
         </div>
 
     </fieldset>
