@@ -1,0 +1,9 @@
+{{ user.name }} ~
+
+This is to notify that your account has been deleted {% if not admin_delete %}successfully!{% else %}for the following reasons:{% endif %}
+{% if admin_delete %}{% if reason_for_deletion %}
+{{ reason_for_deletion }}
+{% else %}
+An admin decided to delete your account. No explaination or reason was provided.
+{% endif %}
+{% endif %}
