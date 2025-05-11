@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editRoleForm = document.querySelector('[name="edit_role_form"]');
     const editServicesForm = document.querySelector('[name="edit_service_form"]');
     const manageUserAccountForm = document.querySelector('[name="manage_user_account_form"]');
+    const changeUsernameForm = document.querySelector('[name="change_username_form"]')
     const tabControl = document.querySelector('[role="tab-control"]');
 
     function convertToUserTimezone(datetimeString) {
@@ -454,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeDelAccount.addEventListener('click', toggleModal);
     }
 
-    if (editRoleForm || editServicesForm || manageUserAccountForm) {
+    if (editRoleForm || editServicesForm || manageUserAccountForm || changeUsernameForm) {
         let currentlyEditingRow = null; // Track the currently editing row
 
         document.querySelectorAll(".edit-btn").forEach(button => {
@@ -467,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const inputs = row.querySelectorAll("input[type='text'], input[type='url'], input[type='checkbox']");
-                const saveButton = row.querySelector("input[name='edit_service'], input[name='edit_user'], input[name='edit_role']");
+                const saveButton = row.querySelector("input[name='edit_service'], input[name='edit_user'], input[name='edit_role'], input[class='save-btn'");
                 const editButton = event.target;
                 const cancelButton = row.querySelector(".cancel-btn");
                 const deleteButton = row.querySelector(".delete-btn");
@@ -477,10 +478,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputs.forEach(input => { if (input.hasAttribute('disabled')) { input.disabled = false; } });
 
                 // Toggle button visibility
-                saveButton.style.display = "inline-block";
-                cancelButton.style.display = "inline-block";
-                editButton.style.display = "none";
-                deleteButton.style.display = "none";
+                if (saveButton) saveButton.style.display = "inline-block";
+                if (cancelButton) cancelButton.style.display = "inline-block";
+                if (editButton) editButton.style.display = "none";
+                if (deleteButton) deleteButton.style.display = "none";
 
                 // Set focus to the first input field
                 const firstInput = row.querySelector("input[type='text'], input[type='url']");
@@ -535,10 +536,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Toggle button visibility
-            saveButton.style.display = "none";
-            cancelButton.style.display = "none";
-            editButton.style.display = "inline-block";
-            deleteButton.style.display = "inline-block";
+            if (saveButton) saveButton.style.display = "none";
+            if (cancelButton) cancelButton.style.display = "none";
+            if (editButton) editButton.style.display = "inline-block";
+            if (deleteButton) deleteButton.style.display = "inline-block";
         }
 
         const userNotifyOnDelete = document.querySelectorAll("input[name='notify_deletion'");
