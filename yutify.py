@@ -2,7 +2,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from waitress import serve
 
-from app import create_app, create_users, db
+from app import create_app, create_services, create_users, db
 from app.models import Role, Service, User, UserData, UserService, WebAuthn
 
 app = create_app()
@@ -44,6 +44,7 @@ def make_shell_context():
 if __name__ == "__main__":
     with app.app_context():
         create_users()
+        create_services()
 
     serve(
         app,

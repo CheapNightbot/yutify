@@ -6,13 +6,13 @@ from dotenv import load_dotenv
 from flask import Flask, current_app
 from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 
+from app.auth.forms import RegistrationForm
 from app.common.helpers import mask_string, relative_timestamp
 from app.common.utils import MyUsernameUtil
 from app.email import MyMailUtil
 from app.extensions import api, cache, cors, csrf, db, mail, migrate
-from app.models import Role, User, WebAuthn
+from app.models import Role, Service, User, WebAuthn
 from config import Config
-from app.auth.forms import RegistrationForm
 
 load_dotenv()
 
@@ -149,7 +149,7 @@ def create_app(config_class=Config):
     return app
 
 
-# Create users and roles (and first blog!)
+# Create initial admin user and roles
 def create_users():
     if current_app.testing:
         return
@@ -170,8 +170,8 @@ def create_users():
 
         # Create default admin user
         admin_user = security.datastore.find_user(
-            username="admin"
-        ) or security.datastore.find_user(email=current_app.config.get("ADMIN_EMAIL"))
+            email=current_app.config.get("ADMIN_EMAIL")
+        )
         if not admin_user:
             admin_user = security.datastore.create_user(
                 name="Admin",
@@ -180,7 +180,34 @@ def create_users():
                 password=hash_password("password"),
                 roles=["admin"],
             )
+            current_app.logger.info(
+                "Successfully created an admin user with username \"admin\". Make sure to change username & passowrd for it!"
+            )
         admin_user.set_avatar()
         security.datastore.db.session.commit()
 
-from app import models
+
+# Create default auth services
+def create_services():
+    if current_app.testing:
+        return
+    with current_app.app_context():
+        security = current_app.security
+        services = [
+            ("Spotify", "https://open.spotify.com", False),
+            ("Lastfm", "https://last.fm", False),
+        ]
+        service_created = set()
+        for name, url, is_private in sorted(services, key=lambda service: service[0]):
+            if security.datastore.db.session.query(Service).where(Service.name.ilike(name)).one_or_none():
+                service_created.add(False)
+            else:
+                service_created.add(True)
+                new_service = Service(name=name, url=url, is_private=is_private)
+                security.datastore.db.session.add(new_service)
+        security.datastore.db.session.commit()
+
+        if any(service_created):
+            current_app.logger.info("Successfully created default services.")
+        else:
+            current_app.logger.info("All default services already exist in database.")
