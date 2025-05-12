@@ -13,31 +13,38 @@
 <meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
 {% endblock %}
 
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+{% endblock %}
+
 {% block content %}
 <section class="sect-with-aside">
     <aside>
         <nav id="aside-nav">
             <ul>
-                <li class="{% if aside_active == 'overview' %}aside-active{% endif %}">
+                <li class="{% if aside_active == 'Overview' %}aside-active{% endif %}">
                     <a href="{{ url_for('docs.index') }}">Overview</a>
                 </li>
-                <li class="{% if aside_active == 'get-started' %}aside-active{% endif %}">
+                <li class="{% if aside_active == 'Get Started' %}aside-active{% endif %}">
                     <a href="{{ url_for('docs.get_started') }}">Get Started</a>
                 </li>
-                <li class="{% if aside_active == 'tutorials' %}aside-active{% endif %}">
+                <li class="{% if aside_active == 'Tutorials' %}aside-active{% endif %}">
                     <a href="{{ url_for('docs.tutorials') }}">Tutorials</a>
                 </li>
                 <li>REFERENCE</li>
-                <li class="{% if aside_active == 'search' %}aside-active{% endif %}">
+                <li class="{% if aside_active == 'Search' %}aside-active{% endif %}">
                     <a href="{{ url_for('docs.reference_search') }}">Search</a>
                 </li>
-                <li class="{% if aside_active == 'activity' %}aside-active{% endif %}">
+                <li class="{% if aside_active == 'Activity' %}aside-active{% endif %}">
                     <a href="{{ url_for('docs.reference_activity') }}">Activity</a>
                 </li>
             </ul>
         </nav>
     </aside>
-
     {% block main %}{% endblock %}
 </section>
 {% endblock %}

@@ -12,9 +12,9 @@ def index():
     base_url = request.host_url.rstrip("/")  # Remove trailing slash
     return render_template(
         "docs/index.html",
-        title="Docs - Overview",
+        title="Overview",
         active_page="docs",
-        aside_active="overview",
+        aside_active="Overview",
         base_url=base_url,
         year=datetime.today().year,
     )
@@ -25,9 +25,9 @@ def get_started():
     """Render the "Get Started" page in the API documentation page."""
     return render_template(
         "docs/get_started.html",
-        title="Docs - Get Started",
+        title="Get Started",
         active_page="docs",
-        aside_active="get-started",
+        aside_active="Get Started",
         year=datetime.today().year,
     )
 
@@ -37,9 +37,9 @@ def tutorials():
     """Render the "Tutorials" page in the API documentation page."""
     return render_template(
         "docs/tutorials.html",
-        title="Docs - Tutorials",
+        title="Tutorials",
         active_page="docs",
-        aside_active="tutorials",
+        aside_active="Tutorials",
         year=datetime.today().year,
     )
 
@@ -49,9 +49,9 @@ def reference_search():
     """Render the "Search" page in the API documentation page."""
     return render_template(
         "docs/reference_search.html",
-        title="Docs - API Reference Search",
+        title="API Reference Search",
         active_page="docs",
-        aside_active="search",
+        aside_active="Search",
         year=datetime.today().year,
     )
 
@@ -61,8 +61,8 @@ def reference_activity():
     """Render the "Activity" page in the API documentation page."""
     return render_template(
         "docs/reference_activity.html",
-        title="Docs - API Reference Activity",
+        title="API Reference Activity",
         active_page="docs",
-        aside_active="activity",
+        aside_active="Activity",
         year=datetime.today().year,
     )
