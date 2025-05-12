@@ -118,6 +118,8 @@ def create_app(config_class=Config):
 
     app.jinja_env.filters["mask_string"] = mask_string
     app.jinja_env.filters["relative_timestamp"] = relative_timestamp
+    app.jinja_env.trim_blocks = True
+    app.jinja_env.lstrip_blocks = True
 
     # Configure caching
     if not app.debug:
