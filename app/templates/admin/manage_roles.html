@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block main %}
-<main class="container">
+<main class="container-fluid">
     <div class="overflow-auto">
         <table>
             <thead>
@@ -49,11 +49,7 @@
                             <input type="button" class="edit-btn" value="Edit">
                             {{ edit_role_form.edit_role(class="save-btn", form=form) }}
                             <input type="button" class="secondary cancel-btn" value="Cancel">
-                            {% if role.name == "admin" %}
-                            {{ edit_role_form.delete_role(class="secondary delete-btn", form=form, disabled="") }}
-                            {% else %}
                             {{ edit_role_form.delete_role(class="secondary delete-btn", form=form) }}
-                            {% endif %}
                         </td>
                     </tr>
                 </form>
