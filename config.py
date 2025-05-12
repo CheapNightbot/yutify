@@ -87,6 +87,11 @@ class Config:
     SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{SERVICE}] Verify Email Address!"
     SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
 
+    # ### Changeable
+    SECURITY_CHANGEABLE = True
+    SECURITY_CHANGE_URL = "/change-password"
+    SECURITY_EMAIL_SUBJECT_PASSWORD_CHANGE_NOTICE = f"[{SERVICE}] You password has been changed!"
+
     # ### Recoverable ###
     SECURITY_RECOVERABLE = True
     SECURITY_RESET_URL = "/reset-password"
