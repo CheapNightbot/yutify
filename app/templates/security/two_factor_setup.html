@@ -18,26 +18,12 @@ authr_key: same key as in qrcode - for possible manual entry
 authr_username: same username as in qrcode
 authr_issuer: same issuer as in qrcode
 #}
-{% set title = title|default("2FA Setup") %}
+{% set title = title|default("Enable 2FA") %}
 {% extends "base.html" %}
 {% from "security/_macros.html" import render_field_with_errors, render_field,
 render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
 
 {% from "security/_macros.html" import prop_next %}
-
-{% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/login">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Login">
-<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/login">
-<meta name="twitter:title" content="yutify: Login">
-<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
-{% endblock %}
 
 {% block nav_title %}
 {{ title }}
@@ -51,7 +37,7 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
 <main class="container">
 <form action="{{ url_for_security('two_factor_setup') }}" method="post" name="two_factor_setup_form">
   {{ two_factor_setup_form.hidden_tag() }}
-  <div>Currently setup two-factor method: {{ primary_method }}</div>
+  <div>Currently setup two-factor method: <ins>{{ primary_method }}</ins></div>
   <hr>
   <fieldset>
     {% for subfield in two_factor_setup_form.setup %}
@@ -85,13 +71,10 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
       {{ _fsdomain("Open an authenticator app on your device and scan the following QRcode (or enter the code below manually) to start receiving codes:") }}
     </div>
     <div>
-      <img alt="{{ _fsdomain('Two-Factor authentication code') }}" id="qrcode" src="{{ authr_qrcode }}">
-      {# TODO: add width and height attrs #}
+      <img alt="{{ _fsdomain('Two-Factor authentication code') }}" id="qrcode" src="{{ authr_qrcode }}" height="170px" width="170px">
     </div>
-    <div class="password-box">
-      <input id="auth-key" type="password" value="{{ authr_key}}" readonly>
-      <span class="password-toggle-icon auth"><i class="fas fa-eye"></i></span>
-    </div>
+    <input id="auth-key" type="password" value="{{ authr_key}}" readonly>
+    <span class="password-toggle-icon auth"><i class="fas fa-eye"></i></span>
   </div>
   {% endif %}
 </form>
@@ -99,7 +82,9 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
 {# Hide this when first setting up #}
 {# This is the fill in code part #}
 <hr class="fs-gap">
-<div class="fs-important">{{ _fsdomain("Enter code to complete setup") }}</div>
+<p>
+  Enter the Code shown in your authenticator app to complete setting up 2FA.
+</p>
 {% if changing %}
 {% set faction = url_for_security('two_factor_setup_validate', token=state_token) %}
 {% else %}
@@ -109,11 +94,10 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
   {# explicitly render csrf_token so we can change the ID so we don't get duplicates #}
   {{ render_csrf(two_factor_verify_code_form, "code") }}
   <fieldset>
-    {{ two_factor_verify_code_form.code.label }}
     {% if two_factor_verify_code_form.code.errors %}
-    {{ two_factor_verify_code_form.code(type="number", placeholder="Enter code shown in your authenticator", aria_describedby="verify-code-helper", aria_invalid="true") }}
+    {{ two_factor_verify_code_form.code(type="number", placeholder="66362", aria_describedby="verify-code-helper", aria_invalid="true") }}
     {% else %}
-    {{ two_factor_verify_code_form.code(type="number", placeholder="Enter code shown in your authenticator", aria_describedby="verify-code-helper") }}
+    {{ two_factor_verify_code_form.code(type="number", placeholder="66362", aria_describedby="verify-code-helper") }}
     {% endif %}
     {% for error in two_factor_verify_code_form.code.errors %}
     <small id="verify-code-helper">{{ error }}</small>

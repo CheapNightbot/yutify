@@ -12,7 +12,9 @@ APP = "yutify"
 class Config:
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.environ.get("RATELIMIT")
-    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(os.environ.get("YUTIFY_ACCOUNT_DELETE_EMAIL", True))
+    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(
+        os.environ.get("YUTIFY_ACCOUNT_DELETE_EMAIL", True)
+    )
 
     # SESSION_COOKIE_SECURE = True
     # SESSION_COOKIE_HTTPONLY = True
@@ -28,12 +30,12 @@ class Config:
     MAIL_DEBUG = False
     MAIL_SERVER = os.environ.get("MAIL_SERVER")
     MAIL_PORT = int(os.environ.get("MAIL_PORT") or 25)
-    MAIL_USE_TLS = bool(os.environ.get("MAIL_USE_TLS", 0))
+    MAIL_USE_TLS = bool(os.environ.get("MAIL_USE_TLS", True))
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
     PORT = os.environ.get("PORT", 5000)
-    LOG_TO_STDOUT = bool(os.environ.get("LOG_TO_STDOUT", 0))
+    LOG_TO_STDOUT = bool(os.environ.get("LOG_TO_STDOUT", True))
 
     # Flask-Security specific (and not specific as well) configs ~
     # https://flask-security.readthedocs.io/en/stable/configuration.html
@@ -55,7 +57,7 @@ class Config:
     SECURITY_PASSWORD_CONFIRM_REQUIRED = True
 
     # ### Core - Multi-factor ###
-    SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS")}
+    SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS") or "6663629"}
     SECURITY_TOTP_ISSUER = APP
 
     # ### Core - rarely need changing ###
@@ -67,27 +69,23 @@ class Config:
     SECURITY_POST_LOGOUT_VIEW = "auth.logout"
 
     # ### Registerable ###
-    SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", 0))
+    SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", False))
     SECURITY_EMAIL_SUBJECT_REGISTER = f"[{APP}] Verify Email Address!"
-    SECURITY_POST_REGISTER_VIEW = "auth.signup"
+    SECURITY_POST_REGISTER_VIEW = "main.index"
     SECURITY_REGISTER_URL = "/signup"
     SECURITY_USERNAME_ENABLE = True
-    # SECURITY_MSG_USERNAME_DISALLOWED_CHARACTERS = (
-    #     "Username can contain only letters, numbers and hyphen (-)",
-    #     "error",
-    # )
+    SECURITY_MSG_USERNAME_DISALLOWED_CHARACTERS = (
+        "Username can contain only letters, numbers and hyphen (-)",
+        "error",
+    )
     SECURITY_USERNAME_REQUIRED = True
     SECURITY_USE_REGISTER_V2 = True
 
     # ### Confirmable ###
     SECURITY_CONFIRMABLE = True
     SECURITY_CONFIRM_URL = "/verify-email"
-    # SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] Verify Email Address!"
-    SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] EMAIL SUBJECT CONFIRM!"
+    SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] Verify Email Address!"
     SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
-
-    # ### Changeable ###
-    # #
 
     # ### Recoverable ###
     SECURITY_RECOVERABLE = True
@@ -103,14 +101,19 @@ class Config:
     SECURITY_TWO_FACTOR = True
     SECURITY_TWO_FACTOR_REQUIRED = False
     SECURITY_TWO_FACTOR_ENABLED_METHODS = ["email", "authenticator"]
+    # SECURITY_TWO_FACTOR_RESCUE_MAIL = ADMIN_EMAIL
+    SECURITY_EMAIL_SUBJECT_TWO_FACTOR = f"[{APP}] Your Code for Two-Factor Login!"
+    SECURITY_EMAIL_SUBJECT_TWO_FACTOR_RESCUE = f"[{APP}] Two-Factor Authentication Recovery!"
+    SECURITY_TWO_FACTOR_RESCUE_URL = "/tf-recovery"
+    SECURITY_TWO_FACTOR_POST_SETUP_VIEW = "/mf-recovery-codes"
     SECURITY_TWO_FACTOR_IMPLEMENTATIONS = {
         "code": "flask_security.twofactor.CodeTfPlugin"
     }
+    SECURITY_TWO_FACTOR_RESCUE_EMAIL = False
 
     # ### Change Username ###
     SECURITY_CHANGE_USERNAME = True
     SECURITY_POST_CHANGE_USERNAME_VIEW = "user.username_changed"
-    SECURITY_CHANGE_USERNAME_TEMPLATE = "user/user_settings.html"
 
     # ### Recovery Codes ###
     SECURITY_MULTI_FACTOR_RECOVERY_CODES = True

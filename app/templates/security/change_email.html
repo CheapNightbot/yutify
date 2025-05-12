@@ -1,0 +1,32 @@
+{% set title = title|default(_fsdomain('Change Email')) %}
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+<p>Once submitted, an email confirmation will be sent to this new email address.</p>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <form action="{{ url_for_security('change_email') }}" method="post" name="change_email_form">
+    {{ change_email_form.hidden_tag() }}
+    <fieldset>
+      {{ change_email_form.email.label }}
+      {% if change_email_form.email.errors %}
+      {{ change_email_form.email(aria_label="Email Address", aria_describedby="email-helper", aria_invalid="true") }}
+      {% else %}
+      {{ change_email_form.email(aria_label="Email Address", aria_describedby="email-helper") }}
+      <small id="email-helper"></small>
+      {% endif %}
+      {% for error in change_email_form.email.errors %}
+      <small id="email-helper">{{ errors }}</small>
+      {% endfor %}
+    </fieldset>
+    {{ change_email_form.submit }}
+  </form>
+</main>
+{% endblock content %}

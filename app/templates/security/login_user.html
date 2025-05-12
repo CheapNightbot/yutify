@@ -30,7 +30,7 @@
   {{ login_user_form.hidden_tag() }}
   <fieldset>
     {% if login_user_form.email and "email" in identity_attributes %}
-    {{ login_user_form.email.label }}
+    {{ login_user_form.email.label(value="Email") }}
     {% if login_user_form.email.errors %}
     {{ login_user_form.email(autofocus="", aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
     {% else %}
@@ -44,21 +44,21 @@
     {% if login_user_form.username and "username" in identity_attributes %}
     {{ login_user_form.username.label }}
     {% if login_user_form.username.errors %}
-    {{ login_user_form.username(autofocus="", aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+    {{ login_user_form.username(autofocus="", aria_label="Username", aria_describedby="username-helper", aria_invalid="true", required="") }}
     {% else %}
-    {{ login_user_form.username(autofocus="", aria_label="Username", aria_describedby="username-helper") }}
+    {{ login_user_form.username(autofocus="", aria_label="Username", aria_describedby="username-helper", required="") }}
     {% endif %}
     {% for error in login_user_form.username.errors %}
     <small id="username-helper">{{ error }}</small>
     {% endfor %}
     {% endif %}
 
-    <div class="password-box">
     {{ login_user_form.password.label }}
     {% if login_user_form.password.errors %}
-    {{ login_user_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+    {{ login_user_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true", required="") }}
     {% else %}
-    {{ login_user_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+    <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+    {{ login_user_form.password(aria_label="Password", aria_describedby="password-helper password-strength", required="") }}
     <small><a href="{{ url_for_security('forgot_password') }}">Forgot Password?</a></small>
     {% endif %}
 
@@ -70,8 +70,6 @@
     <br><a href="{{ url_for_security('forgot_password') }}">Forgot Password?</a>
     </small>
     {% endif %}
-    <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
-    </div>
 
     {{ login_user_form.remember }} {{ login_user_form.remember.label }}
   </fieldset>

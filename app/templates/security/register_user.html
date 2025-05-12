@@ -62,7 +62,6 @@
 
         {{ register_user_form.password.label }}
         {% if register_user_form.password.errors %}
-        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
         {{ register_user_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
         {% else %}
         <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
