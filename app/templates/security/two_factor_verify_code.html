@@ -1,6 +1,6 @@
 {% set title = title|default(_fsdomain("Two-Factor Authentication")) %}
 {% extends "base.html" %}
-{% from "security/_macros.html" import render_field_with_errors, render_field, prop_next, render_csrf %}
+{% from "security/_macros.html" import prop_next, render_csrf %}
 
 {% block nav_title %}
 {{ title }}
@@ -28,7 +28,7 @@
       <small id="auth-code-helper">{{ error }}</small>
       {% endfor %}
     </fieldset>
-    {{ render_field(two_factor_verify_code_form.submit) }}
+    {{ two_factor_verify_code_form.submit }}
   </form>
 
 
@@ -50,7 +50,7 @@
         {% if problem=="help" %}
         <div>{{ _fsdomain("An email was sent to us in order to reset your application account") }}</div>
         {% endif %}
-        {{ render_field(two_factor_rescue_form.submit) }}
+        {{ two_factor_rescue_form.submit }}
       </form>
     </div>
   </details>

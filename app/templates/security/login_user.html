@@ -47,27 +47,32 @@
     {{ login_user_form.username(autofocus="", aria_label="Username", aria_describedby="username-helper", aria_invalid="true", required="") }}
     {% else %}
     {{ login_user_form.username(autofocus="", aria_label="Username", aria_describedby="username-helper", required="") }}
+    <small><a href="{{ url_for_security('recover_username') }}">Forgot Username?</a></small>
     {% endif %}
+    {% if login_user_form.username.errors %}
+    <small id="username-helper">
     {% for error in login_user_form.username.errors %}
-    <small id="username-helper">{{ error }}</small>
+    {{ error }}!
     {% endfor %}
+    <a href="{{ url_for_security('recover_username') }}">Forgot Username?</a>
+    </small>
+    {% endif %}
     {% endif %}
 
     {{ login_user_form.password.label }}
+    <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
     {% if login_user_form.password.errors %}
     {{ login_user_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true", required="") }}
     {% else %}
-    <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
     {{ login_user_form.password(aria_label="Password", aria_describedby="password-helper password-strength", required="") }}
     <small><a href="{{ url_for_security('forgot_password') }}">Forgot Password?</a></small>
     {% endif %}
-
     {% if login_user_form.password.errors %}
     <small id="password-helper">
     {% for error in login_user_form.password.errors %}
-    {{ error }}
+    {{ error }}!
     {% endfor %}
-    <br><a href="{{ url_for_security('forgot_password') }}">Forgot Password?</a>
+    <a href="{{ url_for_security('forgot_password') }}">Forgot Password?</a>
     </small>
     {% endif %}
 

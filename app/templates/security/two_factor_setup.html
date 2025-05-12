@@ -18,7 +18,7 @@ authr_key: same key as in qrcode - for possible manual entry
 authr_username: same username as in qrcode
 authr_issuer: same issuer as in qrcode
 #}
-{% set title = title|default("Enable 2FA") %}
+{% set title = title|default("Manage 2FA") %}
 {% extends "base.html" %}
 {% from "security/_macros.html" import render_field_with_errors, render_field,
 render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
@@ -40,12 +40,25 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
   <div>Currently setup two-factor method: <ins>{{ primary_method }}</ins></div>
   <hr>
   <fieldset>
+    {% if primary_method %}
+    {% for subfield in two_factor_setup_form.setup %}
+    {% if subfield.data in choices[0] %}
+    {{ subfield(aria_describedby="2fa-method-helper") }}
+    {{ subfield.label }} <br>
+    {% endif %}
+    {% endfor %}
+
+    {% else %}
+
     {% for subfield in two_factor_setup_form.setup %}
     {% if subfield.data in choices %}
     {{ subfield(aria_describedby="2fa-method-helper") }}
     {{ subfield.label }} <br>
     {% endif %}
     {% endfor %}
+
+    {% endif %}
+
     {% if "sms" in choices %}
     <div>
       {{ render_field_with_errors(two_factor_setup_form.phone) }}
@@ -95,7 +108,7 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
   {{ render_csrf(two_factor_verify_code_form, "code") }}
   <fieldset>
     {% if two_factor_verify_code_form.code.errors %}
-    {{ two_factor_verify_code_form.code(type="number", placeholder="66362", aria_describedby="verify-code-helper", aria_invalid="true") }}
+    {{ two_factor_verify_code_form.code(autofocus="", type="number", placeholder="66362", aria_describedby="verify-code-helper", aria_invalid="true") }}
     {% else %}
     {{ two_factor_verify_code_form.code(type="number", placeholder="66362", aria_describedby="verify-code-helper") }}
     {% endif %}
@@ -122,6 +135,24 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
   <a href="{{ url_for_security('wan_register') }}">{{ _fsdomain("You can set them up here.") }}</a>
 </div>
 {% endif %}
+{% endif %}
+
+<a role="button" class="custom-btn" href="{{ url_for('user.user_settings', username=current_user.username )}}">Done</a>
+
+{% if primary_method != 'none' %}
+<h3>Recovery Options</h3>
+
+<article class="service-item">
+  <div class="service-info">
+    <div>
+      <i class="fa-solid fa-key"></i>
+      <span>Recovery codes</span>
+    </div>
+  </div>
+  <div class="service-action">
+    <a href="{{ url_for_security('mf_recovery_codes') }}">Manage</a>
+  </div>
+</article>
 {% endif %}
 </main>
 {% endblock content %}
