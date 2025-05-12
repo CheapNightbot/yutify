@@ -6,10 +6,10 @@ from flask_security.utils import uia_username_mapper
 load_dotenv()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-APP = "yutify"
 
 
 class Config:
+    SERVICE = os.getenv("SERVICE", "yutify")
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.environ.get("RATELIMIT")
     YUTIFY_ACCOUNT_DELETE_EMAIL = bool(
@@ -58,7 +58,7 @@ class Config:
 
     # ### Core - Multi-factor ###
     SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS") or "6663629"}
-    SECURITY_TOTP_ISSUER = APP
+    SECURITY_TOTP_ISSUER = SERVICE
 
     # ### Core - rarely need changing ###
     SECURITY_CLI_USERS_NAME = False
@@ -70,7 +70,7 @@ class Config:
 
     # ### Registerable ###
     SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", False))
-    SECURITY_EMAIL_SUBJECT_REGISTER = f"[{APP}] Verify Email Address!"
+    SECURITY_EMAIL_SUBJECT_REGISTER = f"[{SERVICE}] Verify Email Address!"
     SECURITY_POST_REGISTER_VIEW = "main.index"
     SECURITY_REGISTER_URL = "/signup"
     SECURITY_USERNAME_ENABLE = True
@@ -84,7 +84,7 @@ class Config:
     # ### Confirmable ###
     SECURITY_CONFIRMABLE = True
     SECURITY_CONFIRM_URL = "/verify-email"
-    SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{APP}] Verify Email Address!"
+    SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{SERVICE}] Verify Email Address!"
     SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
 
     # ### Recoverable ###
@@ -93,27 +93,33 @@ class Config:
 
     # ### Change-Email ###
     SECURITY_CHANGE_EMAIL = True
-    SECURITY_CHANGE_EMAIL_SUBJECT = f"[{APP}] Confirm your new email address!"
+    SECURITY_CHANGE_EMAIL_SUBJECT = f"[{SERVICE}] Confirm your new email address!"
     SECURITY_POST_CHANGE_EMAIL_VIEW = "user.email_changed"
     SECURITY_CHANGE_EMAIL_ERROR_VIEW = "user.email_changed"
 
     # ### Two-Factor ###
     SECURITY_TWO_FACTOR = True
     SECURITY_TWO_FACTOR_REQUIRED = False
-    SECURITY_TWO_FACTOR_ENABLED_METHODS = ["email", "authenticator"]
+    SECURITY_TWO_FACTOR_ENABLED_METHODS = ["authenticator"]
     # SECURITY_TWO_FACTOR_RESCUE_MAIL = ADMIN_EMAIL
-    SECURITY_EMAIL_SUBJECT_TWO_FACTOR = f"[{APP}] Your Code for Two-Factor Login!"
-    SECURITY_EMAIL_SUBJECT_TWO_FACTOR_RESCUE = f"[{APP}] Two-Factor Authentication Recovery!"
+    SECURITY_EMAIL_SUBJECT_TWO_FACTOR = f"[{SERVICE}] Your Code for Two-Factor Login!"
+    SECURITY_EMAIL_SUBJECT_TWO_FACTOR_RESCUE = (
+        f"[{SERVICE}] Two-Factor Authentication Reset Request!"
+    )
     SECURITY_TWO_FACTOR_RESCUE_URL = "/tf-recovery"
-    SECURITY_TWO_FACTOR_POST_SETUP_VIEW = "/mf-recovery-codes"
     SECURITY_TWO_FACTOR_IMPLEMENTATIONS = {
         "code": "flask_security.twofactor.CodeTfPlugin"
     }
     SECURITY_TWO_FACTOR_RESCUE_EMAIL = False
 
+    # ### Username-Recovery ###
+    SECURITY_USERNAME_RECOVERY = True
+    SECURITY_EMAIL_SUBJECT_USERNAME_RECOVERY = f"[{SERVICE}] Username Recovery Request!"
+
     # ### Change Username ###
     SECURITY_CHANGE_USERNAME = True
     SECURITY_POST_CHANGE_USERNAME_VIEW = "user.username_changed"
+    SECURITY_EMAIL_SUBJECT_USERNAME_CHANGE_NOTICE = f"[{SERVICE}] Your username has been changed!"
 
     # ### Recovery Codes ###
     SECURITY_MULTI_FACTOR_RECOVERY_CODES = True
