@@ -18,9 +18,9 @@
     <fieldset>
       {{ send_confirmation_form.email.label(value="Email") }}
       {% if send_confirmation_form.email.errors %}
-      {{ send_confirmation_form.email(autofocus="", aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
+      {{ send_confirmation_form.email(autocomplete="current-email", autofocus="", aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
       {% else %}
-      {{ send_confirmation_form.email(autofocus="", aria_label="Email", aria_describedby="email-helper") }}
+      {{ send_confirmation_form.email(autocomplete="current-email", autofocus="", aria_label="Email", aria_describedby="email-helper") }}
       {% endif %}
       {% for error in send_confirmation_form.email.errors %}
       <small id="email-helper">{{ error }}</small>

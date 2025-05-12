@@ -17,9 +17,9 @@
     <fieldset>
       {{ change_email_form.email.label }}
       {% if change_email_form.email.errors %}
-      {{ change_email_form.email(aria_label="Email Address", aria_describedby="email-helper", aria_invalid="true") }}
+      {{ change_email_form.email(autocomplete="new-email", aria_label="Email Address", aria_describedby="email-helper", aria_invalid="true") }}
       {% else %}
-      {{ change_email_form.email(aria_label="Email Address", aria_describedby="email-helper") }}
+      {{ change_email_form.email(autocomplete="new-email", aria_label="Email Address", aria_describedby="email-helper") }}
       <small id="email-helper"></small>
       {% endif %}
       {% for error in change_email_form.email.errors %}

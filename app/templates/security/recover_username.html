@@ -21,9 +21,9 @@
     <fieldset>
       {{ username_recovery_form.email.label }}
       {% if username_recovery_form.email.errors %}
-      {{ username_recovery_form.email(aria_label="Email Address", aria_describedby="email-helper", aria_invalid="true") }}
+      {{ username_recovery_form.email(autocomplete="current-email", aria_label="Email Address", aria_describedby="email-helper", aria_invalid="true") }}
       {% else %}
-      {{ username_recovery_form.email(aria_label="Email Address", aria_describedby="email-helper") }}
+      {{ username_recovery_form.email(autocomplete="current-email", aria_label="Email Address", aria_describedby="email-helper") }}
       <small id="email-helper"></small>
       {% endif %}
       {% for error in username_recovery_form.email.errors %}

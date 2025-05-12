@@ -17,9 +17,9 @@
     <fieldset>
       {{ change_username_form.username.label }}
       {% if change_username_form.username.errors %}
-      {{ change_username_form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+      {{ change_username_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
       {% else %}
-      {{ change_username_form.username(aria_label="Username", aria_describedby="username-helper") }}
+      {{ change_username_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper") }}
       <small id="username-helper"></small>
       {% endif %}
       {% for error in change_username_form.username.errors %}
