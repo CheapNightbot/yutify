@@ -10,7 +10,9 @@
 {% endblock %}
 
 {% block content %}
-<main class="container user-settings">
+<main class="container">
+
+    <h3>Account Information:</h3>
     <form action="" method="post" name="username_form">
         {{ username_form.csrf_token(id="csrf_token_username") }}
         {{ username_form.form_name(value="change_username") }}
@@ -26,15 +28,12 @@
         {{ email_form.form_name(value="change_email") }}
         <label for="email">Email</label>
         <fieldset role="group">
-            <input id="email" type="email"
+            <input id="email" type="text"
                 value="{{ user.email | mask_string(mask='*', mask_special_char=True, mask_from_char='@', exclude_bounds=True) }}"
                 readonly>
             <input type="submit" class="edit-btn" value="Change">
         </fieldset>
     </form>
-
-    <br>
-    <button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete Account</button>
 
     <h3>Services:</h3>
     {% if services %}
@@ -85,6 +84,35 @@
     </article>
     {% endif %}
 
+    <h3>Privacy & Security:</h3>
+
+    <article class="service-item">
+        {% if user.tf_primary_method %}
+        <div class="service-info">
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Two-Factor Authentication: <span class="status connected">Enabled</span></span>
+            </div>
+        </div>
+        <div class="service-action">
+            <a href="{{ url_for_security('two_factor_setup') }}">Manage</a>
+        </div>
+        {% else %}
+        <div class="service-info">
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Two-Factor Authentication: <span class="status not-connected">Disabled</span></span>
+            </div>
+        </div>
+        <div class="service-action">
+            <a href="{{ url_for_security('two_factor_setup') }}">Manage</a>
+        </div>
+        {% endif %}
+    </article>
+
+    <hr>
+    <button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete
+        Account</button>
 
     {% if services %}
     {% for service in services %}
@@ -109,7 +137,6 @@
     {% endif %}
     {% endfor %}
     {% endif %}
-
 
     <dialog id="delete-account-modal">
         <article>
