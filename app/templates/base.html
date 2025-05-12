@@ -76,12 +76,17 @@
 
     {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
-    {% for category, message in messages %}
-    <div id="flashMessage" class="flash-message {{ category }}">
-        <span role="alert">{{ message | safe }}</span>
-        <button class="flash-close-btn"></button>
+    {% set count = 0 %}
+    <div class="flash-msg-container">
+        {% for category, message in messages %}
+        {% if message != "Your code has been confirmed" %}
+        <div id="{{ 'flashMessage' + (count + 1) | string }}" class="flash-message {{ category }}">
+            <span role="alert">{{ message | safe }}</span>
+            <button class="flash-close-btn"></button>
+        </div>
+        {% endif %}
+        {% endfor %}
     </div>
-    {% endfor %}
     {% endif %}
     {% endwith %}
 
