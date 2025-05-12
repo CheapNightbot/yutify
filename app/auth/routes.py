@@ -1,7 +1,55 @@
-from flask import flash, redirect, url_for, current_app
-from flask_security import current_user, url_for_security
+from flask import Flask, flash, redirect, url_for
+from flask_security import (
+    Security,
+    SQLAlchemyUserDatastore,
+    current_user,
+    url_for_security,
+)
+from flask_security.signals import user_authenticated, user_confirmed, user_registered
 
 from app.auth import bp
+from app.models import User
+
+
+def post_user_registration(app: Flask, user: User, **extra_args):
+    """
+    Function to call on/after `user_registered` signal emitted by Flask-Security.
+
+    This handles (for now) setting the user avatar, otherwise the `user_profile.html`
+    template will raise exception as there is no fallback value for user avatar.
+    """
+    security: Security = app.security
+    datastore: SQLAlchemyUserDatastore = security.datastore
+    user.set_avatar()
+    datastore.db.session.commit()
+
+
+def post_email_confirmed(app: Flask, user: User, **extra_args):
+    """
+    Function to call on/after `user_confirmed` signal emitted by Flask-Security.
+
+    This handles assigning the user a "user" role.
+    """
+    security: Security = app.security
+    datastore: SQLAlchemyUserDatastore = security.datastore
+    datastore.add_role_to_user(user, "user")
+
+
+def post_user_login(app: Flask, user: User, **extra_args):
+    """
+    Function to call on/after `user_authenticated` signal emitted by Flask-Security.
+
+    This handles flashing a message and redirecting user to the profile page.
+    """
+    flash(
+        f"Welcome {current_user.name}, you've been logged in successfully!",
+        "success",
+    )
+
+
+user_registered.connect(post_user_registration)
+user_confirmed.connect(post_email_confirmed)
+user_authenticated.connect(post_user_login)
 
 
 @bp.route("/login")
@@ -11,23 +59,9 @@ def login():
 
     set this to `SECURITY_POST_LOGIN_VIEW` variable in config.py for Flask-Security.
     """
-    if current_user.is_authenticated:
-        security = current_app.security
-        if "user" not in current_user.roles:
-            security.datastore.add_role_to_user(current_user, "user")
-        if not current_user.avatar:
-            current_user.set_avatar()
-        security.datastore.db.session.commit()
-
-        flash(
-            f"Welcome {current_user.name}, you've been logged in successfully!",
-            "success",
-        )
-        if current_user.has_role("admin"):
-            return redirect(url_for("admin.dashboard"))
-        return redirect(url_for("user.user_profile", username=current_user.username))
-
-    return redirect(url_for_security("login"))
+    if current_user.has_role("admin"):
+        return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("user.user_profile", username=current_user.username))
 
 
 @bp.route("/logout")
@@ -45,17 +79,11 @@ def logout():
     return redirect(url_for("main.index"))
 
 
-@bp.route("/signup")
-def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for("user.user_profile", username=current_user.username))
-
-    try:
-        print(current_user.username)
-    except Exception:
-        print(current_user)
-
-    return redirect(url_for("auth.login"))
+# @bp.route("/signup")
+# def signup():
+#     if current_user.is_authenticated:
+#         return redirect(url_for("user.user_profile", username=current_user.username))
+#     return redirect(url_for("auth.login"))
 
 
 @bp.route("/email-verified")
