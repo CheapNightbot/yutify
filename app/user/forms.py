@@ -1,4 +1,3 @@
-from flask_security.change_username import ChangeUsernameForm
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, Length

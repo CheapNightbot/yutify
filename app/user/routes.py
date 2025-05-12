@@ -16,7 +16,6 @@ from app import db
 from app.models import Service, User, UserService
 from app.user import bp
 from app.user.forms import (
-    ChangeUsernameForm,
     DeleteAccountForm,
     EditProfileForm,
     EmptyForm,
