@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editServicesForm = document.querySelector('[name="edit_service_form"]');
     const manageUserAccountForm = document.querySelector('[name="manage_user_account_form"]');
     const tabControl = document.querySelector('[role="tab-control"]');
+    const togglePasswordContainer = document.querySelector(".password-toggle-icon");
+    const togglePassword = document.querySelector(".password-toggle-icon i");
+    const verifyForm = document.querySelector('[name="verify_form"]');
 
     function convertToUserTimezone(datetimeString) {
         // Get the parts
@@ -79,10 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let fadeTimeout;
 
-    function closeFlashMessage() {
-        const flashMessage = document.getElementById('flashMessage');
+    function closeFlashMessage(flashMessage) {
         if (flashMessage) {
-            flashMessage.style.opacity = '0'; // Start fading out
+            flashMessage.classList.add('fade-out'); // Add fade-out class
 
             // Wait for the transition to finish before removing the element
             setTimeout(() => {
@@ -91,29 +93,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function startFadeOut() {
-        fadeTimeout = setTimeout(closeFlashMessage, 5000); // Start fade out after 5 seconds
+    function startFadeOut(flashMessage) {
+        fadeTimeout = setTimeout(() => closeFlashMessage(flashMessage), 5000); // Start fade out after 5 seconds
     }
 
-    function stopFadeOut() {
+    function stopFadeOut(flashMessage) {
         clearTimeout(fadeTimeout); // Stop the fade out
+        flashMessage.classList.remove('fade-out'); // Remove fade-out class to restore opacity
     }
 
     // Add event listeners for mouse hover
-    const flashMessage = document.getElementById('flashMessage');
-    if (flashMessage) {
-        flashMessage.addEventListener('mouseenter', stopFadeOut);
-        flashMessage.addEventListener('mouseleave', startFadeOut);
+    const flashMessages = document.querySelectorAll('.flash-message');
+    flashMessages.forEach(flashMessage => {
+        if (flashMessage) {
+            flashMessage.addEventListener('mouseenter', () => stopFadeOut(flashMessage));
+            flashMessage.addEventListener('mouseleave', () => startFadeOut(flashMessage));
 
-        // Add event listener for the close button
-        const flashCloseBtn = flashMessage.querySelector('.flash-close-btn');
-        if (flashCloseBtn) {
-            flashCloseBtn.addEventListener('click', closeFlashMessage);
+            // Add event listener for the close button
+            const flashCloseBtns = flashMessage.querySelectorAll('.flash-close-btn');
+            flashCloseBtns.forEach(flashCloseBtn => {
+                if (flashCloseBtn) {
+                    flashCloseBtn.addEventListener('click', () => closeFlashMessage(flashMessage));
+                }
+            });
+
+            // Start the fade out when the page loads
+            startFadeOut(flashMessage);
         }
-
-        // Start the fade out when the page loads
-        startFadeOut();
-    }
+    });
 
 
     if (headerTitle && navTitle) {
@@ -256,8 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
         closeProfileEditor.addEventListener('click', toggleModal);
     }
 
-    const confirmPassword = () => {
-        if (usernameInput) {
+    const validateUsername = () => {
+        if (usernameInput && !loginForm) {
             usernameInput.addEventListener('input', () => {
                 if (usernameInput.value.length < 4) {
                     usernameInput.setAttribute('aria-invalid', true);
@@ -276,63 +283,92 @@ document.addEventListener('DOMContentLoaded', () => {
                 usernameHelper.textContent = '';
             });
         }
-        const showPassToggle = document.querySelector('.password-toggle-icon');
-        showPassToggle.style.opacity = '1';
-        passwordInput.addEventListener('input', () => {
-            if (passwordInput.getAttribute('aria-invalid') === 'true') {
-                showPassToggle.style.opacity = '1';
-            }
-            if (passwordInput.value.length < 16) {
-                passwordInput.setAttribute('aria-invalid', true);
-                passwordHelper.textContent = 'Password must be at least 16 characters long!';
-            } else {
-                showPassToggle.style.marginTop = '0';
-                showPassToggle.style.marginRight = '0';
-                passwordInput.setAttribute('aria-invalid', false);
-                passwordHelper.textContent = '';
-            }
-        });
+    }
 
-        passwordConfirmInput.addEventListener('input', () => {
-            if (passwordConfirmInput.value.length > 8) {
+    const confirmPassword = () => {
+        if (passwordInput && passwordConfirmInput) {
+            passwordInput.addEventListener('input', () => {
+                if (passwordInput.value.length < 16) {
+                    passwordInput.setAttribute('aria-invalid', true);
+                    passwordHelper.textContent = 'Password must be at least 16 characters long!';
+                } else {
+                    passwordInput.setAttribute('aria-invalid', false);
+                    passwordHelper.textContent = '';
+                }
+            });
+
+            passwordConfirmInput.addEventListener('input', () => {
                 if (passwordConfirmInput.value !== passwordInput.value) {
                     passwordConfirmInput.setAttribute('aria-invalid', 'true');
                     passwordConfirm.textContent = 'Passwords do not match!';
                 } else {
-                    showPassToggle.style.opacity = '0';
-                    passwordConfirmInput.setAttribute('aria-invalid', 'false');
                     passwordConfirm.textContent = '';
+                    if (!passwordInput.getAttribute('aria-invalid') && passwordInput.value.length >= 16) {
+                        passwordInput.type = 'password';
+                        passwordConfirmInput.setAttribute('aria-invalid', 'false');
+                    }
                 }
-            }
+            });
 
-        });
+            passwordInput.addEventListener('blur', () => {
+                if (passwordInput.getAttribute('aria-invalid') === 'false') {
+                    passwordInput.removeAttribute('aria-invalid');
+                    passwordHelper.textContent = '';
+                }
+            });
 
-        passwordInput.addEventListener('blur', () => {
-            if (passwordInput.getAttribute('aria-invalid') === 'false') {
-                passwordInput.removeAttribute('aria-invalid');
-                passwordHelper.textContent = '';
-            }
-        });
+            passwordInput.addEventListener('blur', () => {
+                if (togglePasswordContainer) {
+                    togglePasswordContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        togglePasswordContainer.style.display = 'none';
+                    }, 50);
+                }
+            });
 
-        passwordConfirmInput.addEventListener('blur', () => {
-            if (passwordConfirmInput.getAttribute('aria-invalid') === 'false') {
-                passwordConfirmInput.removeAttribute('aria-invalid');
-            }
-        });
+            passwordInput.addEventListener('focus', () => {
+                if (togglePasswordContainer) {
+                    togglePasswordContainer.style.display = 'initial';
+                    setTimeout(() => {
+                        togglePasswordContainer.style.opacity = '1';
+                    }, 50);
+                }
+            });
+
+            passwordConfirmInput.addEventListener('blur', () => {
+                if (passwordConfirmInput.getAttribute('aria-invalid') === 'false') {
+                    passwordConfirmInput.removeAttribute('aria-invalid');
+                }
+            });
+        } else if (loginForm || verifyForm) {
+            passwordInput.addEventListener('blur', () => {
+                if (togglePasswordContainer) {
+                    togglePasswordContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        togglePasswordContainer.style.display = 'none';
+                    }, 50);
+                }
+            });
+
+            passwordInput.addEventListener('focus', () => {
+                if (togglePasswordContainer) {
+                    togglePasswordContainer.style.display = 'initial';
+                    setTimeout(() => {
+                        togglePasswordContainer.style.opacity = '1';
+                    }, 50);
+                }
+            });
+        }
     }
 
 
-    if (registerForm || passResetForm) {
-        confirmPassword();
-    }
+    validateUsername();
+    confirmPassword();
 
-    if (loginForm || registerForm || authKey) {
-        const passwordField = document.querySelector("#password, #auth-key");
-        const togglePassword = document.querySelector(".password-toggle-icon i");
 
+    if (loginForm || registerForm) {
+        const passwordField = document.querySelector("#password");
         if (passwordField.getAttribute('aria-invalid') === 'true') {
-            togglePassword.style.display = 'none';
-
             passwordField.addEventListener("input", () => {
                 const passHelper = document.querySelector('#password-helper');
                 if (passHelper) {
@@ -341,10 +377,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 passwordField.removeAttribute('aria-invalid');
-                togglePassword.style.display = 'initial';
             });
         }
+    }
 
+    if (togglePasswordContainer) {
+        togglePasswordContainer.style.opacity = '1';
+        const passwordField = document.querySelector("#password, #auth-key");
         togglePassword.addEventListener("click", () => {
             if (passwordField.type === "password") {
                 passwordField.type = "text";
