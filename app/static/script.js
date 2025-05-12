@@ -317,45 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            passwordInput.addEventListener('blur', () => {
-                if (togglePasswordContainer) {
-                    togglePasswordContainer.style.opacity = '0';
-                    setTimeout(() => {
-                        togglePasswordContainer.style.display = 'none';
-                    }, 50);
-                }
-            });
-
-            passwordInput.addEventListener('focus', () => {
-                if (togglePasswordContainer) {
-                    togglePasswordContainer.style.display = 'initial';
-                    setTimeout(() => {
-                        togglePasswordContainer.style.opacity = '1';
-                    }, 50);
-                }
-            });
-
             passwordConfirmInput.addEventListener('blur', () => {
                 if (passwordConfirmInput.getAttribute('aria-invalid') === 'false') {
                     passwordConfirmInput.removeAttribute('aria-invalid');
-                }
-            });
-        } else if (loginForm || verifyForm) {
-            passwordInput.addEventListener('blur', () => {
-                if (togglePasswordContainer) {
-                    togglePasswordContainer.style.opacity = '0';
-                    setTimeout(() => {
-                        togglePasswordContainer.style.display = 'none';
-                    }, 50);
-                }
-            });
-
-            passwordInput.addEventListener('focus', () => {
-                if (togglePasswordContainer) {
-                    togglePasswordContainer.style.display = 'initial';
-                    setTimeout(() => {
-                        togglePasswordContainer.style.opacity = '1';
-                    }, 50);
                 }
             });
         }
