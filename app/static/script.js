@@ -305,6 +305,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     passwordConfirm.textContent = '';
                     if (!passwordInput.getAttribute('aria-invalid') && passwordInput.value.length >= 16) {
                         passwordInput.type = 'password';
+                        togglePasswordContainer.style.opacity = '0';
+                        setTimeout(() => {
+                            togglePasswordContainer.style.display = 'none';
+                        }, 50);
                         passwordConfirmInput.setAttribute('aria-invalid', 'false');
                     }
                 }
@@ -323,27 +327,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+
+        if (loginForm) {
+            if (passwordInput.getAttribute('aria-invalid') === 'true') {
+                passwordInput.addEventListener("input", () => {
+                    if (passwordHelper) {
+                        passwordHelper.innerHTML = '<a href="/reset-password">Forgot Password?</a>';
+                    }
+                    passwordInput.removeAttribute('aria-invalid');
+                });
+            }
+        }
     }
 
 
     validateUsername();
     confirmPassword();
 
-
-    if (loginForm || registerForm) {
-        const passwordField = document.querySelector("#password");
-        if (passwordField.getAttribute('aria-invalid') === 'true') {
-            passwordField.addEventListener("input", () => {
-                const passHelper = document.querySelector('#password-helper');
-                if (passHelper) {
-                    if (!registerForm) {
-                        passHelper.innerHTML = '<a href="/reset-password">Forgot Password?</a>';
-                    }
-                }
-                passwordField.removeAttribute('aria-invalid');
-            });
-        }
-    }
 
     if (togglePasswordContainer) {
         togglePasswordContainer.style.opacity = '1';
