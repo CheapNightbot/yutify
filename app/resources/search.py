@@ -119,7 +119,7 @@ class YutifySearch(Resource):
         if artist == "Artist" and song == "Song":
             if platform == "deezer":
                 result = asdict(DEEZER)
-            elif platform == "itunes" or "apple-music":
+            elif platform == "itunes" or platform == "apple-music":
                 result = asdict(ITUNES)
             elif platform == "kkbox":
                 result = asdict(KKBOX)
