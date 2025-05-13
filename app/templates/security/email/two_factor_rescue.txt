@@ -1,0 +1,10 @@
+{% extends "security/email/email_base.txt" %}
+
+{% block content %}
+Heyo ~
+
+It looks like "{{ user.name }} (@{{ user.username }})"
+can't access their account due to 2FA and requesting a 2FA reset for their account.
+
+For additional information, you may contact them via this email: {{ user.email }}
+{% endblock %}

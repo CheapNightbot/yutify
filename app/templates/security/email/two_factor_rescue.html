@@ -1,0 +1,12 @@
+{% extends "security/email/email_base.html" %}
+
+{% block content %}
+<h3>Heyo ~</h3>
+<p>
+    It looks like "<strong>{{ user.name }}</strong> (@{{ user.username }})" can't access
+    their account due to 2FA and requesting a 2FA reset for their account.
+</p>
+<p>
+    For additional information, you may contact them via this email: <code>{{ user.email }}</code>
+</p>
+{% endblock %}

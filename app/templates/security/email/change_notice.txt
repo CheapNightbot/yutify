@@ -1,0 +1,9 @@
+{% extends "security/email/email_base.txt" %}
+{% block content %}
+Heyo {{ user.name }} ~
+This is to notify that your account password has been changed.
+{% if security.recoverable %}
+If you did not change your password, click the link below to reset it immedietly!
+{{ url_for_security('forgot_password', _external=True) }}
+{% endif %}
+{% endblock %}

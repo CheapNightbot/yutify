@@ -1,0 +1,15 @@
+{% extends "security/email/email_base.txt" %}
+
+{% block content %}
+Heyo {{ user.name }} ~
+You requested to change the email address associated with your account.
+Your currently registered email is: {{ user.email }}
+
+To verify your new email address, use this link: {{ link }}
+
+This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}
+
+If you did not request email change, it might be that someone has access to your account.
+You are suggested to reset your password immedietly using the following link:
+{{ url_for_security('forgot_password', _external=True) }}
+{% endblock %}
