@@ -96,9 +96,7 @@
 
     {% block content %}{% endblock %}
 
-    <hr>
-
-    <footer class="container">
+    <footer class="container-fluid">
         <p>&copy;{{ year }} Cheap Nightbot</p>
         <p><a href="https://github.com/CheapNightbot/yutify?tab=MIT-1-ov-file" target="_blank">MIT License</a></p>
         <p><a href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a></p>
@@ -110,8 +108,6 @@
         </button>
 
     </footer>
-
-    {% include "security/_menu.html" %}
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     {% block script %}{% endblock %}
