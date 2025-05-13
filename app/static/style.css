@@ -233,6 +233,19 @@ header {
     flex: 1;
 }
 
+.endpoint.docs {
+    max-width: 32rem;
+}
+
+.endpoint-auth {
+    width: 0;
+    position: relative;
+    float: right;
+    transform: translateX(-2.4rem);
+    cursor: pointer;
+    transition: .3s all cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
 .endpoint,
 .endpoint-url {
     cursor: pointer;
@@ -278,12 +291,12 @@ header {
 }
 
 footer {
-    font-size: clamp(0.6rem, 1.5vw, 2rem);
     display: flex;
     justify-content: center;
     gap: 2rem;
     text-align: center;
-    padding: 1rem;
+    border-top: 1px solid var(--pico-dropdown-hover-background-color);
+    padding-top: 2rem !important;
 }
 
 .music-info {
@@ -654,7 +667,7 @@ aside li:not(:has(a)) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    max-width: 512px;
+    max-width: 612px;
     margin-bottom: .4rem;
 }
 
@@ -662,7 +675,7 @@ aside li:not(:has(a)) {
     display: inline-block;
     border-top: 1px solid;
     opacity: 0.5;
-    width: 6rem;
+    width: 8rem;
 }
 
 [role="tabs"] {
@@ -704,7 +717,48 @@ td [data-tooltip]:not(a, button, input, [role=button]) {
     border: none;
 }
 
+form[name="two_factor_rescue_form"] ul {
+    margin: 0;
+    padding: 0;
+}
+
+form[name="two_factor_rescue_form"] li {
+    list-style: none;
+}
+
+.inline-code {
+    padding: var(--pico-typography-spacing-vertical);
+    overflow: auto;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0.5rem 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 36rem;
+    white-space: pre;
+}
+
+.codeblock {
+    padding: var(--pico-typography-spacing-vertical);
+    overflow: auto;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0.5rem 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 36rem;
+    white-space: pre;
+}
+
+dt::before {
+    content: "●";
+    margin-right: 0.5rem;
+}
+
+.null {
+    background: #423131;
+}
+
 @media (max-width: 1024px) {
+
     #main-nav,
     #main-nav ul:not([dir="rtl"]) {
         gap: 1rem;
@@ -768,11 +822,19 @@ td [data-tooltip]:not(a, button, input, [role=button]) {
         padding-left: var(--pico-spacing);
     }
 
-    aside::after {
+    aside.top::after {
         content: "";
         display: block;
         width: 100%;
         margin-top: 1rem;
         border-bottom: 1px solid var(--pico-accordion-border-color);
+    }
+
+    aside.bottom::before {
+        content: "";
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+        /* border-top: 1px solid var(--pico-accordion-border-color); */
     }
 }
