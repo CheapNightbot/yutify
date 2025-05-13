@@ -12,10 +12,9 @@
 {% block content %}
 <main class="container">
 
-    <h3>Account Information:</h3>
     <form action="" method="post" name="username_form">
         {{ username_form.csrf_token(id="csrf_token_username") }}
-        {{ username_form.form_name(value="change_username") }}
+        {{ username_form.form_name() }}
         <label for="username">Username</label>
         <fieldset role="group">
             <input id="username" type="text" value="{{ user.username }}" readonly>
@@ -25,7 +24,7 @@
 
     <form action="" method="post" name="email_form">
         {{ email_form.csrf_token(id="csrf_token_email") }}
-        {{ email_form.form_name(value="change_email") }}
+        {{ email_form.form_name() }}
         <label for="email">Email</label>
         <fieldset role="group">
             <input id="email" type="text"
@@ -110,10 +109,11 @@
         {% endif %}
     </article>
 
-    <hr>
-    <a role="button" class="custom-btn margin-btm" href="{{ url_for_security('change_password') }}">Change Password</a>
-    <button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete
-        Account</button>
+    <div class="grid margin-btm">
+        <a role="button" class="custom-btn" href="{{ url_for_security('change_password') }}">Change Password</a>
+        <button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete
+            Account</button>
+    </div>
 
     {% if services %}
     {% for service in services %}

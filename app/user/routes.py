@@ -6,7 +6,7 @@ from flask_security import (
     auth_required,
     current_user,
     logout_user,
-    permissions_required,
+    roles_required,
     send_mail,
     url_for_security,
 )
@@ -15,30 +15,25 @@ from flask_security.utils import verify_password
 from app import db
 from app.models import Service, User, UserService
 from app.user import bp
-from app.user.forms import (
-    DeleteAccountForm,
-    EditProfileForm,
-    EmptyForm,
-    LastfmLinkForm,
-)
+from app.user.forms import DeleteAccountForm, EditProfileForm, EmptyForm, LastfmLinkForm
 
 
 @bp.route("/<username>", methods=["GET", "POST"])
 @auth_required()
-@permissions_required("user-read", "user-write")
+@roles_required("user")
 def user_profile(username):
     """Render user profile page."""
-    if username != current_user.username:
+    if username != current_user.username and not current_user.has_role("admin"):
         abort(404)
 
     user = db.first_or_404(sa.select(User).where(User.username == username))
     form = EditProfileForm(obj=user)
     if form.validate_on_submit():
-        current_user.name = form.name.data.strip()
-        current_user.about_me = " ".join(form.about_me.data.split())
+        user.name = form.name.data.strip()
+        user.about_me = " ".join(form.about_me.data.split())
         db.session.commit()
         flash("Your changes have been saved.", "success")
-        return redirect(url_for("user.user_profile", username=current_user.username))
+        return redirect(url_for("user.user_profile", username=user.username))
 
     return render_template(
         "user/user_profile.html",
@@ -52,7 +47,7 @@ def user_profile(username):
 
 @bp.route("/<username>/settings", methods=["GET", "POST"])
 @auth_required()
-@permissions_required("user-read", "user-write")
+@roles_required("user")
 def user_settings(username):
     """Render user settings page."""
     if username != current_user.username:
@@ -75,7 +70,13 @@ def user_settings(username):
 
     # Forms ~
     email_form = EmptyForm()
+    email_form.form_name.id = "change_email"
+    email_form.form_name.name = "change_email"
+    email_form.form_name.render_kw = {"value": "change_email"}
     username_form = EmptyForm()
+    username_form.form_name.id = "change_username"
+    username_form.form_name.name = "change_username"
+    username_form.form_name.render_kw = {"value": "change_username"}
     delete_account_form = DeleteAccountForm()
     service_action_form = EmptyForm()
     lastfm_link_form = None if "lastfm" in connected_services else LastfmLinkForm()
@@ -135,7 +136,7 @@ def user_settings(username):
 
 @bp.route("/username-changed")
 @auth_required()
-@permissions_required("user-read", "user-write")
+@roles_required("user")
 def username_changed():
     """Handle redirect back to user settings page on successful username change."""
     return redirect(url_for("user.user_settings", username=current_user.username))
@@ -143,7 +144,7 @@ def username_changed():
 
 @bp.route("/email-changed")
 @auth_required()
-@permissions_required("user-read", "user-write")
+@roles_required("user")
 def email_changed():
     """Handle redirect back to user settings page on successful email change."""
     return redirect(url_for("user.user_settings", username=current_user.username))

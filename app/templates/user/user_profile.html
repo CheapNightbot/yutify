@@ -15,13 +15,13 @@
 
 {% block header %}
 <article class="profile-header">
-    <img class="profile-header-img" src="{{ url_for('static', filename=current_user.avatar) }}"
+    <img class="profile-header-img" src="{{ url_for('static', filename=user.avatar) }}"
         alt="User Avatar" width="128px" height="128px">
 
     <div class="profile-header-info">
         <div>
-            <h2 >{{ current_user.name }}</h2>
-            <small>@{{ current_user.username }}</small>
+            <h2 >{{ user.name }}</h2>
+            <small>@{{ user.username }}</small>
         </div>
         {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
     </div>
