@@ -1,15 +1,15 @@
 {% extends "security/email/email_base.txt" %}
 {% block content %}
 {% if security.confirmable %}
-  Heyo {{ user.name }} ~
+Heyo {{ user.name }} ~
 
-  To verify your email address, use this link: {{ confirmation_link }}
+To verify your email address, use this link: {{ confirmation_link }}
 
-  This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.
+This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.
 
-  If you did not signup for an account, you may simply ignore this message.
+If you did not signup for an account, you may simply ignore this message.
 {% else %}
-  Heyo {{ user.name }} !!
+Heyo {{ user.name }} !!
 
-  Welcome to yutify ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔
+Welcome to yutify ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔
 {% endif %}{% endblock %}

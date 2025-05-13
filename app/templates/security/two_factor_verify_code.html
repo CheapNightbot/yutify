@@ -33,9 +33,13 @@
 
 
   {% if two_factor_rescue_form %}
+  {% if problem == "email" or problem == "help" %}
+  <details open>
+  {% else %}
   <details>
+  {% endif %}
     <summary><small>Trouble accessing your account? Or lost your Device / Authenticator app?</small></summary>
-    <div>
+    <article>
       <form action="{{ url_for_security('two_factor_rescue') }}{{ prop_next() }}" method="post"
         name="two_factor_rescue_form">
         {# explicitly render csrf_token so we can change the ID so we don't get duplicates #}
@@ -45,14 +49,17 @@
         <small>{{ error }}</small>
         {% endfor %}
         {% if problem=="email" %}
-        <div>{{ _fsdomain("The code for authentication was sent to your email address") }}</div>
+        <p><ins>The code for authentication was sent to your email address.</ins></p>
         {% endif %}
         {% if problem=="help" %}
-        <div>{{ _fsdomain("An email was sent to us in order to reset your application account") }}</div>
+        <p>
+          <ins>An admin has been notified to help you regain access to your account.</ins>
+          You will be contacted soon via your registered email address.
+        </p>
         {% endif %}
         {{ two_factor_rescue_form.submit }}
       </form>
-    </div>
+    </article>
   </details>
   {% endif %}
 </main>

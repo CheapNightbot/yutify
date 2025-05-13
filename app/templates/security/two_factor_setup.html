@@ -35,9 +35,10 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
 
 {% block content %}
 <main class="container">
-<form action="{{ url_for_security('two_factor_setup') }}" method="post" name="two_factor_setup_form">
-  {{ two_factor_setup_form.hidden_tag() }}
-  <div>Currently setup two-factor method: <ins>{{ primary_method }}</ins></div>
+  <form action="{{ url_for_security('two_factor_setup') }}" method="post" name="two_factor_setup_form">
+    {{ two_factor_setup_form.hidden_tag() }}
+  {% if not chosen_method  %}
+  <div>Currently setup two-factor method: <ins>{{ primary_method | replace("authenticator","Authenticator App") }}</ins></div>
   <hr>
   <fieldset>
     {% if primary_method %}
@@ -76,6 +77,7 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
     {% endif %}
     {{ render_field(two_factor_setup_form.submit) }}
   </fieldset>
+  {% endif %}
 
   {% if chosen_method=="authenticator" %}
   <hr>
@@ -108,9 +110,9 @@ render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
   {{ render_csrf(two_factor_verify_code_form, "code") }}
   <fieldset>
     {% if two_factor_verify_code_form.code.errors %}
-    {{ two_factor_verify_code_form.code(autofocus="", type="number", placeholder="66362", aria_describedby="verify-code-helper", aria_invalid="true") }}
+    {{ two_factor_verify_code_form.code(autofocus="", type="number", placeholder="663629", aria_describedby="verify-code-helper", aria_invalid="true") }}
     {% else %}
-    {{ two_factor_verify_code_form.code(type="number", placeholder="66362", aria_describedby="verify-code-helper") }}
+    {{ two_factor_verify_code_form.code(autofocus="", type="number", placeholder="663629", aria_describedby="verify-code-helper") }}
     {% endif %}
     {% for error in two_factor_verify_code_form.code.errors %}
     <small id="verify-code-helper">{{ error }}</small>

@@ -24,68 +24,73 @@
 
 {% block content %}
 <main class="container">
-{% include "security/_messages.html" %}
-<form action="{{ url_for_security('register') }}" method="post" name="register_user_form" id="register_user_form">
-    {{ register_user_form.hidden_tag() }}
-    <fieldset>
-        {{ register_user_form.name.label }}
-        {% if register_user_form.name.errors %}
-        {{ register_user_form.name(autofocus="", aria_label="Name", aria_describedby="name-helper", aria_invalid="true") }}
-        {% else %}
-        {{ register_user_form.name(autofocus="", aria_label="Name", aria_describedby="name-helper") }}
-        {% endif %}
-        {% for error in register_user_form.name.errors %}
-        <small id="name-helper">{{ error }}</small>
-        {% endfor %}
+    {% include "security/_messages.html" %}
+    <form action="{{ url_for_security('register') }}" method="post" name="register_user_form" id="register_user_form">
+        {{ register_user_form.hidden_tag() }}
+        <fieldset>
+            {{ register_user_form.name.label }}
+            {% if register_user_form.name.errors %}
+            {{ register_user_form.name(autofocus="", aria_label="Name", aria_describedby="name-helper", aria_invalid="true") }}
+            {% else %}
+            {{ register_user_form.name(autofocus="", aria_label="Name", aria_describedby="name-helper") }}
+            {% endif %}
+            {% for error in register_user_form.name.errors %}
+            <small id="name-helper">{{ error }}</small>
+            {% endfor %}
 
-        {{ register_user_form.username.label }}
-        {% if register_user_form.username.errors %}
-        {{ register_user_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
-        {% else %}
-        {{ register_user_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper") }}
-        <small id="username-helper">{{ error }}</small>
-        {% endif %}
-        {% for error in register_user_form.username.errors %}
-        <small id="username-helper">{{ error }}</small>
-        {% endfor %}
+            {{ register_user_form.username.label }}
+            {% if register_user_form.username.errors %}
+            {{ register_user_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+            {% else %}
+            {{ register_user_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper") }}
+            <small id="username-helper">{{ error }}</small>
+            {% endif %}
+            {% for error in register_user_form.username.errors %}
+            <small id="username-helper">{{ error }}</small>
+            {% endfor %}
 
-        {{ register_user_form.email.label }}
-        {% if register_user_form.email.errors %}
-        {{ register_user_form.email(autocomplete="new-email", aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
-        {% else %}
-        {{ register_user_form.email(autocomplete="new-email", aria_label="Email", aria_describedby="email-helper") }}
-        <small id="email-helper">{{ error }}</small>
-        {% endif %}
-        {% for error in register_user_form.email.errors %}
-        <small id="email-helper">{{ error }}</small>
-        {% endfor %}
+            {{ register_user_form.email.label }}
+            {% if register_user_form.email.errors %}
+            {{ register_user_form.email(autocomplete="new-email", aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
+            {% else %}
+            {{ register_user_form.email(autocomplete="new-email", aria_label="Email", aria_describedby="email-helper") }}
+            <small id="email-helper">{{ error }}</small>
+            {% endif %}
+            {% for error in register_user_form.email.errors %}
+            <small id="email-helper">{{ error }}</small>
+            {% endfor %}
 
-        {{ register_user_form.password.label }}
-        {% if register_user_form.password.errors %}
-        {{ register_user_form.password(autocomplete="new-password", aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
-        {% else %}
-        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
-        {{ register_user_form.password(autocomplete="new-password", aria_label="Password", aria_describedby="password-helper password-strength") }}
-        <small id="password-helper"></small>
-        {% endif %}
-        {% for error in register_user_form.password.errors %}
-        <small id="password-helper">{{ error }}</small>
-        {% endfor %}
+            {{ register_user_form.password.label }}
+            {% if register_user_form.password.errors %}
+            {{ register_user_form.password(autocomplete="new-password", aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+            {% else %}
+            <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+            {{ register_user_form.password(autocomplete="new-password", aria_label="Password", aria_describedby="password-helper password-strength") }}
+            <small id="password-helper"></small>
+            {% endif %}
+            {% for error in register_user_form.password.errors %}
+            <small id="password-helper">{{ error }}</small>
+            {% endfor %}
 
-        {{ register_user_form.password_confirm.label('Confirm Password') }}
-        {% if register_user_form.password_confirm.errors %}
-        {{ register_user_form.password_confirm(autocomplete="new-password", aria_label="Password_confirm", aria_describedby="password_confirm-helper", aria_invalid="true") }}
-        {% else %}
-        {{ register_user_form.password_confirm(autocomplete="new-password", aria_label="Password_confirm", aria_describedby="password_confirm-helper password-confirm") }}
-        <small id="password-confirm"></small>
-        {% endif %}
-        {% for error in register_user_form.password_confirm.errors %}
-        <small id="password2-helper">{{ error }}</small>
-        {% endfor %}
+            {{ register_user_form.password_confirm.label('Confirm Password') }}
+            {% if register_user_form.password_confirm.errors %}
+            {{ register_user_form.password_confirm(autocomplete="new-password", aria_label="Password_confirm", aria_describedby="password_confirm-helper", aria_invalid="true") }}
+            {% else %}
+            {{ register_user_form.password_confirm(autocomplete="new-password", aria_label="Password_confirm", aria_describedby="password_confirm-helper password-confirm") }}
+            <small id="password-confirm"></small>
+            {% endif %}
+            {% for error in register_user_form.password_confirm.errors %}
+            <small id="password2-helper">{{ error }}</small>
+            {% endfor %}
 
-    </fieldset>
-    {{ register_user_form.submit(value='Sign Up') }}
-</form>
-<p>Already got an account? <a href="{{ url_for_security('login') }}">Login here!</a></p>
+            {{ register_user_form.agreement }}
+            <label for="agreement">
+                By signing up, you agree to our <a href="{{ url_for('main.terms_of_service') }}">Terms of Service</a> and <a
+                    href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a>.
+            </label>
+        </fieldset>
+        {{ register_user_form.submit(value='Sign Up') }}
+    </form>
+    <p>Already got an account? <a href="{{ url_for_security('login') }}">Login here!</a></p>
 </main>
 {% endblock content %}
