@@ -16,9 +16,8 @@
                     <th>Username</th>
                     <th>Email</th>
                     <th>Roles</th>
-                    <th>2FA Enabled</th>
+                    <th>2FA</th>
                     <th>Registered</th>
-                    <th>Active</th>
                     <th></th>
                 </tr>
             </thead>
@@ -55,11 +54,17 @@
                                 {% endfor %}
                             </ul>
                         </td>
-                        <td>{{ "Yes" if user.tf_primary_method else "No" }}</td>
+                        {% if user.tf_primary_method %}
+                        <td>
+                            {{ manage_user_account_form.reset_tf(id="reset_tf" + user.id | string, form=form, disabled="") }}
+                            {{ manage_user_account_form.reset_tf.label(for="reset_tf" + user.id | string) }}
+                        </td>
+                        {% else %}
+                        <td>Disabled</td>
+                        {% endif %}
                         <td>
                             <span class="datetime">{{ user.create_datetime }}</span>
                         </td>
-                        <td>{{ "Yes" if user.is_active else "No" }}</td>
                         <td class="flex-column">
                             <input type="button" class="edit-btn" value="Edit">
                             {{ manage_user_account_form.edit_user(class="save-btn", form=form) }}
