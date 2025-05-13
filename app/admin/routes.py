@@ -5,7 +5,7 @@ from flask_security import (
     Security,
     auth_required,
     current_user,
-    permissions_required,
+    roles_required,
     send_mail,
 )
 
@@ -22,7 +22,7 @@ from app.models import Role, Service, User
 
 @bp.route("/dashboard")
 @auth_required()
-@permissions_required("admin-read", "admin-write")
+@roles_required("admin")
 def dashboard():
     return render_template(
         "admin/dashboard.html",
@@ -35,7 +35,7 @@ def dashboard():
 
 @bp.route("/manage_roles", methods=["GET", "POST"])
 @auth_required()
-@permissions_required("admin-read", "admin-write")
+@roles_required("admin")
 def manage_roles():
     security: Security = current_app.security
     roles = Role.query.all()
@@ -113,7 +113,7 @@ def manage_roles():
 
 @bp.route("/manage_services", methods=["GET", "POST"])
 @auth_required()
-@permissions_required("admin-read", "admin-write")
+@roles_required("admin")
 def manage_services():
     security: Security = current_app.security
     services = Service.query.all()
@@ -179,10 +179,9 @@ def manage_services():
 
 
 @bp.route("/manage_users", methods=["GET", "POST"])
-# @bp.route("/manage_users/<username>", methods=["GET", "POST"])
 @auth_required()
-@permissions_required("admin-read", "admin-write")
-def manage_users(username: str = None):
+@roles_required("admin")
+def manage_users():
     security: Security = current_app.security
     roles = Role.query.all()
     users = User.query.all()
@@ -207,10 +206,16 @@ def manage_users(username: str = None):
                 "error",
             )
             return redirect(url_for("admin.manage_users"))
-
+        msg = "Successfully updated roles"
         user.roles = new_roles
+        if manage_user_account_form.reset_tf:
+            security.datastore.tf_reset(user)
+            msg += " and reset 2FA"
         security.datastore.db.session.commit()
-        flash(f'Successfully updated roles for "{user.name}".', "success")
+        flash(
+            f'{msg} for "{user.name}".',
+            "success"
+            )
         return redirect(url_for("admin.manage_users"))
 
     # Handle deleting a user's account

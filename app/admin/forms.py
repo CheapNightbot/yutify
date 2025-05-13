@@ -88,6 +88,7 @@ class EditServiceForm(Form):
 class ManageUserAccount(Form):
     user_id = HiddenField(name="user_id")
     roles = MultiCheckboxField("Roles")
+    reset_tf = BooleanField("Reset")
     notify_deletion = BooleanField(
         "Send email to notify user about their account deletion?"
     )
