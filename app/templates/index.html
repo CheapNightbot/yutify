@@ -25,24 +25,24 @@ yutify
 
 {% block content %}
 <main class="container">
-<div id="app">
-    <div class="flex-row margin-btm">
-        <select class="customized" name="methods" id="methods">
-            <option value="get">GET</option>
-        </select>
-        <a :href="computedEndpoint" class="endpoint" @click="copyEndpointUrl">
-            <input name="endpoint-url" class="endpoint-url" type="text" readonly :value="computedEndpoint" />
-        </a>
-    </div>
+
+<div class="flex-row margin-btm">
+    <select class="customized" name="methods" id="methods">
+        <option value="get">GET</option>
+    </select>
+    <a href="#" class="endpoint">
+        <input name="endpoint-url" class="endpoint-url" type="text" readonly />
+    </a>
+</div>
 
 <form id="search-form" action="" method="post" class="content">
     {{ form.hidden_tag() }}
     {% if artist %}
-    <input v-model="artist" aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" value="{{ artist }}">
+    <input aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" value="{{ artist }}">
     {% elif form.artist.errors %}
-    <input v-model="artist" aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" aria-invalid="true">
+    <input aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" aria-invalid="true">
     {% else %}
-    <input v-model="artist" aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search">
+    <input aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search">
     {% endif %}
     {% for error in form.artist.errors %}
     <small id="artist-helper">{{ error }}</small>
@@ -50,11 +50,11 @@ yutify
 
     <fieldset role="search" aria-describedby="song-helper">
         {% if song %}
-        <input v-model="song" aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" value="{{ song }}">
+        <input aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" value="{{ song }}">
         {% elif form.song.errors %}
-        <input v-model="song" aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" aria-invalid="true">
+        <input aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" aria-invalid="true">
         {% else %}
-        <input v-model="song" aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search">
+        <input aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search">
         {% endif %}
         <button type="submit" id="search">Search</button>
     </fieldset>
@@ -67,7 +67,7 @@ yutify
 {% for error in form.song.errors %}
 <small id="song-helper">{{ error }}</small>
 {% endfor %}
-</div>
+
 <article class="result-container">
     {% if album_art %}
     <img src="{{ album_art }}" alt="{{ title_ }} - Album Art" class="album-art">

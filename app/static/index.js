@@ -1,7 +1,3 @@
-import { createApp, ref, computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
-const inputArtist = document.querySelector("#artist");
-const inputSong = document.querySelector("#song");
-
 const copyEndpointUrl = (e) => {
     e.preventDefault();
     const endpointUrl = document.querySelector(".endpoint")?.href;
@@ -10,21 +6,32 @@ const copyEndpointUrl = (e) => {
     });
 }
 
-createApp({
-    setup() {
-        const artist = ref(inputArtist.value || '');
-        const song = ref(inputSong.value || '');
-        const endpoint = '/api/search';
-        const computedEndpoint = computed(() => {
-            return `${endpoint}/${artist.value || '<artist>'}:${song.value || '<song>'}`;
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    const endpoint = '/api/search';
+    const endpointUrl = document.querySelector('.endpoint');
+    const endpointInput = document.querySelector('.endpoint-url');
+    const inputArtist = document.querySelector("#artist");
+    const inputSong = document.querySelector("#song");
 
-        return {
-            artist,
-            song,
-            computedEndpoint,
-            copyEndpointUrl
-        }
-    },
-    delimiters: ['${', '}']
-}).mount('#app')
+    let artist = inputArtist.value || '<artist>';
+    let song = inputSong.value || '<song>';
+    let computedEndpointUrl = `${endpoint}/${artist}:${song}`
+
+    endpointUrl.href = computedEndpointUrl;
+    endpointInput.value = computedEndpointUrl;
+    endpointUrl.addEventListener('click', copyEndpointUrl);
+
+    inputArtist.addEventListener('input', () => {
+        artist = inputArtist.value || '<artist>';
+        computedEndpointUrl = `${endpoint}/${artist}:${song}`
+        endpointUrl.href = computedEndpointUrl;
+        endpointInput.value = computedEndpointUrl;
+    });
+
+    inputSong.addEventListener('input', () => {
+        song = inputSong.value || '<song>';
+        computedEndpointUrl = `${endpoint}/${artist}:${song}`
+        endpointUrl.href = computedEndpointUrl;
+        endpointInput.value = computedEndpointUrl;
+    });
+});
