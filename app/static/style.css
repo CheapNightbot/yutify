@@ -667,7 +667,7 @@ aside li:not(:has(a)) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    max-width: 612px;
+    max-width: 712px;
     margin-bottom: .4rem;
 }
 
