@@ -215,27 +215,33 @@ def get_spotify_activity():
     spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
     activity = spotify_auth.get_currently_playing()
     if activity:
-        is_playing = activity.is_playing
-        timestamp = activity.timestamp
+        activity = asdict(activity)
+        is_playing = activity.pop("is_playing")
+        timestamp = activity.pop("timestamp")
 
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = request.host_url.rstrip("/")  # Remove trailing slash
-        search_url = f"{base_url}/api/search/{activity.artists}:{activity.title}"
+        search_url = f"{base_url}/api/search/{activity["artists"]}:{activity["title"]}"
 
         # Call the /api/search endpoint using requests
         try:
             response = requests.get(search_url, params={"all": ""})
             activity = {"music_info": response.json()}
-            activity["activity_info"] = {
-                "is_playing": is_playing,
-                "timestamp": timestamp,
-            }
         except requests.RequestException as e:
             logger.warning(e)
-            activity = asdict(activity)
+            activity = {"music_info": activity}
+
+        # Add activity info
+        activity["activity_info"] = {
+            "is_playing": is_playing,
+            "service": "spotify",
+            "timestamp": timestamp,
+        }
+
+        # Sort the activity by keys
+        activity = OrderedDict(sorted(activity.items()))
 
         # Save the current activity to the database
-        activity = OrderedDict(sorted(activity.items()))
         UserData.insert_or_update_user_data(spotify_service, activity)
         return activity
     else:
