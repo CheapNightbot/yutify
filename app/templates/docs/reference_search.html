@@ -492,7 +492,7 @@
                 <input hidden="hidden" type="radio" name="tabs" id="tab2" />
 
                 <figure>
-                    <p>Unsuccessful response with an error message telling requested music was not found.</p>
+                    <p>Successful response, but requested music (information) was not found.</p>
                     <article class="res-example">
                         <details>
                             <summary>Response Examples</summary>
@@ -526,7 +526,6 @@
                 </figure>
 
                 <input hidden="hidden" type="radio" name="tabs" id="tab3" />
-
                 <figure>
                     <p>Unsuccessful response explaining that you have exceeded the default ratelimit.</p>
                     <article class="res-example">
@@ -555,7 +554,8 @@
                         </p>
                         <p>
                             The default ratelimit is <code>20 requests per 1 minute</code>, but might change. <br>
-                            It will always contain what default ratelimits are.
+                            It will always contain what default ratelimits are in this format:
+                            <code>"<ins>x</ins> requests per <ins>y</ins> <ins>timeframe</ins>"</code>.
                         </p>
                     </div>
                 </figure>
