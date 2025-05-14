@@ -1,5 +1,6 @@
 import logging
 from dataclasses import asdict
+from collections import OrderedDict
 
 import requests
 import sqlalchemy as sa
@@ -110,14 +111,17 @@ def get_lastfm_activity():
         # Call the /api/search endpoint using requests
         try:
             response = requests.get(search_url, params={"all": ""})
-            activity = response.json()
-            activity["is_playing"] = is_playing
-            activity["timestamp"] = timestamp
+            activity = {"music_info": response.json()}
+            activity["activity_info"] = {
+                "is_playing": is_playing,
+                "timestamp": timestamp,
+            }
         except requests.RequestException as e:
             logger.warning(e)
             activity = asdict(activity)
 
         # Save the current activity to the database
+        activity = OrderedDict(sorted(activity.items()))
         UserData.insert_or_update_user_data(lastfm_service, activity)
         return activity
     else:
@@ -127,9 +131,9 @@ def get_lastfm_activity():
         )
         if existing_data:
             data = existing_data.data
-            data["is_playing"] = False
-            if not data.get("timestamp"):
-                data["timestamp"] = existing_data.updated_at.timestamp()
+            data["activity_info"]["is_playing"] = False
+            if not data.get("activity_info").get("timestamp"):
+                data["activity_info"]["timestamp"] = existing_data.updated_at.timestamp()
 
             # Update the activity in the database
             UserData.insert_or_update_user_data(lastfm_service, data)

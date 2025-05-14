@@ -3,8 +3,8 @@ import random
 
 import sqlalchemy as sa
 from flask import abort, make_response, render_template, request
-from flask_security import current_user
 from flask_restful import Resource
+from flask_security import current_user
 
 from app import db
 from app.auth_services.lastfm import get_lastfm_activity
