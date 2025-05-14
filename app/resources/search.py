@@ -166,9 +166,12 @@ class YutifySearch(Resource):
                     result = py_music.search(artist, song, limit=3)
 
         if not result:
-            result = {
-                "error": f"Couldn't find '{song}' by '{artist}' on platform '{platform}'"
-            }, 404
+            msg = (
+                f"Couldn't find '{song}' by '{artist}'"
+                if platform == "all"
+                else f"Couldn't find '{song}' by '{artist}' on platform '{platform.title()}'"
+            )
+            result = {"error": msg}, 404
         else:
             result = OrderedDict(sorted(asdict(result).items())), 200
 
