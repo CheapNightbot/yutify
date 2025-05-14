@@ -102,10 +102,11 @@
                 <figure>
                     <p>Successful response with the requested information about the music.</p>
                     <article class="res-example">
-                    <details>
-                        <summary>Response Examples</summary>
-                        <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code></header>
-<pre class="codeblock"><code>{
+                        <details>
+                            <summary>Response Examples</summary>
+                            <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code>
+                            </header>
+                            <pre class="codeblock"><code>{
   "album_art": "https://deezer.com/6663629/album_art.jpg",
   "album_art_source": "deezer",
   "album_title": "Song",
@@ -134,8 +135,8 @@
     "ytmusic": "https://music.youtube.com/watch?v=xD69iRAEiu0"
   }
 }</code></pre>
-                        <header class="flex-column"><code>/api/search/Artist:Song<ins>?deezer</ins></code></header>
-<pre class="codeblock"><code>{
+                            <header class="flex-column"><code>/api/search/Artist:Song<ins>?deezer</ins></code></header>
+                            <pre class="codeblock"><code>{
   "album_art": "https://deezer.com/6663629/album_art.jpg",
   "album_title": "Song",
   "album_type": "single",
@@ -151,7 +152,7 @@
   "upc": null,
   "url": "https://www.deezer.com/track/6663629"
 }</code></pre>
-                    </details>
+                        </details>
                     </article>
                     <blockquote>
                         Note that URL(s) and such information shown in the response examples here does NOT reflect the
@@ -292,7 +293,8 @@
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
                             <dd>
-<pre class="codeblock"><code>"id": "7e8XZUuB78uEOil4i3ONox"</code></pre></dd>
+                                <pre class="codeblock"><code>"id": "7e8XZUuB78uEOil4i3ONox"</code></pre>
+                            </dd>
                         </dl>
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter</code></dt>
@@ -302,7 +304,7 @@
                                 <code>"id"</code> object will not have <code>"spotify"</code> key.
                             </blockquote>
                             <dd>
-<pre class="codeblock"><code>"id": {
+                                <pre class="codeblock"><code>"id": {
     "itunes": 123456789,
     "deezer": 123456789,
     "kkbox": "XyxzETEWlclsnflt",
@@ -376,7 +378,8 @@
                         <p>
                             The tempo of the requested music in beats per minute (BPM). <br>
                             Currently, it is always going to be <code class="null">null</code>. Please see this <a
-                                href="https://github.com/CheapNightbot/yutify/issues/28" target="_blank" rel="noopener noreferrer">issue</a> on GitHub for more
+                                href="https://github.com/CheapNightbot/yutify/issues/28" target="_blank"
+                                rel="noopener noreferrer">issue</a> on GitHub for more
                             information.
                         </p>
                     </div>
@@ -460,7 +463,8 @@
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
                             <dd>
-<pre class="codeblock"><code>"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code></pre>
+                                <pre
+                                    class="codeblock"><code>"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code></pre>
                             </dd>
                         </dl>
                         <dl>
@@ -471,7 +475,7 @@
                                 <code>"url"</code> object will not have <code>"spotify"</code> key.
                             </blockquote>
                             <dd>
-<pre class="codeblock"><code>"url": {
+                                <pre class="codeblock"><code>"url": {
     "itunes": "https://music.apple.com/album/123456789",
     "deezer": "https://www.deezer.com/track/123456789",
     "kkbox": "https://www.kkbox.com/song/XyxzETEWlclsnflt",
@@ -488,13 +492,72 @@
                 <input hidden="hidden" type="radio" name="tabs" id="tab2" />
 
                 <figure>
-                    Music not found
+                    <p>Unsuccessful response with an error message telling requested music was not found.</p>
+                    <article class="res-example">
+                        <details>
+                            <summary>Response Examples</summary>
+                            <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code>
+                            </header>
+                            <pre class="codeblock"><code>{
+  "error": "Couldn't find 'Song' by 'Artist'"
+}</code></pre>
+                            <header class="flex-column"><code>/api/search/Artist:Song<ins>?deezer</ins></code></header>
+                            <pre class="codeblock"><code>{
+  "error": "Couldn't find 'Song' by 'Artist' on platform 'Deezer'"
+}</code></pre>
+                        </details>
+                    </article>
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>error</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The error message explaining that the music was not found. <br>
+                            If music information was requested for a specific platform, it will contain the platform
+                            name.
+                        </p>
+                    </div>
                 </figure>
 
                 <input hidden="hidden" type="radio" name="tabs" id="tab3" />
 
                 <figure>
-                    Rate limit exceeded
+                    <p>Unsuccessful response explaining that you have exceeded the default ratelimit.</p>
+                    <article class="res-example">
+                        <details>
+                            <summary>Response Examples</summary>
+                            <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code>
+                            </header>
+                            <pre class="codeblock"><code>{
+  "error": "ratelimit exceeded! you are allowed to make 20 request(s) per 1 minute."
+}
+</code></pre>
+                        </details>
+                    </article>
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>error</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The error message explaining you have exceeded the default ratelimit.
+                        </p>
+                        <p>
+                            The default ratelimit is <code>20 requests per 1 minute</code>, but might change. <br>
+                            It will always contain what default ratelimits are.
+                        </p>
+                    </div>
                 </figure>
             </section>
         </div>
