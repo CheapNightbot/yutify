@@ -101,6 +101,58 @@
                 <input hidden="hidden" type="radio" name="tabs" id="tab1" checked="checked" />
                 <figure>
                     <p>Successful response with the requested information about the music.</p>
+                    <article class="res-example">
+                    <details>
+                        <summary>Response Examples</summary>
+                        <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code></header>
+<pre class="codeblock"><code>{
+  "album_art": "https://deezer.com/6663629/album_art.jpg",
+  "album_art_source": "deezer",
+  "album_title": "Song",
+  "album_type": "single",
+  "artists": "Artist",
+  "genre": "Electronic",
+  "id": {
+    "deezer": 6663629,
+    "itunes": 6663629,
+    "kkbox": "Dx6duYxp9UagGhiqwq",
+    "spotify": "6rqhFgbbKwnb9MLmUQDhG6",
+    "ytmusic": "xD69iRAEiu0"
+  },
+  "isrc": "US1234567890",
+  "lyrics": "These are the lyrics of the song...",
+  "release_date": "2025-10-25",
+  "tempo": null,
+  "title": "Song",
+  "type": "track",
+  "upc": null,
+  "url": {
+    "deezer": "https://www.deezer.com/track/6663629",
+    "itunes": "https://music.apple.com/track/6663629",
+    "kkbox": "https://www.kkbox.com/tw/tc/song/Dx6duYxp9UagGhiqwq",
+    "spotify": "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
+    "ytmusic": "https://music.youtube.com/watch?v=xD69iRAEiu0"
+  }
+}</code></pre>
+                        <header class="flex-column"><code>/api/search/Artist:Song<ins>?deezer</ins></code></header>
+<pre class="codeblock"><code>{
+  "album_art": "https://deezer.com/6663629/album_art.jpg",
+  "album_title": "Song",
+  "album_type": "single",
+  "artists": "Artist",
+  "genre": null,
+  "id": 6663629,
+  "isrc": "US1234567890",
+  "lyrics": null,
+  "release_date": "2025-10-25",
+  "tempo": 0,
+  "title": "Song",
+  "type": "track",
+  "upc": null,
+  "url": "https://www.deezer.com/track/6663629"
+}</code></pre>
+                    </details>
+                    </article>
                     <blockquote>
                         Note that URL(s) and such information shown in the response examples here does NOT reflect the
                         actual response sent
@@ -239,7 +291,8 @@
                             <b>Example</b>: Request and Response showing what <code>"id"</code> field looks like:<br>
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
-                            <dd><code class="inline-code">"id": "7e8XZUuB78uEOil4i3ONox"</code></dd>
+                            <dd>
+<pre class="codeblock"><code>"id": "7e8XZUuB78uEOil4i3ONox"</code></pre></dd>
                         </dl>
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter</code></dt>
@@ -248,13 +301,14 @@
                                 respective platform or not. For example, if the music was not found on Spotify, the
                                 <code>"id"</code> object will not have <code>"spotify"</code> key.
                             </blockquote>
-                            <dd><code class="codeblock">"id": {
+                            <dd>
+<pre class="codeblock"><code>"id": {
     "itunes": 123456789,
     "deezer": 123456789,
     "kkbox": "XyxzETEWlclsnflt",
     "spotify": "7e8XZUuB78uEOil4i3ONox",
     "ytmusic": "AdLFtTiA8d5"
-}</code>
+}</code></pre>
                             </dd>
                         </dl>
                         </code>
@@ -405,8 +459,8 @@
                             <b>Example</b>: Request and Response showing what <code>"url"</code> field looks like:<br>
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
-                            <dd><code
-                                    class="inline-code">"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code>
+                            <dd>
+<pre class="codeblock"><code>"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code></pre>
                             </dd>
                         </dl>
                         <dl>
@@ -416,13 +470,14 @@
                                 respective platform or not. For example, if the music was not found on Spotify, the
                                 <code>"url"</code> object will not have <code>"spotify"</code> key.
                             </blockquote>
-                            <dd><code class="codeblock">"url": {
+                            <dd>
+<pre class="codeblock"><code>"url": {
     "itunes": "https://music.apple.com/album/123456789",
     "deezer": "https://www.deezer.com/track/123456789",
     "kkbox": "https://www.kkbox.com/song/XyxzETEWlclsnflt",
     "spotify": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox",
     "ytmusic": "https://music.youtube.com/watch?v=AdLFtTiA8d5"
-}</code>
+}</code></pre>
                             </dd>
                         </dl>
                         </code>

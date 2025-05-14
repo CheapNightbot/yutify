@@ -726,26 +726,9 @@ form[name="two_factor_rescue_form"] li {
     list-style: none;
 }
 
-.inline-code {
-    padding: var(--pico-typography-spacing-vertical);
-    overflow: auto;
-    font-family: 'Courier New', Courier, monospace;
-    margin: 0.5rem 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    min-width: 36rem;
-    white-space: pre;
-}
-
 .codeblock {
-    padding: var(--pico-typography-spacing-vertical);
-    overflow: auto;
-    font-family: 'Courier New', Courier, monospace;
     margin: 0.5rem 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    min-width: 36rem;
-    white-space: pre;
+    max-width: 41.5rem;
 }
 
 dt::before {
@@ -755,6 +738,18 @@ dt::before {
 
 .null {
     background: #423131;
+}
+
+.res-example {
+    max-width: 43.5rem;
+}
+
+.res-example details {
+    margin-bottom: 0;
+}
+
+.res-example .codeblock {
+    max-width: initial;
 }
 
 @media (max-width: 1024px) {
