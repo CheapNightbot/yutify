@@ -267,7 +267,7 @@
                     <div>
                         <div class="req-para-info">
                             <div>
-                                <kbd>id</kbd> <code>int</code> <code>string</code> <code>object</code>
+                                <kbd>id</kbd> <code>integer</code> <code>string</code> <code>object</code>
                             </div>
                             <div class="flex-row">
                                 <span class="line"></span>
@@ -276,20 +276,21 @@
                         </div>
                         <p>
                             The unique ID of the music on the requested music platform(s). <br>
-                            The <code>"id"</code> itself can be either <code>int</code> or <code>string</code> based on
+                            The <code>"id"</code> itself can be either <code>integer</code> or <code>string</code> based on
                             the music
                             platform. For example, <code>"id"</code> for YouTube Music will be 11 characters long
                             alpha-numeric string.
                         </p>
                         <p>
-                            <b>Note</b>: It will be a <code>string</code> or <code>int</code>, if query parameter
+                            <b>Note</b>: It will be a <code>string</code> or <code>integer</code>, if query parameter
                             for <kbd>platform</kbd>
                             contains a value from "<strong>Allowed values</strong>" except <code>"all"</code>.
                             Otherwise, if
                             <code>platform="all"</code> or no query parameter provided, it will be an
                             <code>object</code> with each key representing the music platform name and value being
                             actual ID of the music on that platform. <br>
-                            <b>Example</b>: Request and Response showing what <code>"id"</code> field looks like:<br>
+                            <b>Example</b>: Request and Response showing what <code>"id"</code> field looks like:
+                        </p>
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
                             <dd>
@@ -305,11 +306,11 @@
                             </blockquote>
                             <dd>
                                 <pre class="codeblock"><code>"id": {
-    "itunes": 123456789,
-    "deezer": 123456789,
-    "kkbox": "XyxzETEWlclsnflt",
-    "spotify": "7e8XZUuB78uEOil4i3ONox",
-    "ytmusic": "AdLFtTiA8d5"
+  "itunes": 123456789,
+  "deezer": 123456789,
+  "kkbox": "XyxzETEWlclsnflt",
+  "spotify": "7e8XZUuB78uEOil4i3ONox",
+  "ytmusic": "AdLFtTiA8d5"
 }</code></pre>
                             </dd>
                         </dl>
@@ -368,7 +369,7 @@
                     <div>
                         <div class="req-para-info">
                             <div>
-                                <kbd>tempo</kbd> <code>int</code> <code class="null">null</code>
+                                <kbd>tempo</kbd> <code>integer</code> <code class="null">null</code>
                             </div>
                             <div class="flex-row">
                                 <span class="line"></span>
@@ -459,7 +460,8 @@
                             <code>platform="all"</code> or no query parameter provided, it will be an
                             <code>object</code> with each key representing the music platform name and value being
                             actual streaming URL of the music on that platform. <br>
-                            <b>Example</b>: Request and Response showing what <code>"url"</code> field looks like:<br>
+                            <b>Example</b>: Request and Response showing what <code>"url"</code> field looks like:
+                        </p>
                         <dl>
                             <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
                             <dd>
@@ -476,11 +478,11 @@
                             </blockquote>
                             <dd>
                                 <pre class="codeblock"><code>"url": {
-    "itunes": "https://music.apple.com/album/123456789",
-    "deezer": "https://www.deezer.com/track/123456789",
-    "kkbox": "https://www.kkbox.com/song/XyxzETEWlclsnflt",
-    "spotify": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox",
-    "ytmusic": "https://music.youtube.com/watch?v=AdLFtTiA8d5"
+  "itunes": "https://music.apple.com/album/123456789",
+  "deezer": "https://www.deezer.com/track/123456789",
+  "kkbox": "https://www.kkbox.com/song/XyxzETEWlclsnflt",
+  "spotify": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox",
+  "ytmusic": "https://music.youtube.com/watch?v=AdLFtTiA8d5"
 }</code></pre>
                             </dd>
                         </dl>
