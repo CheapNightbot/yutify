@@ -51,7 +51,6 @@ if __name__ == "__main__":
     serve(
         app,
         host="0.0.0.0",
-        port=app.config["PORT"] or 5000,
-        url_scheme="https",
-        ident="yutify",
+        port=app.config["PORT"],
+        ident=app.config.get("SERVICE"),
     )
