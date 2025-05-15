@@ -141,7 +141,7 @@ def create_app(config_class=Config):
 
     # Configure Rate Limiting
     if app.config.get("RATELIMIT"):
-        app.logger.info(f"Ratelimit set to {app.config["RATELIMIT"]}.")
+        app.logger.info(f"Ratelimit set to {app.config['RATELIMIT']}.")
     else:
         app.logger.info("Ratelimit is disabled.")
 
