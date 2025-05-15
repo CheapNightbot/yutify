@@ -10,20 +10,20 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SERVICE = os.getenv("SERVICE", "yutify")
+    HOST_URL = os.getenv("HOST_URL", "localhost")
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.getenv("RATELIMIT")
-    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(
-        os.getenv("YUTIFY_ACCOUNT_DELETE_EMAIL", True)
+    YUTIFY_MAIL_ERROR_LOGS = bool(os.getenv("YUTIFY_MAIL_ERROR_LOGS", False))
+    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(os.getenv("YUTIFY_ACCOUNT_DELETE_EMAIL", True))
+
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "strict"
+    REMEMBER_COOKIE_SAMESITE = "strict"
+
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL") or "sqlite:///" + os.path.join(
+        basedir, "app.db"
     )
-
-    # SESSION_COOKIE_SECURE = True
-    # SESSION_COOKIE_HTTPONLY = True
-    # REMEMBER_COOKIE_SAMESITE = "strict"
-    # SESSION_COOKIE_SAMESITE = "strict"
-
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL"
-    ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -40,8 +40,8 @@ class Config:
     # Flask-Security specific (and not specific as well) configs ~
     # https://flask-security.readthedocs.io/en/stable/configuration.html
     # ### Core ###
-    SECRET_KEY = os.getenv("SECRET_KEY", "senpai-likes-small-potatoes")
-    ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "potatoes").encode()
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY").encode()
     SECURITY_EMAIL_VALIDATOR_ARGS = {"check_deliverability": False}
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
@@ -90,7 +90,9 @@ class Config:
     # ### Changeable
     SECURITY_CHANGEABLE = True
     SECURITY_CHANGE_URL = "/change-password"
-    SECURITY_EMAIL_SUBJECT_PASSWORD_CHANGE_NOTICE = f"[{SERVICE}] You password has been changed!"
+    SECURITY_EMAIL_SUBJECT_PASSWORD_CHANGE_NOTICE = (
+        f"[{SERVICE}] You password has been changed!"
+    )
 
     # ### Recoverable ###
     SECURITY_RECOVERABLE = True
@@ -124,7 +126,9 @@ class Config:
     # ### Change Username ###
     SECURITY_CHANGE_USERNAME = True
     SECURITY_POST_CHANGE_USERNAME_VIEW = "user.username_changed"
-    SECURITY_EMAIL_SUBJECT_USERNAME_CHANGE_NOTICE = f"[{SERVICE}] Your username has been changed!"
+    SECURITY_EMAIL_SUBJECT_USERNAME_CHANGE_NOTICE = (
+        f"[{SERVICE}] Your username has been changed!"
+    )
 
     # ### Recovery Codes ###
     SECURITY_MULTI_FACTOR_RECOVERY_CODES = True
