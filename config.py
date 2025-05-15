@@ -11,9 +11,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SERVICE = os.getenv("SERVICE", "yutify")
     REDIS_URI = os.getenv("REDIS_URI")
-    RATELIMIT = os.environ.get("RATELIMIT")
+    RATELIMIT = os.getenv("RATELIMIT")
     YUTIFY_ACCOUNT_DELETE_EMAIL = bool(
-        os.environ.get("YUTIFY_ACCOUNT_DELETE_EMAIL", True)
+        os.getenv("YUTIFY_ACCOUNT_DELETE_EMAIL", True)
     )
 
     # SESSION_COOKIE_SECURE = True
@@ -21,27 +21,27 @@ class Config:
     # REMEMBER_COOKIE_SAMESITE = "strict"
     # SESSION_COOKIE_SAMESITE = "strict"
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
+    SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     MAIL_DEBUG = False
-    MAIL_SERVER = os.environ.get("MAIL_SERVER")
-    MAIL_PORT = int(os.environ.get("MAIL_PORT") or 25)
-    MAIL_USE_TLS = bool(os.environ.get("MAIL_USE_TLS", True))
-    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
-    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
-    PORT = os.environ.get("PORT", 5000)
-    LOG_TO_STDOUT = bool(os.environ.get("LOG_TO_STDOUT", True))
+    MAIL_SERVER = os.getenv("MAIL_SERVER")
+    MAIL_PORT = int(os.getenv("MAIL_PORT") or 25)
+    MAIL_USE_TLS = bool(os.getenv("MAIL_USE_TLS", True))
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+    PORT = os.getenv("PORT", 5000)
+    LOG_TO_STDOUT = bool(os.getenv("LOG_TO_STDOUT", True))
 
     # Flask-Security specific (and not specific as well) configs ~
     # https://flask-security.readthedocs.io/en/stable/configuration.html
     # ### Core ###
-    SECRET_KEY = os.environ.get("SECRET_KEY", "senpai-likes-small-potatoes")
-    ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY", "potatoes").encode()
+    SECRET_KEY = os.getenv("SECRET_KEY", "senpai-likes-small-potatoes")
+    ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "potatoes").encode()
     SECURITY_EMAIL_VALIDATOR_ARGS = {"check_deliverability": False}
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
@@ -51,13 +51,13 @@ class Config:
     SECURITY_FRESHNESS_GRACE_PERIOD = timedelta(minutes=5)
 
     # ### Core - Passwords and Tokens ###
-    SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT", "6663629")
+    SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT")
     SECURITY_PASSWORD_LENGTH_MIN = 16
     SECURITY_PASSWORD_COMPLEXITY_CHECKER = "zxcvbn"
     SECURITY_PASSWORD_CONFIRM_REQUIRED = True
 
     # ### Core - Multi-factor ###
-    SECURITY_TOTP_SECRETS = {1: os.environ.get("SECURITY_TOTP_SECRETS") or "6663629"}
+    SECURITY_TOTP_SECRETS = {1: os.getenv("SECURITY_TOTP_SECRETS")}
     SECURITY_TOTP_ISSUER = SERVICE
 
     # ### Core - rarely need changing ###
@@ -69,7 +69,7 @@ class Config:
     SECURITY_POST_LOGOUT_VIEW = "auth.logout"
 
     # ### Registerable ###
-    SECURITY_REGISTERABLE = bool(os.environ.get("ALLOW_SIGNUP", False))
+    SECURITY_REGISTERABLE = bool(os.getenv("SECURITY_REGISTERABLE", False))
     SECURITY_EMAIL_SUBJECT_REGISTER = f"[{SERVICE}] Verify Email Address!"
     SECURITY_POST_REGISTER_VIEW = "main.index"
     SECURITY_REGISTER_URL = "/signup"
