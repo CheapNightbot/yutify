@@ -161,7 +161,7 @@ python yutify.py
 
 > [!WARNING]
 > Regardless of the user registeration / signup is enabled or disabled, a default admin user with the email set in the `ADMIN_EMAIL` environment variable will be created when you will run the project. It will be created only if a user with that email does not exist in the database. You must change the username and password for it after logging in as this user. Please check the default values below:
-> -`name`: "Admin"
+> - `name`: "Admin"
 > - `userrname`: "admin"
 > - `email`: value set in `ADMIN_EMAIL` envrionment variable
 > - `password`: "senpai-likes-small-potatoes"
