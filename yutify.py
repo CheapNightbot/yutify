@@ -35,7 +35,8 @@ def set_security_headers(response):
         "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/tokyo-night-dark.min.css "
         "https://fonts.googleapis.com/; "
         "font-src 'self' https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/; "
-        "script-src-elem 'self' https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js;"
+        "script-src-elem 'self' https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js "
+        "https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.5/purify.min.js;"
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"

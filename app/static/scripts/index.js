@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputArtist = document.querySelector("#artist");
     const inputSong = document.querySelector("#song");
 
-    let artist = inputArtist.value || '<artist>';
-    let song = inputSong.value || '<song>';
+    let artist = DOMPurify.sanitize(inputArtist.value) || '<artist>';
+    let song = DOMPurify.sanitize(inputSong.value) || '<song>';
     let computedEndpointUrl = `${endpoint}/${artist}:${song}`
 
     endpointUrl.href = computedEndpointUrl;
@@ -22,14 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
     endpointUrl.addEventListener('click', copyEndpointUrl);
 
     inputArtist.addEventListener('input', () => {
-        artist = inputArtist.value || '<artist>';
+        artist = DOMPurify.sanitize(inputArtist.value) || '<artist>';
         computedEndpointUrl = `${endpoint}/${artist}:${song}`
         endpointUrl.href = computedEndpointUrl;
         endpointInput.value = computedEndpointUrl;
     });
 
     inputSong.addEventListener('input', () => {
-        song = inputSong.value || '<song>';
+        song = DOMPurify.sanitize(inputSong.value) || '<song>';
         computedEndpointUrl = `${endpoint}/${artist}:${song}`
         endpointUrl.href = computedEndpointUrl;
         endpointInput.value = computedEndpointUrl;
