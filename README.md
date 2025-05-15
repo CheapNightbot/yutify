@@ -143,17 +143,22 @@ For certain configurations, it relies on environment variables that must be set 
   - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
   - Without `FLASK_DEBUG` (production mode), caching will be disabled.
 - `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging and `0` or omit it to use file based logging.
+- `RETURN_GENERIC_RESPONSES`: Whether to return generic responses for auth endpoints.
 
 
 **3. Run the application**:
 
 > [!IMPORTANT]
-> Make sure you are at the root of the project directory before running command below!
+> Make sure you are at the root of the project directory before running commands below!
 >
 > Visit the application locally at: `http://localhost:<PORT>` or `http://127.0.0.1:<PORT>` ~
 > Replace the `<PORT>` with the port number you defined in environment variable (or `.env` file) Or the default `5000`.
 >
 > When using a hosting provider, use the link provided by them for your deployed project.
+
+```bash
+flask db upgrade
+```
 
 ```bash
 python yutify.py

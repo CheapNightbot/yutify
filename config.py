@@ -48,7 +48,7 @@ class Config:
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
     ]
-    SECURITY_RETURN_GENERIC_RESPONSES = True
+    SECURITY_RETURN_GENERIC_RESPONSES = bool(int(os.getenv("RETURN_GENERIC_RESPONSES", True)))
     SECURITY_FRESHNESS = timedelta(minutes=10)
     SECURITY_FRESHNESS_GRACE_PERIOD = timedelta(minutes=5)
 
