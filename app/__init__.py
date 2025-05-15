@@ -1,6 +1,7 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler, SMTPHandler
+from datetime import datetime, timezone
 
 from dotenv import load_dotenv
 from flask import Flask, current_app
@@ -185,6 +186,7 @@ def create_users():
             current_app.logger.info(
                 'Successfully created an admin user with username "admin". Make sure to change username & passowrd for it!'
             )
+        admin_user.confirmed_at = datetime.now(timezone.utc)
         admin_user.set_avatar()
         security.datastore.db.session.commit()
 
