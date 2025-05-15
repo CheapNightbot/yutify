@@ -9,9 +9,6 @@
 
 </div>
 
-> [!IMPORTANT]
-> See pull request https://github.com/CheapNightbot/yutify/pull/45 for the current state of the project.
-
 # yutify <img src="app/static/favicon.svg" width="40px">
 
 <details>
@@ -102,13 +99,25 @@ For certain configurations, it relies on environment variables that must be set 
   python -c "import secrets; print(secrets.token_hex())"
   ```
 
-- `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting user emails at rest (in the database). To generate an encryption key, run the following command after installing dependencies:
+- `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting access token information (for the services that require authorization like Spotify & KKBox for searching music) and to encrypt the (2FA) recovery codes at rest at rest (i.e. in the database). To generate an encryption key, run the following command after installing dependencies:
 
   ```bash
   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
   ```
 
   - **Important**: Once used to encrypt emails, changing or losing this key will prevent decryption of previously saved emails. Handle with care!
+
+- `SECURITY_PASSWORD_SALT`: Specifies the HMAC salt. This is used for double hashing the password. A good salt can be generated using the following command:
+
+  ```bash
+  python -c "import secrets; pritn(secrets.SystemRandom().getrandbits(128))"
+  ```
+
+- `SECURITY_TOTP_SECRETS`: Secret used to encrypt the totp_password both into DB and into the session cookie. You should run the following command to generate one after installing dependencies:
+
+  ```bash
+  python  -c "from passlib import totp; print(totp.generate_secret());"
+  ```
 
 ### Optional: These environment variables are optional!
 
@@ -129,16 +138,22 @@ For certain configurations, it relies on environment variables that must be set 
   - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
   - Without `FLASK_DEBUG` (production mode), caching will be disabled.
 - `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging and `0` or omit it to use file based logging.
+- `YUTIFY_ACCOUNT_DELETE_EMAIL`: Whether to send account deletion confirmation email to the user when they decide to delete their account.
+- `SECURITY_REGISTERABLE`: Whether to allow user registration / sign up or not. Set this variable to `1` to enable user sign up and `0` or omit it to disable user sign up.
 
 **3. Run the application**:
 
+> Make sure you are at the root of the project directory before running command below!
+
 ```bash
-flask run
+python yutify.py
 ```
 
 > [!IMPORTANT]
 > Visit the application locally at: `http://localhost:<PORT>` or `http://127.0.0.1:<PORT>` ~
 > Replace the `<PORT>` with the port number you defined in environment variable (or `.env` file) Or the default `5000`.
+>
+> When using a hosting provider, use the link provided by them for your deployed project.
 
 # Contributing 🤝
 
