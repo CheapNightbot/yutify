@@ -121,8 +121,13 @@ For certain configurations, it relies on environment variables that must be set 
 
 ### Optional: These environment variables are optional!
 
+- `SERVICE`: The service / application name. Default to `"yutify"`. You may set it to anything you want. It will be used / shown in various places like, home/index page, meta tags, email, etc.
+- `HOST_URL`: The URL where the application itself is currently running. It will be used in meta tags and just used for sending logging emails (error and above) to the admin email. The default is `localhost`, so the email "from" field will look like this: `From: <no-reply@localhost>`
 - `PORT`: The port number on which the application will serve HTTP requests. Defaults to `5000`.
 - `DATABASE_URL`: SQL Database URL. If not set, a file-based SQLite database (`app.db`) will be used in the root directory.
+- `YUTIFY_ACCOUNT_DELETE_EMAIL`: Whether to send account deletion confirmation email to the user when they decide to delete their account.
+- `SECURITY_REGISTERABLE`: Whether to allow user registration / sign up or not. Set this variable to `1` to enable user sign up and `0` or omit it to disable user sign up.
+- `YUTIFY_MAIL_ERROR_LOGS`: If set to `1`, logs for error and above level will be sent to the email set in the `ADMIN_EMAIL` variable. To disable sending logs to email, set it to `0` or simply omit it.
 - For retrieving music information from Spotify, KKBox, and Last.fm, client IDs, client secrets, or API keys are required. Thankfully, [yutipy](https://pypi.org/project/yutipy/) provides a command-line utility to obtain these values. Run `yutipy-config` in your terminal after installing dependencies. The wizard will guide you through obtaining and setting up API keys for supported services like KKBOX, Last.fm, and Spotify. These values are automatically saved in the `.env` file.
   - `KKBOX_CLIENT_ID`, `KKBOX_CLIENT_SECRET`, `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REDIRECT_URI`, `LASTFM_API_KEY`
   - Without these variables, interaction with these platforms will be unavailable.
@@ -138,8 +143,7 @@ For certain configurations, it relies on environment variables that must be set 
   - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
   - Without `FLASK_DEBUG` (production mode), caching will be disabled.
 - `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging and `0` or omit it to use file based logging.
-- `YUTIFY_ACCOUNT_DELETE_EMAIL`: Whether to send account deletion confirmation email to the user when they decide to delete their account.
-- `SECURITY_REGISTERABLE`: Whether to allow user registration / sign up or not. Set this variable to `1` to enable user sign up and `0` or omit it to disable user sign up.
+
 
 **3. Run the application**:
 
