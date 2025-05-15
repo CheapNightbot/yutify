@@ -13,8 +13,10 @@ class Config:
     HOST_URL = os.getenv("HOST_URL", "localhost")
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.getenv("RATELIMIT")
-    YUTIFY_MAIL_ERROR_LOGS = bool(os.getenv("YUTIFY_MAIL_ERROR_LOGS", False))
-    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(os.getenv("YUTIFY_ACCOUNT_DELETE_EMAIL", True))
+    YUTIFY_MAIL_ERROR_LOGS = bool(int(os.getenv("YUTIFY_MAIL_ERROR_LOGS", False)))
+    YUTIFY_ACCOUNT_DELETE_EMAIL = bool(
+        int(os.getenv("YUTIFY_ACCOUNT_DELETE_EMAIL", True))
+    )
 
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
@@ -35,7 +37,7 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
     PORT = os.getenv("PORT", 5000)
-    LOG_TO_STDOUT = bool(os.getenv("LOG_TO_STDOUT", True))
+    LOG_TO_STDOUT = bool(int(os.getenv("LOG_TO_STDOUT", True)))
 
     # Flask-Security specific (and not specific as well) configs ~
     # https://flask-security.readthedocs.io/en/stable/configuration.html
@@ -69,7 +71,8 @@ class Config:
     SECURITY_POST_LOGOUT_VIEW = "auth.logout"
 
     # ### Registerable ###
-    SECURITY_REGISTERABLE = bool(os.getenv("SECURITY_REGISTERABLE", False))
+    SECURITY_REGISTERABLE = bool(int(os.getenv("SECURITY_REGISTERABLE", False)))
+    print(SECURITY_REGISTERABLE)
     SECURITY_EMAIL_SUBJECT_REGISTER = f"[{SERVICE}] Verify Email Address!"
     SECURITY_POST_REGISTER_VIEW = "main.index"
     SECURITY_REGISTER_URL = "/signup"
