@@ -31,7 +31,11 @@ def create_app(config_class=Config):
     )
     root_logger = logging.getLogger()
 
-    if not app.debug and not app.testing:
+    if (
+        not app.debug
+        and not app.testing
+        and not app.config.get("YUTIFY_MAIL_ERROR_LOGS")
+    ):
         if app.config.get("MAIL_SERVER"):
             auth = None
             if app.config.get("MAIL_USERNAME") or app.config.get("MAIL_PASSWORD"):
@@ -44,7 +48,7 @@ def create_app(config_class=Config):
                 secure = ()
             mail_handler = SMTPHandler(
                 mailhost=(app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT")),
-                fromaddr="no-reply@" + app.config.get("MAIL_SERVER"),
+                fromaddr="no-reply@" + app.config.get("HOST_URL"),
                 toaddrs=app.config.get("ADMIN_EMAIL"),
                 subject="[yutify] Failure!",
                 credentials=auth,
