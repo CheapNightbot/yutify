@@ -42,7 +42,7 @@ class Config:
     # ### Core ###
     SECRET_KEY = os.getenv("SECRET_KEY")
     ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY").encode()
-    SECURITY_EMAIL_VALIDATOR_ARGS = {"check_deliverability": False}
+    SECURITY_EMAIL_VALIDATOR_ARGS = {"check_deliverability": True}
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
     ]
