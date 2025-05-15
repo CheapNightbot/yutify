@@ -3,7 +3,7 @@
 {% block main %}
 <main class="container">
     <p>
-        <strong>yutify</strong> is a simple RESTful API for retrieving music info from various streaming platforms.
+        <strong>{{ config["SERVICE"] }}</strong> is a simple RESTful API for retrieving music info from various streaming platforms.
         Using the artist and song name, you can get various information/metadata about the song, including streaming
         link for multiple music platforms.
         If you sign up for an account, you can get music information about your currently listening music as well.
@@ -56,7 +56,7 @@
             </ul>
         </li>
     </ol>
-    <blockquote>&#10024; Congratulations, you just retrieved music information using <strong>yutify</strong>!
+    <blockquote>&#10024; Congratulations, you just retrieved music information using <strong>{{ config["SERVICE"] }}</strong>!
     </blockquote>
     <p>
         And with that opens endless possibilities for what you can do with it.. If not sure, you may check

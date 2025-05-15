@@ -7,9 +7,9 @@
     <meta name="color-scheme" content="light dark">
     <meta name="description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
     <meta name="author" content="Cheap Nightbot">
-    <meta name="keywords" content="yutify, music, rest-api, api, python, flask, free-api, Cheap Nighbot">
+    <meta name="keywords" content="{{ config['SERVICE'] }}, music, rest-api, api, python, flask, free-api, Cheap Nighbot">
     {% block metadata %}{% endblock %}
-    <title>yutify: {{ title }}</title>
+    <title>{{ config["SERVICE"] }}: {{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.indigo.min.css">
     <link rel="stylesheet"
@@ -59,7 +59,9 @@
                         <ul dir="rtl">
                             {% if current_user.is_anonymous %}
                             <li><a href="{{ url_for_security('login') }}">Login</a></li>
+                            {% if config["SECURITY_REGISTERABLE"] %}
                             <li><a href="{{ url_for_security('register') }}">Sign Up</a></li>
+                            {% endif %}
                             {% else %}
                             <li><a href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a>
                             </li>

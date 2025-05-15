@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/docs">
+<meta property="og:url" content="{{ url_for('docs.index', _external=true) }}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: API Documentation">
-<meta property="og:description" content="Read the docs for yutify, simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:title" content="{{ config['SERVICE'] }}: API Documentation">
+<meta property="og:description" content="Read the docs for {{ config['SERVICE'] }}, simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/docs">
-<meta name="twitter:title" content="yutify: API Documentation">
-<meta name="twitter:description" content="Read the docs for yutify, simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta property="twitter:url" content="{{ url_for('docs.index', _external=true) }}">
+<meta name="twitter:title" content="{{ config['HOST_URL'] }}: API Documentation">
+<meta name="twitter:description" content="Read the docs for {{ config['SERVICE'] }}, simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 {% endblock %}
 
 {% block style %}

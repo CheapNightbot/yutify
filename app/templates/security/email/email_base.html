@@ -79,12 +79,12 @@
 </head>
 
 <body>
-    <h1 id="brand">yutify</h1>
+    <h1 id="brand">{{ config["SERVICE"] }}</h1>
     <div class="email-container">
         {% block content %}{% endblock %}
         <hr>
         <div>
-            <p>Sincerely,<br><strong>yutify team</strong></p>
+            <p>Sincerely,<br><strong>{{ config["SERVICE"] }} team</strong></p>
         </div>
         </di>
 </body>

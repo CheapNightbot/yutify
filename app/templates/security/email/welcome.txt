@@ -11,5 +11,5 @@ If you did not signup for an account, you may simply ignore this message.
 {% else %}
 Heyo {{ user.name }} !!
 
-Welcome to yutify ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔
+Welcome to {{ config["SERVICE"] }} ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔
 {% endif %}{% endblock %}

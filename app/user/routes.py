@@ -104,7 +104,7 @@ def user_settings(username):
 
             if current_app.config.get("YUTIFY_ACCOUNT_DELETE_EMAIL"):
                 send_mail(
-                    subject="[yutify] Account Deletion Notice!",
+                    subject=f"[{current_app.config['SERVICE']}] Account Deletion Notice!",
                     recipient=user.email,
                     template="notify_account_delete",
                     user=user,

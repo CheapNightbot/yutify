@@ -1,37 +1,34 @@
 {% set title = title|default('403 - FORBIDDEN') %}
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/404">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Home">
-<meta property="og:description"
-    content="The content you're looking for is not found. This is simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:title" content="{{ config['SERVICE'] }}: Home">
+<meta property="og:description" content="It looks like you don't have permission to view this resource.">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/404">
-<meta name="twitter:title" content="yutify: Home">
-<meta name="twitter:description"
-    content="The content you're looking for is not found. This is simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta name="twitter:title" content="{{ config['SERVICE'] }}: Home">
+<meta name="twitter:description" content="It looks like you don't have permission to view this resource.">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 {% endblock %}
 
 {% block content %}
 <main class="container">
-<div class="grid error-container">
-    <img src="{{ url_for('static', filename='errors/403.gif') }}" alt="powerful-head-slap" width="403px">
-    <div>
-        <h1>{{ title }}</h1>
-        <p>
-            You don't have the permission to access the requested resource. It is either read-protected or not readable
-            by the server.
-        </p>
-        <p>
-            Why not go back <a href="{{ url_for('main.index') }}">Home</a>?
-            Or if you think we have made some mistake, feel free to open an issue on Github
-            <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !
-        </p>
+    <div class="grid error-container">
+        <img src="{{ url_for('static', filename='errors/403.gif') }}" alt="powerful-head-slap" width="403px">
+        <div>
+            <h1>{{ title }}</h1>
+            <p>
+                You don't have the permission to access the requested resource. It is either read-protected or not
+                readable
+                by the server.
+            </p>
+            <p>
+                Why not go back <a href="{{ url_for('main.index') }}">Home</a>?
+                Or if you think we have made some mistake, feel free to open an issue on Github
+                <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !
+            </p>
+        </div>
     </div>
-</div>
 </main>
 {% endblock content %}

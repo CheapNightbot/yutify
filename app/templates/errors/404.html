@@ -1,19 +1,17 @@
 {% set title = title|default('404 - NOT FOUND') %}
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/404">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Home">
+<meta property="og:title" content="{{ config['SERVICE'] }}: Home">
 <meta property="og:description"
     content="The content you're looking for is not found. This is simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/404">
-<meta name="twitter:title" content="yutify: Home">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta name="twitter:title" content="{{ config['SERVICE'] }}: Home">
 <meta name="twitter:description"
     content="The content you're looking for is not found. This is simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 {% endblock %}
 
 {% block content %}

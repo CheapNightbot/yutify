@@ -1,4 +1,4 @@
 {% block content %}{% endblock %}
 
 Sincerely,
-yutify team
+{{ config["SERVICE"] }} team

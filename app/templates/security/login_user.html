@@ -2,20 +2,6 @@
 {% extends "base.html" %}
 {% from "security/_macros.html" import prop_next %}
 
-{% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/login">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Login">
-<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/login">
-<meta name="twitter:title" content="yutify: Login">
-<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
-{% endblock %}
-
 {% block nav_title %}
 {{ title }}
 {% endblock %}
@@ -80,6 +66,8 @@
   </fieldset>
   {{ login_user_form.submit }}
 </form>
+{% if config["SECURITY_REGISTERABLE"] %}
 <p>New User? <a href="{{ url_for_security('register') }}">Sign Up here!</a></p>
+{% endif %}
 </main>
 {% endblock content %}

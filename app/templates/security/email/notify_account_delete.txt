@@ -10,7 +10,7 @@ An admin decided to delete your account. No explaination or reason was provided.
 {% endif %}{% else %}
 The username and email that were previously associated with your account are now available to be used to create a new account.
 
-We are sorry to see you go... But if you think we can improve yutify, or your reason for leaving was some feature / functionality missing
+We are sorry to see you go... But if you think we can improve {{ config["SERVICE"] }}, or your reason for leaving was some feature / functionality missing
 from it or maybe just a bug, please consider letting us know by simply opening an issue on GitHub here:
 https://github.com/CheapNightbot/yutify/issues/new/choose
 
