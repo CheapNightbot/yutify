@@ -72,7 +72,6 @@ class Config:
 
     # ### Registerable ###
     SECURITY_REGISTERABLE = bool(int(os.getenv("SECURITY_REGISTERABLE", False)))
-    print(SECURITY_REGISTERABLE)
     SECURITY_EMAIL_SUBJECT_REGISTER = f"[{SERVICE}] Verify Email Address!"
     SECURITY_POST_REGISTER_VIEW = "main.index"
     SECURITY_REGISTER_URL = "/signup"
