@@ -79,7 +79,7 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
-    # csrf.init_app(app)
+    csrf.init_app(app)
     mail.init_app(app)
     user_datastore = SQLAlchemyUserDatastore(db, User, Role, WebAuthn)
     app.security = Security(
