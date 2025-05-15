@@ -107,7 +107,7 @@ def get_lastfm_activity():
 
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = request.host_url.rstrip("/")  # Remove trailing slash
-        search_url = f"{base_url}/api/search/{activity["artists"]}:{activity["title"]}"
+        search_url = f"{base_url}/api/search/{activity['artists']}:{activity['title']}"
 
         # Call the /api/search endpoint using requests
         try:
