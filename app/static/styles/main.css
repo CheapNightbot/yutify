@@ -174,8 +174,13 @@ header {
     opacity: 0;
 }
 
-.flash-message.success,
 .flash-message.info {
+    background-color: #E0D7F0;
+    color: #524ED2;
+    border: 1px solid #C2B2E0;
+}
+
+.flash-message.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;

@@ -40,12 +40,27 @@ class Config:
     PORT = os.getenv("PORT", 5000)
     LOG_TO_STDOUT = bool(int(os.getenv("LOG_TO_STDOUT", True)))
 
+    # Only set these config variables if custom captcha solution used
+    # for example, hCaptcha, otherwise Flask-WTF's defualt config will be used,
+    # which is default to reCaptcha (google, ig) ~
+    ENABLE_CAPTCHA = bool(int(os.getenv("ENABLE_CAPTCHA", False)))
+    if ENABLE_CAPTCHA and bool(int(os.getenv("CUSTOM_CAPTCHA", False))):
+        # Flask-WTF Recaptcha configs
+        RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
+        RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
+        RECAPTCHA_DATA_ATTRS = {"theme": "dark"}
+        RECAPTCHA_SCRIPT = os.getenv("RECAPTCHA_SCRIPT")
+        RECAPTCHA_DIV_CLASS = os.getenv("RECAPTCHA_DIV_CLASS")
+        RECAPTCHA_VERIFY_SERVER = os.getenv("RECAPTCHA_VERIFY_SERVER")
+
     # Flask-Security specific (and not specific as well) configs ~
     # https://flask-security.readthedocs.io/en/stable/configuration.html
     # ### Core ###
     SECRET_KEY = os.getenv("SECRET_KEY")
     ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY").encode()
-    SECURITY_EMAIL_VALIDATOR_ARGS = {"check_deliverability": True}
+    SECURITY_EMAIL_VALIDATOR_ARGS = {
+        "check_deliverability": bool(int(os.getenv("CHECK_EMAIL_DELIVERABILITY", True)))
+    }
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
     ]
@@ -83,6 +98,10 @@ class Config:
     )
     SECURITY_USERNAME_REQUIRED = True
     SECURITY_USE_REGISTER_V2 = True
+    SECURITY_MSG_CONFIRM_REGISTRATION = (
+        "✨ Almost there! Please check your email to confirm your account! (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+        "info",
+    )
 
     # ### Confirmable ###
     SECURITY_CONFIRMABLE = True

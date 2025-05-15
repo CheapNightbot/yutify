@@ -76,6 +76,11 @@
                     href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a>.
             </label>
         </fieldset>
+        {% if config["ENABLE_CAPTCHA"] %}
+        <fieldset>
+            {{ register_user_form.recaptcha }}
+        </fieldset>
+        {% endif %}
         {{ register_user_form.submit(value='Sign Up') }}
     </form>
     <p>Already got an account? <a href="{{ url_for_security('login') }}">Login here!</a></p>

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, current_app
 from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 
-from app.auth.forms import RegistrationForm
+from app.auth.forms import RegistrationForm, MyLoginForm
 from app.common.helpers import mask_string, relative_timestamp, obfuscate_email
 from app.common.utils import MyUsernameUtil
 from app.email import MyMailUtil
@@ -81,7 +81,10 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     csrf.init_app(app)
-    mail.init_app(app)
+    # only register mail extension if mail server configured
+    # as setting mail server is optional
+    if app.config.get("MAIL_SERVER"):
+        mail.init_app(app)
     user_datastore = SQLAlchemyUserDatastore(db, User, Role, WebAuthn)
     app.security = Security(
         app,
@@ -89,6 +92,7 @@ def create_app(config_class=Config):
         mail_util_cls=MyMailUtil,
         username_util_cls=MyUsernameUtil,
         register_form=RegistrationForm,
+        login_form=MyLoginForm,
     )
     api.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})

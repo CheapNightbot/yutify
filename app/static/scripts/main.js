@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.addEventListener("click", () => {
         const currentIcon = themeBtnIcon.innerText;
         themeBtnIcon.innerText = 'light_mode' === currentIcon ? 'dark_mode' : 'light_mode';
-        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light')
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
     });
 
     let fadeTimeout;

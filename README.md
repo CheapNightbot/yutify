@@ -122,13 +122,16 @@ For certain configurations, it relies on environment variables that must be set 
 ### Optional: These environment variables are optional!
 
 - `SERVICE`: The service / application name. Default to `"yutify"`. You may set it to anything you want. It will be used / shown in various places like, home/index page, meta tags, email, etc.
-= `SERVICE_EMAIL`: An email address which will be used in privacy policy and terms of service pages at the bottom (before obfuscating).
+- `SERVICE_EMAIL`: An email address which will be used in privacy policy and terms of service pages at the bottom (after obfuscating).
 - `HOST_URL`: The URL where the application itself is currently running. It will be used in meta tags and just used for sending logging emails (error and above) to the admin email. The default is `localhost`, so the email "from" field will look like this: `From: <no-reply@localhost>`
 - `PORT`: The port number on which the application will serve HTTP requests. Defaults to `5000`.
+- `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging and `0` or omit it to use file based logging.
 - `DATABASE_URL`: SQL Database URL. If not set, a file-based SQLite database (`app.db`) will be used in the root directory.
-- `YUTIFY_ACCOUNT_DELETE_EMAIL`: Whether to send account deletion confirmation email to the user when they decide to delete their account.
-- `SECURITY_REGISTERABLE`: Whether to allow user registration / sign up or not. Set this variable to `1` to enable user sign up and `0` or omit it to disable user sign up.
 - `YUTIFY_MAIL_ERROR_LOGS`: If set to `1`, logs for error and above level will be sent to the email set in the `ADMIN_EMAIL` variable. To disable sending logs to email, set it to `0` or simply omit it.
+- `YUTIFY_ACCOUNT_DELETE_EMAIL`: Whether to send account deletion confirmation email to the user when they decide to delete their account. Set this to `0` to disable it. Default to `1` (will send email).
+- `SECURITY_REGISTERABLE`: Whether to allow user registration / sign up or not. Set this variable to `1` to enable user sign up and `0` or omit it to disable user sign up.
+- `RETURN_GENERIC_RESPONSES`: Whether to return generic responses for auth endpoints. Set it to `0` to disable it. Default to enabled (i.e. `1`).
+- `CHECK_EMAIL_DELIVERABILITY`: When user signup, check if email address exists (or is fake) and whether emails can be sent to that address. Set it to `1` to enable it or `0` to disable it. By default it is enabled.
 - For retrieving music information from Spotify, KKBox, and Last.fm, client IDs, client secrets, or API keys are required. Thankfully, [yutipy](https://pypi.org/project/yutipy/) provides a command-line utility to obtain these values. Run `yutipy-config` in your terminal after installing dependencies. The wizard will guide you through obtaining and setting up API keys for supported services like KKBOX, Last.fm, and Spotify. These values are automatically saved in the `.env` file.
   - `KKBOX_CLIENT_ID`, `KKBOX_CLIENT_SECRET`, `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REDIRECT_URI`, `LASTFM_API_KEY`
   - Without these variables, interaction with these platforms will be unavailable.
@@ -138,14 +141,16 @@ For certain configurations, it relies on environment variables that must be set 
   - `MAIL_USE_TLS`: Whether to use TLS for secure email communication. Set this variable to `1` to enable TLS and `0` or omit it to disable TLS.
   - `MAIL_USERNAME`: The email address to use for sending emails.
   - `MAIL_PASSWORD`: The password or app-specific password for the email account.
-  - `ADMIN_EMAIL`: The administrator's email address to receive error logs or notifications.
+  - `ADMIN_EMAIL`: The administrator's email address to receive error logs or notifications. It will also be used to create a defult admin user when first running yutify (see below "**Run the application**"!).
 - `RATELIMIT`: Enables rate-limiting on all API routes (`/api/*`). For valid values, refer to the [Flask-Limiter Docs](https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation).
 - `REDIS_URI`: URI for Redis (used for rate-limiting and caching). If not set:
   - With `FLASK_DEBUG=1` (development mode), in-memory caching will be used.
   - Without `FLASK_DEBUG` (production mode), caching will be disabled.
-- `LOG_TO_STDOUT`: Whether to use file based logging or log to the console. Set this variable to `1` to enable console logging and `0` or omit it to use file based logging.
-- `RETURN_GENERIC_RESPONSES`: Whether to return generic responses for auth endpoints.
-
+- `ENABLE_CAPTCHA`: Whether to enable captcha on login and signup forms or not. Set this to `1` to enable captcha and `0` or omit it to disable captcha.
+- For captcha, yutify uses Flask-WTF. Which comes with default configs for reCaptcha. However, if you want to use different captcha (e.g. hCaptcha), you may set these variables in environment variable (or `.env` file):
+  - `CUSTOM_CAPTCHA`: Set to `1` if using different captcha than the Flask-WTF comes with and `0` or omit it to use default configs. (`ENABLE_CAPTCHA` should also be set to `1` otherwise this variable will be ignored and no captcha will be enabled).
+  - Following variables define the configs for custom captcha. Please consult the [Flask-WTF Docs](https://flask-wtf.readthedocs.io/en/latest/config/#recaptcha). `CUSTOM_CAPTCHA` must be set to `1` else, these will be ignored:
+  - `RECAPTCHA_PUBLIC_KEY`, `RECAPTCHA_PRIVATE_KEY`, `RECAPTCHA_SCRIPT`, `RECAPTCHA_DIV_CLASS`, `RECAPTCHA_VERIFY_SERVER`
 
 **3. Run the application**:
 
