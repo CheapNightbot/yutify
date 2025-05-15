@@ -208,7 +208,7 @@ def manage_users():
             return redirect(url_for("admin.manage_users"))
         msg = "Successfully updated roles"
         user.roles = new_roles
-        if manage_user_account_form.reset_tf:
+        if manage_user_account_form.reset_tf.data:
             security.datastore.tf_reset(user)
             msg += " and reset 2FA"
         security.datastore.db.session.commit()
