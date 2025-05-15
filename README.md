@@ -110,7 +110,7 @@ For certain configurations, it relies on environment variables that must be set 
 - `SECURITY_PASSWORD_SALT`: Specifies the HMAC salt. This is used for double hashing the password. A good salt can be generated using the following command:
 
   ```bash
-  python -c "import secrets; pritn(secrets.SystemRandom().getrandbits(128))"
+  python -c "import secrets; print(secrets.SystemRandom().getrandbits(128))"
   ```
 
 - `SECURITY_TOTP_SECRETS`: Secret used to encrypt the totp_password both into DB and into the session cookie. You should run the following command to generate one after installing dependencies:
