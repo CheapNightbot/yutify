@@ -31,12 +31,8 @@ def create_app(config_class=Config):
     )
     root_logger = logging.getLogger()
 
-    if (
-        not app.debug
-        and not app.testing
-        and not app.config.get("YUTIFY_MAIL_ERROR_LOGS")
-    ):
-        if app.config.get("MAIL_SERVER"):
+    if not app.testing:
+        if app.config.get("MAIL_SERVER") and app.config.get("YUTIFY_MAIL_ERROR_LOGS"):
             auth = None
             if app.config.get("MAIL_USERNAME") or app.config.get("MAIL_PASSWORD"):
                 auth = (
@@ -183,11 +179,11 @@ def create_users():
                 name="Admin",
                 username="admin",
                 email=current_app.config["ADMIN_EMAIL"],
-                password=hash_password("password"),
+                password=hash_password("senpai-likes-small-potatoes"),
                 roles=["admin"],
             )
             current_app.logger.info(
-                "Successfully created an admin user with username \"admin\". Make sure to change username & passowrd for it!"
+                'Successfully created an admin user with username "admin". Make sure to change username & passowrd for it!'
             )
         admin_user.set_avatar()
         security.datastore.db.session.commit()
@@ -205,7 +201,11 @@ def create_services():
         ]
         service_created = set()
         for name, url, is_private in sorted(services, key=lambda service: service[0]):
-            if security.datastore.db.session.query(Service).where(Service.name.ilike(name)).one_or_none():
+            if (
+                security.datastore.db.session.query(Service)
+                .where(Service.name.ilike(name))
+                .one_or_none()
+            ):
                 service_created.add(False)
             else:
                 service_created.add(True)
