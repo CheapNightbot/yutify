@@ -222,7 +222,7 @@ def manage_users():
     if manage_user_account_form.validate_on_submit() and "delete_user" in request.form:
         user_id = int(manage_user_account_form.user_id.data)
         if user_id == current_user.id:
-            settings_page = f'<a href="{url_for('user.user_settings', username=current_user.username)}">Settings</a>'
+            settings_page = f"<a href=\"{url_for('user.user_settings', username=current_user.username)}\">Settings</a>"
             flash(
                 f"For deleting your own account, please visit your {settings_page} page!",
                 "error",
