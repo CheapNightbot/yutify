@@ -147,17 +147,24 @@ For certain configurations, it relies on environment variables that must be set 
 
 **3. Run the application**:
 
+> [!IMPORTANT]
 > Make sure you are at the root of the project directory before running command below!
+>
+> Visit the application locally at: `http://localhost:<PORT>` or `http://127.0.0.1:<PORT>` ~
+> Replace the `<PORT>` with the port number you defined in environment variable (or `.env` file) Or the default `5000`.
+>
+> When using a hosting provider, use the link provided by them for your deployed project.
 
 ```bash
 python yutify.py
 ```
 
-> [!IMPORTANT]
-> Visit the application locally at: `http://localhost:<PORT>` or `http://127.0.0.1:<PORT>` ~
-> Replace the `<PORT>` with the port number you defined in environment variable (or `.env` file) Or the default `5000`.
->
-> When using a hosting provider, use the link provided by them for your deployed project.
+> [!WARNING]
+> Regardless of the user registeration / signup is enabled or disabled, a default admin user with the email set in the `ADMIN_EMAIL` environment variable will be created when you will run the project. It will be created only if a user with that email does not exist in the database. You must change the username and password for it after logging in as this user. Please check the default values below:
+> -`name`: "Admin"
+> - `userrname`: "admin"
+> - `email`: value set in `ADMIN_EMAIL` envrionment variable
+> - `password`: "senpai-likes-small-potatoes"
 
 # Contributing 🤝
 
