@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="{{ url_for('docs.index', _external=true) }}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ config['SERVICE'] }}: API Documentation">
+<meta property="og:description" content="Read the docs for {{ config['SERVICE'] }}, simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta property="twitter:url" content="{{ url_for('docs.index', _external=true) }}">
+<meta name="twitter:title" content="{{ config['HOST_URL'] }}: API Documentation">
+<meta name="twitter:description" content="Read the docs for {{ config['SERVICE'] }}, simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+<section class="sect-with-aside">
+    <aside class="top">
+        <nav id="aside-nav">
+            <ul>
+                <li class="{% if aside_active == 'Overview' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.index') }}">Overview</a>
+                </li>
+                <li class="{% if aside_active == 'Get Started' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.get_started') }}">Get Started</a>
+                </li>
+                <li class="{% if aside_active == 'Tutorials' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.tutorials') }}">Tutorials</a>
+                </li>
+                <li>REFERENCE</li>
+                <li class="{% if aside_active == 'Search' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.reference_search') }}">Search</a>
+                </li>
+                <li class="{% if aside_active == 'Activity' %}aside-active{% endif %}">
+                    <a href="{{ url_for('docs.reference_activity') }}">Activity</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    {% block main %}{% endblock %}
+</section>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"
+    integrity="sha512-EBLzUL8XLl+va/zAsmXwS7Z2B1F9HUHkZwyS/VKwh3S7T/U0nF4BaU29EP/ZSf6zgiIxYAnKLu6bJ8dqpmX5uw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{{ url_for('static', filename='scripts/docs.js') }}"></script>
+{% endblock %}

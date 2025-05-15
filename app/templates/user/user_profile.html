@@ -1,26 +1,28 @@
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:url" content="{{ url_for('user.user_profile', username=user.username, _external=true) }}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Account">
-<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:title" content="{{ config['SERVICE'] }}: {{ user.name}}'s Profile">
+<meta property="og:description" content="See what {{ user.name}} is listening to...">
+<meta property="og:image" content="{{ url_for('static', filename=user.avatar, _external=true) }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/">
-<meta name="twitter:title" content="yutify: Profile">
-<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta property="twitter:url" content="{{ url_for('user.user_profile', username=user.username, _external=true) }}">
+<meta name="twitter:title" content="{{ config['SERVICE'] }}: {{ user.name }}'s Profile">
+<meta name="twitter:description" content="See what {{ user.name}} is listening to...">
+<meta name="twitter:image" content="{{ url_for('static', filename=user.avatar, _external=true) }}">
 {% endblock %}
 
 {% block header %}
 <article class="profile-header">
-
-    <img class="profile-header-img" src="{{ url_for('static', filename=current_user.avatar) }}"
+    <img class="profile-header-img" src="{{ url_for('static', filename=user.avatar) }}"
         alt="User Avatar" width="128px" height="128px">
 
     <div class="profile-header-info">
-        <h1>{{ current_user.name or current_user.username }}</h1>
+        <div>
+            <h2 >{{ user.name }}</h2>
+            <small>@{{ user.username }}</small>
+        </div>
         {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
     </div>
     <div class="profile-header-edit">
@@ -33,7 +35,7 @@
 {% endblock %}
 
 {% block content %}
-
+<main class="container">
 <article class="user-activity-container" aria-busy="true"></article>
 
 {% if user == current_user %}
@@ -70,4 +72,5 @@
     </article>
 </dialog>
 {% endif %}
+</main>
 {% endblock %}

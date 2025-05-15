@@ -1,25 +1,31 @@
+{% set title = title|default('Terms of Service') %}
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/privacy-policy">
+<meta property="og:url" content="{{ url_for('main.terms_of_service', _external=true) }}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Privacy Policy">
+<meta property="og:title" content="{{ config['SERVICE'] }}: Privacy Policy">
 <meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/privacy-policy">
-<meta name="twitter:title" content="yutify: Privacy Policy">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta property="twitter:url" content="{{ url_for('main.terms_of_service', _external=true) }}">
+<meta name="twitter:title" content="{{ config['SERVICE'] }}: Privacy Policy">
 <meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
+{% endblock %}
+
+{% block nav_title %}
+{{ title }}
 {% endblock %}
 
 {% block content %}
+<main class="container">
 <div>
     <h1>Terms of Service</h1>
 
     <h3>1. Introduction</h3>
     <p>
-        Welcome to <b>yutify</b> ("we", "us", or "our"). By accessing or using our web application ("the Service"), you
+        Welcome to <strong>{{ config["SERVICE"] }}</strong> ("we", "us", or "our"). By accessing or using our web application ("the Service"), you
         agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use the Service.
     </p>
 
@@ -100,4 +106,5 @@
 
     <p>Last updated: [Insert Date]</p>
 </div>
+</main>
 {% endblock %}

@@ -1,0 +1,70 @@
+{% set title = title|default('Manage Services') %}
+{% extends "admin/base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block main %}
+<main class="container-fluid">
+    <div class="overflow-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th>Private</th>
+                    <th></th>
+                </tr>
+                <!-- Add new service -->
+                <form action="" method="post" name="add_service_form" id="add_service_form">
+                    {{ add_service_form.csrf_token }}
+                    <tr>
+                        <td></td>
+                        <td>{{ add_service_form.name }}</td>
+                        <td>{{ add_service_form.url }}</td>
+                        <td>{{ add_service_form.is_private }} {{ add_service_form.is_private.label }}</td>
+                        <td>{{ add_service_form.add_service }}</td>
+                    </tr>
+                </form>
+            </thead>
+
+            <!-- Existing services -->
+            {% if services %}
+            <tbody>
+                {% for service in services %}
+                {% set form = "edit_service_form_" + service.id | string %}
+                <form action="" method="post" name="edit_service_form" id="{{ form }}">
+                    {{ edit_service_form.csrf_token }}
+                    {{ edit_service_form.service_id(value=service.id) }}
+                    <tr>
+                        <td>{{ service.id }}</td>
+                        <td>{{ edit_service_form.name(value=service.name, id="name" + service.id | string, form=form) }}
+                        </td>
+                        <td>{{ edit_service_form.url(value=service.url, id="url" + service.id | string, form=form) }}
+                        </td>
+                        <td>{{ edit_service_form.is_private(checked=service.is_private, id="is_private" + service.id | string, form=form) }}
+                            {{ service.is_private }}
+                        </td>
+                        <td class="flex-row">
+                            <input type="button" class="edit-btn" value="Edit">
+                            {{ edit_service_form.edit_service(class="save-btn", form=form) }}
+                            <input type="button" class="secondary cancel-btn" value="Cancel">
+                            {{ edit_service_form.delete_service(class="secondary delete-btn", form=form) }}
+                        </td>
+                    </tr>
+                </form>
+                {% endfor %}
+            </tbody>
+            {% else %}
+            <tfoot>
+                <tr>
+                    <td>No services available..</td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</main>
+{% endblock %}

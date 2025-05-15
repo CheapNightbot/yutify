@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 from flask import abort, flash, redirect, request, url_for
-from flask_login import current_user, login_required
+from flask_security import auth_required, current_user
 
 from app import db
 from app.auth_services import bp
@@ -11,7 +11,7 @@ from app.user.forms import LastfmLinkForm
 
 
 @bp.route("/<service>", methods=["POST"])
-@login_required
+@auth_required()
 def service(service):
     match service:
         case "spotify":
@@ -30,7 +30,7 @@ def service(service):
 
 
 @bp.route("/<service>/callback")
-@login_required
+@auth_required()
 def callback(service):
     match service:
         case "spotify":
@@ -44,11 +44,11 @@ def callback(service):
 
 
 @bp.route("/<service>/unlink", methods=["POST"])
-@login_required
+@auth_required()
 def unlink(service):
     # Fetch the service dynamically by name
     service_obj = db.session.scalar(
-        sa.select(Service).where(Service.service_name.ilike(service))
+        sa.select(Service).where(Service.name.ilike(service))
     )
     if not service_obj:
         abort(404, description="Service not found.")
@@ -56,8 +56,8 @@ def unlink(service):
     # Fetch the UserService entry for the current user and the service
     user_service = db.session.scalar(
         sa.select(UserService)
-        .where(UserService.user_id == current_user.user_id)
-        .where(UserService.service_id == service_obj.service_id)
+        .where(UserService.user_id == current_user.id)
+        .where(UserService.service_id == service_obj.id)
     )
     if not user_service:
         flash(f"You have not linked {service.capitalize()}.", "error")

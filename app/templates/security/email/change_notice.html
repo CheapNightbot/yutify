@@ -1,0 +1,14 @@
+{% extends "security/email/email_base.html" %}
+
+{% block content %}
+<h3>Heyo {{ user.name }} ~</h3>
+<p>
+  This is to notify that <strong>your account password has been changed.</strong>
+</p>
+{% if security.recoverable %}
+<p>
+  If you did not change your password,
+  <a href="{{ url_for_security('forgot_password', _external=True) }}"> click here to reset it</a> immedietly!
+</p>
+{% endif %}
+{% endblock %}

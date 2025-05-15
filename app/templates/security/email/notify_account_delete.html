@@ -1,0 +1,31 @@
+{% extends "security/email/email_base.html" %}
+
+{% block content %}
+<h3>Heyo {{ user.name }} ~</h3>
+<p>
+    This is to notify that <strong>your account has been deleted</strong>
+    {% if not admin_delete %} successfully! {% else %} for the following reasons: {% endif %}
+</p>
+
+{% if admin_delete %}
+{% if reason_for_deletion %}
+<p>{{ reason_for_deletion }}</p>
+{% else %}
+<p>
+    An admin decided to delete your account. No explaination or reason was provided.
+</p>
+{% endif %}
+{% else %}
+<p>
+    The username and email that were previously associated with your account are now available
+    to be used to create a new account.
+</p>
+<p>
+    We are sorry to see you go... But if you think we can improve <strong>{{ config["SERVICE"] }}</strong>, or your reason for leaving
+    was some feature / functionality missing from it or maybe just a bug, please consider letting
+    us know by simply opening an issue on GitHub
+    <a href="https://github.com/CheapNightbot/yutify/issues/new/choose">HERE</a>.
+</p>
+<p>This is the last email you recieved from us, goodbye ~ </p>
+{% endif %}
+{% endblock %}

@@ -1,15 +1,15 @@
 import logging
 from dataclasses import asdict
+from collections import OrderedDict
 
 import requests
 import sqlalchemy as sa
 from flask import flash, redirect, request, url_for
-from flask_login import current_user
+from flask_security import current_user
 from yutipy.lastfm import LastFm, LastFmException
 
 from app import db
-from app.models import Service, UserData, UserService, User
-
+from app.models import Service, User, UserData, UserService
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ def handle_lastfm_auth(lastfm_username):
 
     # Fetch the service dynamically by name
     lastfm_service = db.session.scalar(
-        sa.select(Service).where(Service.service_name.ilike("lastfm"))
+        sa.select(Service).where(Service.name.ilike("lastfm"))
     )
     if not lastfm_service:
         flash("Service 'Last.fm' not found in the database.", "error")
@@ -47,8 +47,8 @@ def handle_lastfm_auth(lastfm_username):
     # Check if the UserService entry already exists
     user_service = db.session.scalar(
         sa.select(UserService)
-        .where(UserService.user_id == user.user_id)
-        .where(UserService.service_id == lastfm_service.service_id)
+        .where(UserService.user_id == user.id)
+        .where(UserService.id == lastfm_service.id)
     )
 
     if user_service:
@@ -64,8 +64,8 @@ def handle_lastfm_auth(lastfm_username):
 
         # Create a new entry for Last.fm
         user_service = UserService(
-            user_id=user.user_id,
-            service_id=lastfm_service.service_id,
+            user_id=user.id,
+            service_id=lastfm_service.id,
             username=result.get("username"),
             profile_url=result.get("url"),
         )
@@ -91,8 +91,8 @@ def get_lastfm_activity():
         sa.select(UserService)
         .join(Service)
         .where(
-            UserService.user_id == current_user.user_id,
-            Service.service_name.ilike("lastfm"),
+            UserService.user_id == current_user.id,
+            Service.name.ilike("lastfm"),
         )
     )
 
@@ -101,22 +101,31 @@ def get_lastfm_activity():
 
     activity = lastfm.get_currently_playing(username=lastfm_service.username)
     if activity:
-        is_playing = activity.is_playing
-        timestamp = activity.timestamp
+        activity = asdict(activity)
+        is_playing = activity.pop("is_playing")
+        timestamp = activity.pop("timestamp")
 
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = request.host_url.rstrip("/")  # Remove trailing slash
-        search_url = f"{base_url}/api/search/{activity.artists}:{activity.title}"
+        search_url = f"{base_url}/api/search/{activity["artists"]}:{activity["title"]}"
 
         # Call the /api/search endpoint using requests
         try:
             response = requests.get(search_url, params={"all": ""})
-            activity = response.json()
-            activity["is_playing"] = is_playing
-            activity["timestamp"] = timestamp
+            activity = {"music_info": response.json()}
         except requests.RequestException as e:
             logger.warning(e)
-            activity = asdict(activity)
+            activity = {"music_info": activity}
+
+        # Add activity info
+        activity["activity_info"] = {
+            "is_playing": is_playing,
+            "service": "lastfm",
+            "timestamp": timestamp,
+        }
+
+        # Sort the activity by keys
+        activity = OrderedDict(sorted(activity.items()))
 
         # Save the current activity to the database
         UserData.insert_or_update_user_data(lastfm_service, activity)
@@ -124,15 +133,15 @@ def get_lastfm_activity():
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(
-            sa.select(UserData).where(
-                UserData.user_service_id == lastfm_service.user_services_id
-            )
+            sa.select(UserData).where(UserData.user_service_id == lastfm_service.id)
         )
         if existing_data:
             data = existing_data.data
-            data["is_playing"] = False
-            if not data.get("timestamp"):
-                data["timestamp"] = existing_data.updated_at.timestamp()
+            data["activity_info"]["is_playing"] = False
+            if not data.get("activity_info").get("timestamp"):
+                data["activity_info"][
+                    "timestamp"
+                ] = existing_data.updated_at.timestamp()
 
             # Update the activity in the database
             UserData.insert_or_update_user_data(lastfm_service, data)

@@ -1,32 +1,48 @@
 {% extends "base.html" %}
 {% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/">
+<meta property="og:url" content="{{ url_for('main.index', _external=true) }}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Home">
+<meta property="og:title" content="{{ config['SERVICE'] }}: Home">
 <meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/">
-<meta name="twitter:title" content="yutify: Home">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta property="twitter:url" content="{{ url_for('main.index', _external=true) }}">
+<meta name="twitter:title" content="{{ config['SERVICE'] }}: Home">
 <meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
+{% endblock %}
+
+{% block nav_title %}
+{{ config["SERVICE"] }}
 {% endblock %}
 
 {% block header %}
-<h1 id="brand">yutify</h1>
+
+<h1 id="header-title" class="brand">{{ config["SERVICE"] }}</h1>
 <p>Simple RESTful API for retrieving music info for various steaming platforms.</p>
 {% endblock %}
 
 {% block content %}
+<main class="container">
+
+<div class="flex-row margin-btm">
+    <select class="customized" name="methods" id="methods">
+        <option value="get">GET</option>
+    </select>
+    <a href="#" class="endpoint">
+        <input name="endpoint-url" class="endpoint-url" type="text" readonly />
+    </a>
+</div>
+
 <form id="search-form" action="" method="post" class="content">
     {{ form.hidden_tag() }}
     {% if artist %}
-    {{ form.artist(autofocus="", placeholder="Enter artist name", value=artist, aria_label="Artist Name", aria_describedby="artist-helper") }}
+    <input aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" value="{{ artist }}">
     {% elif form.artist.errors %}
-    {{ form.artist(autofocus="", placeholder="Enter artist name", aria_label="Artist Name", aria_describedby="artist-helper", aria_invalid="true") }}
+    <input aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search" aria-invalid="true">
     {% else %}
-    {{ form.artist(autofocus="", placeholder="Enter artist name", aria_label="Artist Name", aria_describedby="artist-helper") }}
+    <input aria-describedby="artist-helper" aria-label="Artist Name" autofocus="" id="artist" name="artist" placeholder="Enter artist name" required="" type="search">
     {% endif %}
     {% for error in form.artist.errors %}
     <small id="artist-helper">{{ error }}</small>
@@ -34,23 +50,23 @@
 
     <fieldset role="search" aria-describedby="song-helper">
         {% if song %}
-        {{ form.song(placeholder="Enter song name", value=song, aria_label="Song Name", aria_describedby="song-helper") }}
+        <input aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" value="{{ song }}">
         {% elif form.song.errors %}
-        {{ form.song(placeholder="Enter song name", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+        <input aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search" aria-invalid="true">
         {% else %}
-        {{ form.song(placeholder="Enter song name", aria_label="Song Name", aria_describedby="song-helper") }}
+        <input aria-describedby="song-helper" aria-label="Song Name" id="song" name="song" placeholder="Enter song name" required="" type="search">
         {% endif %}
         <button type="submit" id="search">Search</button>
     </fieldset>
-    {% if form.song.errors %}
-    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
-    {% else %}
-    {{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper") }}
-    {% endif %}
-    {% for error in form.song.errors %}
-    <small id="song-helper">{{ error }}</small>
-    {% endfor %}
 </form>
+{% if form.song.errors %}
+{{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper", aria_invalid="true") }}
+{% else %}
+{{ form.song(hidden="", disabled="", aria_label="Song Name", aria_describedby="song-helper") }}
+{% endif %}
+{% for error in form.song.errors %}
+<small id="song-helper">{{ error }}</small>
+{% endfor %}
 
 <article class="result-container">
     {% if album_art %}
@@ -172,7 +188,7 @@
                     {% if title_ %}
                     <strong>{{ title_ }} ~ Lyrics:</strong>
                     {% else %}
-                    <strong>Yutify ~ Lyrics:</strong>
+                    <strong>{{ config["SERVICE"] }} ~ Lyrics:</strong>
                     {% endif %}
                 </p>
             </header>
@@ -186,5 +202,12 @@
         </article>
     </dialog>
 </article>
+</main>
+{% endblock %}
 
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.5/purify.min.js"
+    integrity="sha512-/CUtA84sWWqWEBejNrrtWa7Yc4cth3Ome2ymvCKOo9YcZ4sh98tndUy4LutE2xGcAgD4fyz16y+gSyJdGCB5ww=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{{ url_for('static', filename='scripts/index.js')}}"></script>
 {% endblock %}

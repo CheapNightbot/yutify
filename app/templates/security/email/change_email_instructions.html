@@ -1,0 +1,23 @@
+{% extends "security/email/email_base.html" %}
+
+{% block content %}
+<h3>Heyo {{ user.name }} ~</h3>
+<p>
+  You requested to change the email address associated with your account. <br>
+  Your currently registered email is: <code>{{ user.email }}</code>
+</p>
+<p>
+  To verify your new email address, click <a href="{{ link }}">HERE</a>.
+  Alternatively, you can copy and paste the following link in your browser's address bar:
+</p>
+
+<div class="codeblock">
+  {{ link }}
+</div>
+
+<p>This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
+<p>
+  If you did not request email change, it might be that someone has access to your account.
+  You are suggested to <a href="{{ url_for_security('forgot_password', _external=True) }}">reset your password</a> immedietly!
+</p>
+{% endblock %}

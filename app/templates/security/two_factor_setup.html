@@ -1,0 +1,160 @@
+{#
+This template receives different input based on state of tf-setup. In addition
+to form values the following are available:
+On GET or unsuccessful POST:
+choices: Value of SECURITY_TWO_FACTOR_ENABLED_METHODS (with possible addition of 'delete')
+two_factor_required: Value of SECURITY_TWO_FACTOR_REQUIRED
+primary_method: the translated name of two-factor method that has already been set up.
+On successful POST:
+chosen_method: which 2FA method was chosen (e.g. sms, authenticator)
+choices: Value of SECURITY_TWO_FACTOR_ENABLED_METHODS
+changing: boolean - True if user is trying to change/disable 2FA
+state_token: if changing - this is the new (non-session) way to validate
+the new 2FA method
+
+If chosen_method == 'authenticator':
+authr_qrcode: the image source for the qrcode
+authr_key: same key as in qrcode - for possible manual entry
+authr_username: same username as in qrcode
+authr_issuer: same issuer as in qrcode
+#}
+{% set title = title|default("Manage 2FA") %}
+{% extends "base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field,
+render_field_no_label, render_field_errors, render_form_errors, render_csrf %}
+
+{% from "security/_macros.html" import prop_next %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <form action="{{ url_for_security('two_factor_setup') }}" method="post" name="two_factor_setup_form">
+    {{ two_factor_setup_form.hidden_tag() }}
+  {% if not chosen_method  %}
+  <div>Currently setup two-factor method: <ins>{{ primary_method | replace("authenticator","Authenticator App") }}</ins></div>
+  <hr>
+  <fieldset>
+    {% if primary_method %}
+    {% for subfield in two_factor_setup_form.setup %}
+    {% if subfield.data in choices[0] %}
+    {{ subfield(aria_describedby="2fa-method-helper") }}
+    {{ subfield.label }} <br>
+    {% endif %}
+    {% endfor %}
+
+    {% else %}
+
+    {% for subfield in two_factor_setup_form.setup %}
+    {% if subfield.data in choices %}
+    {{ subfield(aria_describedby="2fa-method-helper") }}
+    {{ subfield.label }} <br>
+    {% endif %}
+    {% endfor %}
+
+    {% endif %}
+
+    {% if "sms" in choices %}
+    <div>
+      {{ render_field_with_errors(two_factor_setup_form.phone) }}
+    </div>
+    {% endif %}
+  </fieldset>
+
+  {% if two_factor_setup_form.setup.errors %}
+  <fieldset>
+    <br>
+    <input type="hidden" name="errors" id="errors" aria-invalid="true">
+    {% for error in two_factor_setup_form.setup.errors %}
+    <small id="2fa-method-helper">{{ error }}..</small>
+    {% endfor %}
+    {% endif %}
+    {{ render_field(two_factor_setup_form.submit) }}
+  </fieldset>
+  {% endif %}
+
+  {% if chosen_method=="authenticator" %}
+  <hr>
+  <div class="fs-center">
+    <div>
+      {{ _fsdomain("Open an authenticator app on your device and scan the following QRcode (or enter the code below manually) to start receiving codes:") }}
+    </div>
+    <div>
+      <img alt="{{ _fsdomain('Two-Factor authentication code') }}" id="qrcode" src="{{ authr_qrcode }}" height="170px" width="170px">
+    </div>
+    <input id="auth-key" type="password" value="{{ authr_key}}" readonly>
+    <span class="password-toggle-icon auth"><i class="fas fa-eye"></i></span>
+  </div>
+  {% endif %}
+</form>
+{% if chosen_method and not two_factor_setup_form.setup.errors %}
+{# Hide this when first setting up #}
+{# This is the fill in code part #}
+<hr class="fs-gap">
+<p>
+  Enter the Code shown in your authenticator app to complete setting up 2FA.
+</p>
+{% if changing %}
+{% set faction = url_for_security('two_factor_setup_validate', token=state_token) %}
+{% else %}
+{% set faction = url_for_security('two_factor_token_validation') %}
+{% endif %}
+<form action="{{ faction }}" method="post" name="two_factor_verify_code_form">
+  {# explicitly render csrf_token so we can change the ID so we don't get duplicates #}
+  {{ render_csrf(two_factor_verify_code_form, "code") }}
+  <fieldset>
+    {% if two_factor_verify_code_form.code.errors %}
+    {{ two_factor_verify_code_form.code(autofocus="", type="number", placeholder="663629", aria_describedby="verify-code-helper", aria_invalid="true") }}
+    {% else %}
+    {{ two_factor_verify_code_form.code(autofocus="", type="number", placeholder="663629", aria_describedby="verify-code-helper") }}
+    {% endif %}
+    {% for error in two_factor_verify_code_form.code.errors %}
+    <small id="verify-code-helper">{{ error }}</small>
+    {% endfor %}
+  </fieldset>
+  <div>{{ render_field(two_factor_verify_code_form.submit) }}</div>
+</form>
+{% else %}
+{% if security.support_mfa and security.multi_factor_recovery_codes %}
+<hr class="fs-gap">
+<h3>{{ _fsdomain("Recovery Codes") }}</h3>
+<div>
+  {{ _fsdomain("This application supports setting up recovery codes.") }}
+  <a href="{{ url_for_security('mf_recovery_codes') }}">{{ _fsdomain("You can set them up here.") }}</a>
+</div>
+{% endif %}
+{% if security.webauthn %}
+<hr class="fs-gap">
+<h3>{{ _fsdomain("WebAuthn") }}</h3>
+<div>
+  {{ _fsdomain("This application supports WebAuthn security keys.") }}
+  <a href="{{ url_for_security('wan_register') }}">{{ _fsdomain("You can set them up here.") }}</a>
+</div>
+{% endif %}
+{% endif %}
+
+<a role="button" class="custom-btn" href="{{ url_for('user.user_settings', username=current_user.username )}}">Done</a>
+
+{% if primary_method != 'none' %}
+<h3>Recovery Options</h3>
+
+<article class="service-item">
+  <div class="service-info">
+    <div>
+      <i class="fa-solid fa-key"></i>
+      <span>Recovery codes</span>
+    </div>
+  </div>
+  <div class="service-action">
+    <a href="{{ url_for_security('mf_recovery_codes') }}">Manage</a>
+  </div>
+</article>
+{% endif %}
+</main>
+{% endblock content %}

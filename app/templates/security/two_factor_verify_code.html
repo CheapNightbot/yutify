@@ -1,0 +1,66 @@
+{% set title = title|default(_fsdomain("Two-Factor Authentication")) %}
+{% extends "base.html" %}
+{% from "security/_macros.html" import prop_next, render_csrf %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+<p>Please enter your authentication code generated via: <ins>{{ chosen_method }}</ins></p>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <form action="{{ url_for_security('two_factor_token_validation') }}{{ prop_next() }}" method="post"
+    name="two_factor_verify_code_form">
+    {{ two_factor_verify_code_form.hidden_tag() }}
+    <fieldset>
+      {{ two_factor_verify_code_form.code.label }}
+      {% if two_factor_verify_code_form.code.errors %}
+      {{ two_factor_verify_code_form.code(type="number", aria_label="Authentication Code", aria_describedby="auth-code-helper", aria_invalid="true", autofocus="") }}
+      {% else %}
+      {{ two_factor_verify_code_form.code(type="number", aria_label="Authentication Code", aria_describedby="auth-code-helper", placeholder="663629", autofocus="") }}
+      <small id="auth-code-helper"></small>
+      {% endif %}
+      {% for error in two_factor_verify_code_form.code.errors %}
+      <small id="auth-code-helper">{{ error }}</small>
+      {% endfor %}
+    </fieldset>
+    {{ two_factor_verify_code_form.submit }}
+  </form>
+
+
+  {% if two_factor_rescue_form %}
+  {% if problem == "email" or problem == "help" %}
+  <details open>
+  {% else %}
+  <details>
+  {% endif %}
+    <summary><small>Trouble accessing your account? Or lost your Device / Authenticator app?</small></summary>
+    <article>
+      <form action="{{ url_for_security('two_factor_rescue') }}{{ prop_next() }}" method="post"
+        name="two_factor_rescue_form">
+        {# explicitly render csrf_token so we can change the ID so we don't get duplicates #}
+        {{ render_csrf(two_factor_rescue_form, "rescue") }}
+        {{ two_factor_rescue_form.help_setup() }}
+        {% for error in two_factor_rescue_form.errors %}
+        <small>{{ error }}</small>
+        {% endfor %}
+        {% if problem=="email" %}
+        <p><ins>The code for authentication was sent to your email address.</ins></p>
+        {% endif %}
+        {% if problem=="help" %}
+        <p>
+          <ins>An admin has been notified to help you regain access to your account.</ins>
+          You will be contacted soon via your registered email address.
+        </p>
+        {% endif %}
+        {{ two_factor_rescue_form.submit }}
+      </form>
+    </article>
+  </details>
+  {% endif %}
+</main>
+{% endblock content %}

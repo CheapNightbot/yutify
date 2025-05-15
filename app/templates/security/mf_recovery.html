@@ -1,0 +1,31 @@
+{% set title = title|default(_fsdomain("Enter Recovery Code")) %}
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+<p>Enter a recovery code that you previously saved. <strong>One code can be used only once!</strong></p>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <form action="{{ url_for_security('mf_recovery') }}" method="post" name="mf_recovery_form">
+    {{ mf_recovery_form.hidden_tag() }}
+    <fieldset>
+      {{ mf_recovery_form.code.label }}
+      {% if mf_recovery_form.code.errors %}
+      {{ mf_recovery_form.code(autofocus="", aria_label="Recovery Code", aria_describedby="rc-helper", aria_invalid="true") }}
+      {% else %}
+      {{ mf_recovery_form.code(autofocus="", aria_label="Recovery Code", aria_describedby="rc-helper") }}
+      {% endif %}
+      {% for error in mf_recovery_form.code.errors %}
+      <small id="rc-helper">{{ error }}</small>
+      {% endfor %}
+    </fieldset>
+    {{ mf_recovery_form.submit }}
+  </form>
+</main>
+{% endblock content %}

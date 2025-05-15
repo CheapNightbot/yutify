@@ -1,185 +1,168 @@
+{% set title = title|default('Settings') %}
 {% extends "base.html" %}
-{% block metadata %}
-<meta property="og:url" content="https://yutify.onrender.com/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yutify: Account">
-<meta property="og:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta property="og:image" content="https://yutify.onrender.com/static/music.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta property="twitter:domain" content="yutify.onrender.com">
-<meta property="twitter:url" content="https://yutify.onrender.com/">
-<meta name="twitter:title" content="yutify: Profile">
-<meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
-<meta name="twitter:image" content="https://yutify.onrender.com/static/music.png">
+
+{% block nav_title %}
+{{ title }}
 {% endblock %}
 
 {% block header %}
-<h1>{{ title }}</h1>
+<h1 id="header-title">{{ title }}</h1>
 {% endblock %}
 
 {% block content %}
+<main class="container">
 
-<form action="" method="post">
-    {{ form.csrf_token }}
-    {% if form.__class__.__name__ == "EmptyForm" %}
-    <fieldset>
-        <label>
-            Username
-            <input type="text" name="username" placeholder="{{ user.username }}" aria-label="Read-only Username"
-                readonly />
-        </label>
+    <form action="" method="post" name="username_form">
+        {{ username_form.csrf_token(id="csrf_token_username") }}
+        {{ username_form.form_name() }}
+        <label for="username">Username</label>
+        <fieldset role="group">
+            <input id="username" type="text" value="{{ user.username }}" readonly>
+            <input type="submit" class="edit-btn" value="Change">
+        </fieldset>
+    </form>
 
-        <label>
-            Email
-            <input type="email" name="email"
-                placeholder="{{ user.email | mask_string(mask='*', mask_special_char=True, mask_from_char='@', exclude_bounds=True) }}"
-                aria-label="Read-only Email" readonly />
-        </label>
+    <form action="" method="post" name="email_form">
+        {{ email_form.csrf_token(id="csrf_token_email") }}
+        {{ email_form.form_name() }}
+        <label for="email">Email</label>
+        <fieldset role="group">
+            <input id="email" type="text"
+                value="{{ user.email | mask_string(mask='*', mask_special_char=True, mask_from_char='@', exclude_bounds=True) }}"
+                readonly>
+            <input type="submit" class="edit-btn" value="Change">
+        </fieldset>
+    </form>
 
-    </fieldset>
-    {{ form.submit(value="Edit Account Details") }}
-    {% else %}
-    {{ form.username.label }}
-    {% if form.username.errors %}
-    {{ form.username(aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
-    {% else %}
-    {{ form.username(value=user.username, aria_label="Username", aria_describedby="username-helper") }}
-    {% endif %}
-    {% for error in form.username.errors %}
-    <small id="username-helper">{{ error }}</small>
-    {% endfor %}
-    {{ form.email.label }}
-    {% if form.email.errors %}
-    {{ form.email(aria_label="Email", aria_describedby="email-helper", aria_invalid="true") }}
-    {% else %}
-    {{ form.email(value=user.email, aria_label="Email", aria_describedby="email-helper") }}
-    {% endif %}
-    {% for error in form.email.errors %}
-    <small id="email-helper">{{ error }}</small>
-    {% endfor %}
-    {{ form.password.label }}
-    {% if form.password.errors %}
-    {{ form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
-    {% else %}
-    {{ form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
-    {% endif %}
-    {% for error in form.password.errors %}
-    <small id="password-helper">{{ error }}</small>
-    {% endfor %}
-    {{ form.submit() }}
-    <a role="button" class="secondary custom-btn"
-        href="{{ url_for('user.user_settings', username=current_user.username) }}">
-        Cancel
-    </a>
-    {% endif %}
+    <h3>Services:</h3>
+    {% if services %}
+    {% for service in services %}
+    <article class="service-item">
+        <div class="service-info">
+            <a href="{{ service.url }}" rel="noopener noreferrer" target="_blank">
+                <img class="service-logo"
+                    src="{{ url_for('static', filename='logos/' + service.name.lower() + '.svg') }}"
+                    alt="{{ service.name }} Logo">
+            </a>
+            <div>
+                <strong>{{ service.name }}</strong>
+                {% if service.id in connected_services %}
+                {% for user_service in user.user_services %}
+                {% if service.id == user_service.service_id %}
+                <p class="status connected">Linked: <a href="{{ user_service.profile_url }}" rel="noopener noreferrer"
+                        target="_blank">{{ user_service.username }}</a></p>
+                {% endif %}
+                {% endfor %}
 
-</form>
-
-
-{% if form.__class__.__name__ == "EmptyForm" %}
-<button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete
-    Account</button>
-{% endif %}
-
-{% if form.__class__.__name__ == "EmptyForm" %}
-<h3>Services:</h3>
-{% if services %}
-{% for service in services %}
-<article class="service-item">
-    <div class="service-info">
-        <a href="{{ service.service_url }}" rel="noopener noreferrer" target="_blank">
-            <img class="service-logo"
-                src="{{ url_for('static', filename='logos/' + service.service_name.lower() + '.svg') }}"
-                alt="{{ service.service_name }} Logo">
-        </a>
-        <div>
-            <strong>{{ service.service_name }}</strong>
-            {% if service.service_id in connected_services %}
-            {% for user_service in user.user_services %}
-            {% if service.service_id == user_service.service_id %}
-            <p class="status connected">Linked: <a href="{{ user_service.profile_url }}" rel="noopener noreferrer"
-                    target="_blank">{{ user_service.username }}</a></p>
-            {% endif %}
-            {% endfor %}
-
+                {% else %}
+                <p class="status not-connected">Not Linked</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="service-action">
+            {% if service.id in connected_services %}
+            <!-- Unlink Form -->
+            <form action="{{ url_for('auth_services.unlink', service=service.name.lower()) }}" method="post">
+                {{ service_action_form.csrf_token(id="csrf_token_unlink_" +  service.name.lower() ) }}
+                <button type="submit" class="secondary unlink">Unlink</button>
+            </form>
             {% else %}
-            <p class="status not-connected">Not Linked</p>
+            <!-- Link Form -->
+            <form action="{{ url_for('auth_services.service', service=service.name.lower()) }}" method="post">
+                {{ service_action_form.csrf_token(id="csrf_token_link_" +  service.name.lower() ) }}
+                <button type="submit" class="primary link" {% if service.name.lower()=='lastfm' %} data-service="lastfm"
+                    data-target="lastfm-link-modal" {% endif %}>Link</button>
+            </form>
             {% endif %}
         </div>
-    </div>
-    <div class="service-action">
-        {% if service.service_id in connected_services %}
-        <!-- Unlink Form -->
-        <form action="{{ url_for('auth_services.unlink', service=service.service_name.lower()) }}" method="post">
-            {{ form.csrf_token(id="csrf_token_unlink_" +  service.service_name.lower() ) }}
-            <button type="submit" class="secondary unlink">Unlink</button>
-        </form>
+    </article>
+    {% endfor %}
+    {% else %}
+    <article class="service-item">
+        <p class="text-in-article">No services are available...</p>
+    </article>
+    {% endif %}
+
+    <h3>Privacy & Security:</h3>
+
+    <article class="service-item">
+        {% if user.tf_primary_method %}
+        <div class="service-info">
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Two-Factor Authentication: <span class="status connected">Enabled</span></span>
+            </div>
+        </div>
+        <div class="service-action">
+            <a href="{{ url_for_security('two_factor_setup') }}">Manage</a>
+        </div>
         {% else %}
-        <!-- Link Form -->
-        <form action="{{ url_for('auth_services.service', service=service.service_name.lower()) }}" method="post">
-            {{ form.csrf_token(id="csrf_token_link_" +  service.service_name.lower() ) }}
-            <button type="submit" class="primary link" {% if service.service_name.lower()=='lastfm' %}
-                data-service="lastfm" data-target="lastfm-link-modal" {% endif %}>Link</button>
-        </form>
+        <div class="service-info">
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Two-Factor Authentication: <span class="status not-connected">Disabled</span></span>
+            </div>
+        </div>
+        <div class="service-action">
+            <a href="{{ url_for_security('two_factor_setup') }}">Manage</a>
+        </div>
         {% endif %}
+    </article>
+
+    <div class="grid margin-btm">
+        <a role="button" class="custom-btn" href="{{ url_for_security('change_password') }}">Change Password</a>
+        <button id="show-account-del" class="secondary delete-account" data-target="delete-account-modal">Delete
+            Account</button>
     </div>
-</article>
-{% endfor %}
-{% else %}
-<article class="service-item">
-    <p class="text-in-article">No services are available...</p>
-</article>
-{% endif %}
-{% endif %}
 
-{% if services %}
-{% for service in services %}
-{% if service.service_id not in connected_services and service.service_name.lower() == 'lastfm' %}
-<dialog id="lastfm-link-modal">
-    <article>
-        <header>
-            <h3>Link Last.fm</h3>
-            <button id="close-lastfm-modal" aria-label="Close" class="close" data-target="lastfm-link-modal"></button>
-        </header>
-        <form action="{{ url_for('auth_services.service', service='lastfm') }}" method="post">
-            {{ lastfm_link_form.csrf_token(id="csrf_token_lastfm") }}
-            <fieldset>
-                {{ lastfm_link_form.lastfm_username.label }}
-                {{ lastfm_link_form.lastfm_username(placeholder="Enter your Last.fm username", autofocus="") }}
-            </fieldset>
-            {{ lastfm_link_form.submit(id="link_lastfm") }}
-        </form>
-    </article>
-</dialog>
-{% endif %}
-{% endfor %}
-{% endif %}
+    {% if services %}
+    {% for service in services %}
+    {% if service.id not in connected_services and service.name.lower() == 'lastfm' %}
+    <dialog id="lastfm-link-modal">
+        <article>
+            <header>
+                <h3>Link Last.fm</h3>
+                <button id="close-lastfm-modal" aria-label="Close" class="close"
+                    data-target="lastfm-link-modal"></button>
+            </header>
+            <form action="{{ url_for('auth_services.service', service='lastfm') }}" method="post">
+                {{ lastfm_link_form.csrf_token(id="csrf_token_lastfm") }}
+                <fieldset>
+                    {{ lastfm_link_form.lastfm_username.label }}
+                    {{ lastfm_link_form.lastfm_username(placeholder="Enter your Last.fm username", autofocus="") }}
+                </fieldset>
+                {{ lastfm_link_form.submit(id="link_lastfm") }}
+            </form>
+        </article>
+    </dialog>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
 
-{% if form.__class__.__name__ == "EmptyForm" %}
-<dialog id="delete-account-modal">
-    <article>
-        <header>
-            <h3>Confirm Account Deletion</h3>
-        </header>
-        <p>To delete your account, please enter your password below:</p>
-        <form action="" method="post">
-            {{ delete_account_form.csrf_token(id="csrf_token_account_del") }}
-            {{ delete_account_form.password.label }}
-            {% if delete_account_form.password.errors %}
-            {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
-            {% else %}
-            {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
-            {% endif %}
-            {% for error in delete_account_form.password.errors %}
-            <small id="password-helper">{{ error }}</small>
-            {% endfor %}
-            <footer role="group">
-                {{ delete_account_form.submit(id="delete_account", class="secondary delete-account") }}
-                <button id="close-account-del" type="button" data-target="delete-account-modal">Cancel</button>
-            </footer>
-        </form>
-    </article>
-</dialog>
-{% endif %}
+    <dialog id="delete-account-modal">
+        <article>
+            <header>
+                <h3>Confirm Account Deletion</h3>
+            </header>
+            <p>To delete your account, please enter your password below:</p>
+            <form action="" method="post">
+                {{ delete_account_form.csrf_token(id="csrf_token_account_del") }}
+                {{ delete_account_form.password.label }}
+                {% if delete_account_form.password.errors %}
+                {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+                {% else %}
+                {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+                {% endif %}
+                {% for error in delete_account_form.password.errors %}
+                <small id="password-helper">{{ error }}</small>
+                {% endfor %}
+                <footer role="group">
+                    {{ delete_account_form.submit(id="delete_account", class="secondary delete-account") }}
+                    <button id="close-account-del" type="button" data-target="delete-account-modal">Cancel</button>
+                </footer>
+            </form>
+        </article>
+    </dialog>
 
+</main>
 {% endblock %}

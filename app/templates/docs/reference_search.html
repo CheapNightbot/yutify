@@ -1,0 +1,569 @@
+{% extends "docs/base.html" %}
+
+{% block main %}
+<main class="container">
+    <h1>Search for Music</h1>
+    <p>Get information about music that match provided artist and song name.</p>
+
+    <div class="flex-row left padding-r">
+        <select id="methods" name="methods">
+            <option value="get">GET</option>
+        </select>
+        <input class="endpoint docs" type="text" value="/api/search/&lt;ARTIST&gt;:&lt;SONG&gt;" readonly>
+        <span class="endpoint-auth" data-tooltip="No Authorization Required" data-placement="left">
+            <i class="fa-solid fa-unlock"></i>
+        </span>
+    </div>
+
+    <h3>Request</h3>
+    <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>&lt;ARTIST&gt;</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Required</mark>
+            </div>
+        </div>
+        <p>
+            The artist name to search for.
+        </p>
+        <p>
+            <b>Example</b>: <code>/api/search/<ins>Madeon</ins>:Song</code>,
+            <code>/api/search/<ins>Rick Astley</ins>:Song</code>
+        </p>
+    </div>
+
+    <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>&lt;Song&gt;</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Required</mark>
+            </div>
+        </div>
+        <p>
+            The song or album name to search for.
+        </p>
+        <p>
+            <b>Example</b>: <code>/api/search/Madeon:<ins>Shelter</ins></code>,
+            <code>/api/search/Rick Astley:<ins>Never Gonna Give You Up</ins></code>
+        </p>
+    </div>
+
+    <blockquote>The artist name and song name must be separated by a colon (<code>:</code>)</blockquote>
+
+    <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>platform</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            The music platform to retrieve music information/metadata from.
+        </p>
+        <p>
+            If provided, music information/metadata will be retrieved (only) from this music platform. If it is not
+            provided or does not contain allowed values, it will be simply ignored and music information/metadata will
+            be retrieved from all the available music platforms.
+        </p>
+        <p>
+            <b>Default</b>: <code>"all"</code> <br>
+            <b>Allowed values</b>: <code>"all"</code>, <code>"deezer"</code>, <code>"itunes"</code> (or
+            <code>"apple-music"</code>),
+            <code>"kkbox"</code>, <code>"spotify"</code>, <code>"ytmusic"</code> <br>
+            <b>Note</b>: The query parameter for <code>platform</code> is NOT <code>?platform=&lt;name&gt;</code>
+            &lpar;i.e. key-value pair&rpar;! Instead, you just provide the platform name directly as a key. <br>
+            <b>Example</b>: <code>/api/search/Madeon:Shelter<ins>?spotify</ins></code>
+        </p>
+    </div>
+
+    <div class="flex-row left">
+        <h3>Response</h3>
+        <nav role="tab-control">
+            <ul>
+                <li><label for="tab1">200</label></li>
+                <li><label for="tab2">404</label></li>
+                <li><label for="tab3">429</label></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="container">
+        <div role="tabs">
+            <section>
+                <input hidden="hidden" type="radio" name="tabs" id="tab1" checked="checked" />
+                <figure>
+                    <p>Successful response with the requested information about the music.</p>
+                    <article class="res-example">
+                        <details>
+                            <summary>Response Examples</summary>
+                            <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code>
+                            </header>
+                            <pre class="codeblock"><code>{
+  "album_art": "https://deezer.com/6663629/album_art.jpg",
+  "album_art_source": "deezer",
+  "album_title": "Song",
+  "album_type": "single",
+  "artists": "Artist",
+  "genre": "Electronic",
+  "id": {
+    "deezer": 6663629,
+    "itunes": 6663629,
+    "kkbox": "Dx6duYxp9UagGhiqwq",
+    "spotify": "6rqhFgbbKwnb9MLmUQDhG6",
+    "ytmusic": "xD69iRAEiu0"
+  },
+  "isrc": "US1234567890",
+  "lyrics": "These are the lyrics of the song...",
+  "release_date": "2025-10-25",
+  "tempo": null,
+  "title": "Song",
+  "type": "track",
+  "upc": null,
+  "url": {
+    "deezer": "https://www.deezer.com/track/6663629",
+    "itunes": "https://music.apple.com/track/6663629",
+    "kkbox": "https://www.kkbox.com/tw/tc/song/Dx6duYxp9UagGhiqwq",
+    "spotify": "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
+    "ytmusic": "https://music.youtube.com/watch?v=xD69iRAEiu0"
+  }
+}</code></pre>
+                            <header class="flex-column"><code>/api/search/Artist:Song<ins>?deezer</ins></code></header>
+                            <pre class="codeblock"><code>{
+  "album_art": "https://deezer.com/6663629/album_art.jpg",
+  "album_title": "Song",
+  "album_type": "single",
+  "artists": "Artist",
+  "genre": null,
+  "id": 6663629,
+  "isrc": "US1234567890",
+  "lyrics": null,
+  "release_date": "2025-10-25",
+  "tempo": 0,
+  "title": "Song",
+  "type": "track",
+  "upc": null,
+  "url": "https://www.deezer.com/track/6663629"
+}</code></pre>
+                        </details>
+                    </article>
+                    <blockquote>
+                        Note that URL(s) and such information shown in the response examples here does NOT reflect the
+                        actual response sent
+                        by {{ config["SERVICE"] }} API. These are just for demonstration purposes. In short, those are fake!
+                    </blockquote>
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>album_art</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The URL to the album art (image) of the requested music.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>album_art_source</kbd> <code>string</code>
+                            </div>
+                        </div>
+                        <p>
+                            The music platform name where the album art retrieved from. <br>
+                            Only present if music information was requested for all the streaming platforms either by
+                            providing <code>?platform="all"</code> query or omitting it altogether (which is default).
+                        </p>
+                        <p>
+                            <b>Example</b>: <code>"deezer"</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>album_title</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The title of the album for the requested music.
+                        </p>
+                        <p>
+                            <b>Note</b>: It will be the same as the <kbd>title</kbd> if <kbd>album_type</kbd> is
+                            <code>"single</code>.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>album_type</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The type of the album for the requested music.
+                        </p>
+                        <p>
+                            <b>Available values</b>: <code>"album"</code>, <code>"ep"</code>, <code>"single"</code> <br>
+                            <b>Example</b>: <code>"single"</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>artists</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            A comma-separated string of artist name(s) for the requested music.
+                        </p>
+                        <p>
+                            <b>Example</b>: <code>"Ahrix"</code>, <code>"花譜, Hoshimachi Suisei"</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>genre</kbd> <code>string</code> <code class="null">null</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The genre of the requested music.
+                        </p>
+                        <p>
+                            <b>Example</b>: <code>"Electronic"</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>id</kbd> <code>integer</code> <code>string</code> <code>object</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The unique ID of the music on the requested music platform(s). <br>
+                            The <code>"id"</code> itself can be either <code>integer</code> or <code>string</code> based on
+                            the music
+                            platform. For example, <code>"id"</code> for YouTube Music will be 11 characters long
+                            alpha-numeric string.
+                        </p>
+                        <p>
+                            <b>Note</b>: It will be a <code>string</code> or <code>integer</code>, if query parameter
+                            for <kbd>platform</kbd>
+                            contains a value from "<strong>Allowed values</strong>" except <code>"all"</code>.
+                            Otherwise, if
+                            <code>platform="all"</code> or no query parameter provided, it will be an
+                            <code>object</code> with each key representing the music platform name and value being
+                            actual ID of the music on that platform. <br>
+                            <b>Example</b>: Request and Response showing what <code>"id"</code> field looks like:
+                        </p>
+                        <dl>
+                            <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
+                            <dd>
+                                <pre class="codeblock"><code>"id": "7e8XZUuB78uEOil4i3ONox"</code></pre>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><code>/api/search/Madeon:Shelter</code></dt>
+                            <blockquote>
+                                The music platform keys in this object can vary based on if that music found on
+                                respective platform or not. For example, if the music was not found on Spotify, the
+                                <code>"id"</code> object will not have <code>"spotify"</code> key.
+                            </blockquote>
+                            <dd>
+                                <pre class="codeblock"><code>"id": {
+  "itunes": 123456789,
+  "deezer": 123456789,
+  "kkbox": "XyxzETEWlclsnflt",
+  "spotify": "7e8XZUuB78uEOil4i3ONox",
+  "ytmusic": "AdLFtTiA8d5"
+}</code></pre>
+                            </dd>
+                        </dl>
+                        </code>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>isrc</kbd> <code>string</code> <code class="null">null</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The ISRC code of the requested music. If the <kbd>album_type</kbd> is not
+                            <code>"single"</code>, then it will be <code class="null">null</code>.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>lyrics</kbd> <code>string</code> <code class="null">null</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The lyrics of the requested music.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>release_date</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The date when requested music was released in ISO format: <code>YYYY-MM-DD</code>
+                        </p>
+                        <P>
+                            <b>Example</b>: <code>"2025-05-14"</code>
+                        </P>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>tempo</kbd> <code>integer</code> <code class="null">null</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The tempo of the requested music in beats per minute (BPM). <br>
+                            Currently, it is always going to be <code class="null">null</code>. Please see this <a
+                                href="https://github.com/CheapNightbot/yutify/issues/28" target="_blank"
+                                rel="noopener noreferrer">issue</a> on GitHub for more
+                            information.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>title</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The title / name of the requested music.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>type</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The type of the requested music.
+                        </p>
+                        <p>
+                            <b>Available values</b>: <code>"album"</code>, <code>"track"</code> <br>
+                            <b>Note</b>: Don't get confused with <kbd>album_type</kbd>! This one tells you whether you
+                            requested a track (which can be part of an album) or an album itself.<br>
+                            <b>Example</b>: If you requested a track <code>"Third Track"</code> which is part of an
+                            album <code>"Best Album"</code>, then <kbd>"type"</kbd> will be <code>track</code>. However,
+                            if you requested <code>"Best Album"</code>, the <kbd>"type"</kbd> will be
+                            <code>"album"</code>.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>upc</kbd> <code>string</code> <code class="null">null</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The UPC code of the requested music. If the <kbd>album_type</kbd> is not
+                            <code>"album"</code> or <code>"ep"</code>, then it will be <code class="null">null</code>.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>url</kbd> <code>string</code> <code>object</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The streaming URL of the music on the requested music platform(s).
+                        </p>
+                        <p>
+                            <b>Note</b>: It will be a <code>string</code>, if query parameter for <kbd>platform</kbd>
+                            contains a value from "<strong>Allowed values</strong>" except <code>"all"</code>.
+                            Otherwise, if
+                            <code>platform="all"</code> or no query parameter provided, it will be an
+                            <code>object</code> with each key representing the music platform name and value being
+                            actual streaming URL of the music on that platform. <br>
+                            <b>Example</b>: Request and Response showing what <code>"url"</code> field looks like:
+                        </p>
+                        <dl>
+                            <dt><code>/api/search/Madeon:Shelter?spotify</code></dt>
+                            <dd>
+                                <pre
+                                    class="codeblock"><code>"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code></pre>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><code>/api/search/Madeon:Shelter</code></dt>
+                            <blockquote>
+                                The music platform keys in this object can vary based on if that music found on
+                                respective platform or not. For example, if the music was not found on Spotify, the
+                                <code>"url"</code> object will not have <code>"spotify"</code> key.
+                            </blockquote>
+                            <dd>
+                                <pre class="codeblock"><code>"url": {
+  "itunes": "https://music.apple.com/album/123456789",
+  "deezer": "https://www.deezer.com/track/123456789",
+  "kkbox": "https://www.kkbox.com/song/XyxzETEWlclsnflt",
+  "spotify": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox",
+  "ytmusic": "https://music.youtube.com/watch?v=AdLFtTiA8d5"
+}</code></pre>
+                            </dd>
+                        </dl>
+                        </code>
+                    </div>
+
+                </figure>
+
+                <input hidden="hidden" type="radio" name="tabs" id="tab2" />
+
+                <figure>
+                    <p>Successful response, but requested music (information) was not found.</p>
+                    <article class="res-example">
+                        <details>
+                            <summary>Response Examples</summary>
+                            <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code>
+                            </header>
+                            <pre class="codeblock"><code>{
+  "error": "Couldn't find 'Song' by 'Artist'"
+}</code></pre>
+                            <header class="flex-column"><code>/api/search/Artist:Song<ins>?deezer</ins></code></header>
+                            <pre class="codeblock"><code>{
+  "error": "Couldn't find 'Song' by 'Artist' on platform 'Deezer'"
+}</code></pre>
+                        </details>
+                    </article>
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>error</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The error message explaining that the music was not found. <br>
+                            If music information was requested for a specific platform, it will contain the platform
+                            name.
+                        </p>
+                    </div>
+                </figure>
+
+                <input hidden="hidden" type="radio" name="tabs" id="tab3" />
+                <figure>
+                    <p>Unsuccessful response explaining that you have exceeded the default ratelimit.</p>
+                    <article class="res-example">
+                        <details>
+                            <summary>Response Examples</summary>
+                            <header class="flex-column"><code>/api/search/<ins>Artist</ins>:<ins>Song</ins></code>
+                            </header>
+                            <pre class="codeblock"><code>{
+  "error": "ratelimit exceeded! you are allowed to make 20 request(s) per 1 minute."
+}
+</code></pre>
+                        </details>
+                    </article>
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>error</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The error message explaining you have exceeded the default ratelimit.
+                        </p>
+                        <p>
+                            The default ratelimit is <code>20 requests per 1 minute</code>, but might change. <br>
+                            It will always contain what default ratelimits are in this format:
+                            <code>"<ins>x</ins> requests per <ins>y</ins> <ins>timeframe</ins>"</code>.
+                        </p>
+                    </div>
+                </figure>
+            </section>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

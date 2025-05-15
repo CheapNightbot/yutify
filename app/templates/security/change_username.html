@@ -1,0 +1,32 @@
+{% set title = title|default('Change Username') %}
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<h1 id="header-title">{{ title }}</h1>
+<p>Your current username is: <ins>{{ current_username }}</ins></p>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <form action="{{ url_for_security('change_username') }}" method="post" name="change_username_form">
+    {{ change_username_form.hidden_tag() }}
+    <fieldset>
+      {{ change_username_form.username.label }}
+      {% if change_username_form.username.errors %}
+      {{ change_username_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper", aria_invalid="true") }}
+      {% else %}
+      {{ change_username_form.username(autocomplete="new-username", aria_label="Username", aria_describedby="username-helper") }}
+      <small id="username-helper"></small>
+      {% endif %}
+      {% for error in change_username_form.username.errors %}
+      <small id="username-helper">{{ error }}</small>
+      {% endfor %}
+    </fieldset>
+    {{ change_username_form.submit(value="Save") }}
+  </form>
+</main>
+{% endblock content %}
