@@ -6,7 +6,7 @@ from flask_security import (
     auth_required,
     current_user,
     logout_user,
-    roles_required,
+    permissions_accepted,
     send_mail,
     url_for_security,
 )
@@ -20,7 +20,7 @@ from app.user.forms import DeleteAccountForm, EditProfileForm, EmptyForm, Lastfm
 
 @bp.route("/<username>", methods=["GET", "POST"])
 @auth_required()
-@roles_required("user")
+@permissions_accepted("user-read", "user-write")
 def user_profile(username):
     """Render user profile page."""
     if username != current_user.username and not current_user.has_role("admin"):
@@ -47,7 +47,7 @@ def user_profile(username):
 
 @bp.route("/<username>/settings", methods=["GET", "POST"])
 @auth_required()
-@roles_required("user")
+@permissions_accepted("user-read", "user-write")
 def user_settings(username):
     """Render user settings page."""
     if username != current_user.username:
@@ -136,7 +136,7 @@ def user_settings(username):
 
 @bp.route("/username-changed")
 @auth_required()
-@roles_required("user")
+@permissions_accepted("user-read", "user-write")
 def username_changed():
     """Handle redirect back to user settings page on successful username change."""
     return redirect(url_for("user.user_settings", username=current_user.username))
@@ -144,7 +144,7 @@ def username_changed():
 
 @bp.route("/email-changed")
 @auth_required()
-@roles_required("user")
+@permissions_accepted("user-read", "user-write")
 def email_changed():
     """Handle redirect back to user settings page on successful email change."""
     return redirect(url_for("user.user_settings", username=current_user.username))
