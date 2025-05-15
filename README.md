@@ -122,6 +122,7 @@ For certain configurations, it relies on environment variables that must be set 
 ### Optional: These environment variables are optional!
 
 - `SERVICE`: The service / application name. Default to `"yutify"`. You may set it to anything you want. It will be used / shown in various places like, home/index page, meta tags, email, etc.
+= `SERVICE_EMAIL`: An email address which will be used in privacy policy and terms of service pages at the bottom (before obfuscating).
 - `HOST_URL`: The URL where the application itself is currently running. It will be used in meta tags and just used for sending logging emails (error and above) to the admin email. The default is `localhost`, so the email "from" field will look like this: `From: <no-reply@localhost>`
 - `PORT`: The port number on which the application will serve HTTP requests. Defaults to `5000`.
 - `DATABASE_URL`: SQL Database URL. If not set, a file-based SQLite database (`app.db`) will be used in the root directory.

@@ -10,6 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SERVICE = os.getenv("SERVICE", "yutify")
+    SERVICE_EMAIL = os.getenv("SERVICE_EMAIL", "hi@example.com")
     HOST_URL = os.getenv("HOST_URL", "localhost")
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.getenv("RATELIMIT")

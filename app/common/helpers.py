@@ -134,6 +134,10 @@ def relative_timestamp(timestamp):
                 return f"{value} {name}s ago"
 
 
+def obfuscate_email(email: str):
+    return email.replace("@", "[at]").replace(".", "[dot]")
+
+
 if __name__ == "__main__":
 
     ips = ["127.0.0.1", "192.168.69.69"]

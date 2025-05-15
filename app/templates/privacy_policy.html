@@ -8,7 +8,7 @@
 <meta property="og:image" content="{{ url_for('static', filename='music.png, _external=true') }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
-<meta property="twitter:url" content="{{ url_for('main.privary_policy', _external=true) }}">
+<meta property="twitter:url" content="{{ url_for('main.privacy_policy', _external=true) }}">
 <meta name=" twitter:title" content="{{ config['SERVICE'] }}: Privacy Policy">
 <meta name="twitter:description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
 <meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
@@ -99,7 +99,7 @@
 
     <h3>8. Contact Us</h3>
     <p>
-        If you have any questions or concerns about this Privacy Policy, please contact us at [hi@example.com].
+        If you have any questions or concerns about this Privacy Policy, please contact us at {{ config["SERVICE_EMAIL"] | obfuscate_email }}.
     </p>
 
     <p>Last updated: 2025, May 15</p>
