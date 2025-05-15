@@ -8,6 +8,7 @@ Flask-Migrate==4.1.0
 Flask-RESTful==0.3.10
 Flask-Security[common,fsqla,mfa]==5.6.2
 Flask-SQLAlchemy==3.1.1
+psycopg2==2.9.10
 python-dotenv==1.1.0
 requests==2.32.3
 waitress==3.0.2
