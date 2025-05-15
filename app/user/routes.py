@@ -82,14 +82,11 @@ def user_settings(username):
     lastfm_link_form = None if "lastfm" in connected_services else LastfmLinkForm()
 
     # User clicked on "Change" button for username
-    if (
-        username_form.validate_on_submit()
-        and username_form.form_name.data == "change_username"
-    ):
+    if username_form.validate_on_submit():
         return redirect(url_for_security("change_username"))
 
     # User clicked on "Change" button for email
-    if email_form.validate_on_submit() and email_form.form_name.data == "change_email":
+    if email_form.validate_on_submit():
         return redirect(url_for_security("change_email"))
 
     # User clicked on "Delete Account" button
