@@ -99,13 +99,13 @@ For certain configurations, it relies on environment variables that must be set 
   python -c "import secrets; print(secrets.token_hex())"
   ```
 
-- `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting access token information (for the services that require authorization like Spotify & KKBox for searching music) and to encrypt the (2FA) recovery codes at rest at rest (i.e. in the database). To generate an encryption key, run the following command after installing dependencies:
+- `ENCRYPTION_KEY`: A URL-safe base64-encoded 32-byte key used for encrypting access token information (for the services that require authorization like Spotify & KKBox for searching music) and to encrypt the (2FA) recovery codes at rest (i.e. in the database). To generate an encryption key, run the following command after installing dependencies:
 
   ```bash
   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
   ```
 
-  - **Important**: Once used to encrypt emails, changing or losing this key will prevent decryption of previously saved emails. Handle with care!
+  - **Important**: Once used to encrypt, changing or losing this key will prevent decryption of previously encrypted data. Handle with care!
 
 - `SECURITY_PASSWORD_SALT`: Specifies the HMAC salt. This is used for double hashing the password. A good salt can be generated using the following command:
 
