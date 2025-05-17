@@ -1,7 +1,7 @@
 cryptography==44.0.3
 Flask==3.1.1
 Flask-Caching==2.3.1
-flask-cors==5.0.1
+flask-cors==6.0.0
 Flask-Limiter[redis]==3.12
 Flask-Mail==0.10.0
 Flask-Migrate==4.1.0
