@@ -379,7 +379,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const response = await fetch('/api/me?type=html');
+        const response = await fetch('/api/me?type=html', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
 
         if (!response.ok) {
             activityContainer.removeAttribute('aria-busy');
