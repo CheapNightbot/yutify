@@ -13,11 +13,7 @@ from app.models import OAuth2AuthorizationCode, OAuth2Client, OAuth2Token, User
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
-    TOKEN_ENDPOINT_AUTH_METHODS = [
-        "client_secret_basic",
-        "client_secret_post",
-        "none",
-    ]
+    TOKEN_ENDPOINT_AUTH_METHODS = ["client_secret_basic"]
 
     def save_authorization_code(self, code, request):
         code_challenge = request.data.get("code_challenge")
@@ -78,9 +74,7 @@ def config_oauth(app):
     authorization.init_app(app)
 
     # add grants to support
-    # authorization.register_grant(grants.ClientCredentialsGrant) DON'T THINK THIS ONE NEEDED
     authorization.register_grant(AuthorizationCodeGrant, [CodeChallenge(required=True)])
-    # authorization.register_grant(RefreshTokenGrant) NOT SURE ABOUT THIS ONE ~
 
     # support revocation
     revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
