@@ -6,6 +6,7 @@ import requests
 import sqlalchemy as sa
 from flask import flash, redirect, request, url_for
 from flask_security import current_user
+from authlib.integrations.flask_oauth2 import current_token
 from yutipy.lastfm import LastFm, LastFmException
 
 from app import db
@@ -78,20 +79,26 @@ def handle_lastfm_auth(lastfm_username):
     return redirect(url_for("user.user_settings", username=current_user.username))
 
 
-def get_lastfm_activity():
+def get_lastfm_activity(user=None):
     """Fetch the user's listening activity from Last.fm."""
     if not lastfm:
         flash(
             "Lastfm Authentication is not available! You may contact the admin(s).",
             "error",
         )
-        return redirect(url_for("user.user_settings", username=current_user.username))
+        return redirect(
+            url_for(
+                "user.user_settings",
+                username=(user.username if user else current_user.username),
+            )
+        )
 
+    user = user or current_user
     lastfm_service = db.session.scalar(
         sa.select(UserService)
         .join(Service)
         .where(
-            UserService.user_id == current_user.id,
+            UserService.user_id == user.id,
             Service.name.ilike("lastfm"),
         )
     )
