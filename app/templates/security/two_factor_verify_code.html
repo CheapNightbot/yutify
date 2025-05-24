@@ -7,8 +7,10 @@
 {% endblock %}
 
 {% block header %}
-<h1 id="header-title">{{ title }}</h1>
-<p>Please enter your authentication code generated via: <ins>{{ chosen_method }}</ins></p>
+<header class="container">
+  <h1 id="header-title">{{ title }}</h1>
+  <p>Please enter your authentication code generated via: <ins>{{ chosen_method }}</ins></p>
+</header>
 {% endblock %}
 
 {% block content %}

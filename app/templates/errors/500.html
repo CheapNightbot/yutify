@@ -12,16 +12,13 @@
 <meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
 {% endblock %}
 
-{% block header %}
-<h1>{{ title }}</h1>
-{% endblock %}
-
 {% block content %}
 <main class="container">
     <div class="grid error-container">
         <img class="error-img" src="{{ url_for('static', filename='errors/500.gif') }}" alt="anime-satania"
             width="500px">
         <div>
+            <h1>{{ title }}</h1>
             <p>Oops~ the server fainted. Why not go back <a href="{{ url_for('main.index') }}">Home</a>?</p>
             <p>If this keep happening, feel free to open an issue on Github
                 <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !

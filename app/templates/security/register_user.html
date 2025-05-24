@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block header %}
-<h1 id="header-title">{{ title }}</h1>
+<header class="container">
+    <h1 id="header-title">{{ title }}</h1>
+</header>
 {% endblock %}
 
 {% block content %}
@@ -72,8 +74,8 @@
 
             {{ register_user_form.agreement }}
             <label for="agreement">
-                By signing up, you agree to our <a href="{{ url_for('main.terms_of_service') }}">Terms of Service</a> and <a
-                    href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a>.
+                By signing up, you agree to our <a href="{{ url_for('main.terms_of_service') }}">Terms of Service</a>
+                and <a href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a>.
             </label>
         </fieldset>
         {% if config["ENABLE_CAPTCHA"] %}
