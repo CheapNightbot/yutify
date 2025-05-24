@@ -13,7 +13,7 @@ from flask_security import (
 from flask_security.utils import verify_password
 
 from app import db
-from app.models import Service, User, UserService
+from app.models import OAuth2Token, Service, User, UserService, OAuth2Client
 from app.user import bp
 from app.user.forms import DeleteAccountForm, EditProfileForm, EmptyForm, LastfmLinkForm
 
@@ -55,6 +55,14 @@ def user_settings(username):
 
     security = current_app.security
     user = db.first_or_404(sa.select(User).where(User.username == username))
+    # Only count tokens for existing clients
+    authorized_apps = (
+        db.session.query(OAuth2Token)
+        .join(OAuth2Client, OAuth2Token.client_id == OAuth2Client.client_id)
+        .filter(OAuth2Token.user_id == user.id)
+        .all()
+    )
+
     # Query all services that are not private.
     # Service marked as private assumed to not have user authorization.
     services = db.session.scalars(
@@ -70,49 +78,45 @@ def user_settings(username):
 
     # Forms ~
     email_form = EmptyForm()
-    email_form.form_name.id = "change_email"
-    email_form.form_name.name = "change_email"
-    email_form.form_name.render_kw = {"value": "change_email"}
     username_form = EmptyForm()
-    username_form.form_name.id = "change_username"
-    username_form.form_name.name = "change_username"
-    username_form.form_name.render_kw = {"value": "change_username"}
     delete_account_form = DeleteAccountForm()
     service_action_form = EmptyForm()
     lastfm_link_form = None if "lastfm" in connected_services else LastfmLinkForm()
 
     # User clicked on "Change" button for username
-    if username_form.validate_on_submit():
+    if (
+        username_form.validate_on_submit()
+        and username_form.form_name.data == "change_username"
+    ):
         return redirect(url_for_security("change_username"))
 
     # User clicked on "Change" button for email
-    if email_form.validate_on_submit():
+    if email_form.validate_on_submit() and email_form.form_name.data == "change_email":
         return redirect(url_for_security("change_email"))
 
     # User clicked on "Delete Account" button
     if delete_account_form.validate_on_submit():
-        if delete_account_form.validate_on_submit():
-            password = security.password_util.normalize(request.form.get("password"))
-            if not password or not verify_password(password, user.password):
-                flash("Invalid password. Please try again.", "error")
-                return redirect(
-                    url_for("user.user_settings", username=current_user.username)
-                )
+        password = security.password_util.normalize(request.form.get("password"))
+        if not password or not verify_password(password, user.password):
+            flash("Invalid password. Please try again.", "error")
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
 
-            if current_app.config.get("YUTIFY_ACCOUNT_DELETE_EMAIL"):
-                send_mail(
-                    subject=f"[{current_app.config['SERVICE']}] Account Deletion Notice!",
-                    recipient=user.email,
-                    template="notify_account_delete",
-                    user=user,
-                    admin_delete=False,
-                    reason_for_deletion=None,
-                )
-            logout_user()
-            security.datastore.delete_user(user)
-            security.datastore.db.session.commit()
-            flash("Your account has been deleted successfully!", "success")
-            return redirect(url_for("main.index"))
+        if current_app.config.get("YUTIFY_ACCOUNT_DELETE_EMAIL"):
+            send_mail(
+                subject=f"[{current_app.config['SERVICE']}] Account Deletion Notice!",
+                recipient=user.email,
+                template="notify_account_delete",
+                user=user,
+                admin_delete=False,
+                reason_for_deletion=None,
+            )
+        logout_user()
+        security.datastore.delete_user(user)
+        security.datastore.db.session.commit()
+        flash("Your account has been deleted successfully!", "success")
+        return redirect(url_for("main.index"))
 
     # Default: Render the empty form on "GET" request
     return render_template(
@@ -128,7 +132,57 @@ def user_settings(username):
         delete_account_form=delete_account_form,
         service_action_form=service_action_form,
         lastfm_link_form=lastfm_link_form,
+        authorized_apps=authorized_apps,
     )
+
+
+@bp.route("/<username>/authorized-apps", methods=["GET"])
+@auth_required()
+@permissions_accepted("user-read", "user-write")
+def authorized_apps_overview(username):
+    """Show all authorized OAuth2 apps for the user with revoke option."""
+    if username != current_user.username:
+        abort(404)
+    user = db.first_or_404(sa.select(User).where(User.username == username))
+    # Only show tokens for existing clients
+    tokens = (
+        db.session.query(OAuth2Token, OAuth2Client)
+        .join(OAuth2Client, OAuth2Token.client_id == OAuth2Client.client_id)
+        .filter(OAuth2Token.user_id == user.id)
+        .all()
+    )
+    from app.user.forms import RevokeAppForm
+
+    revoke_forms = {
+        client.client_id: RevokeAppForm(prefix=f"revoke_{client.client_id}")
+        for token, client in tokens
+    }
+    return render_template(
+        "user/authorized_apps.html",
+        title="Authorized Apps",
+        active_page="user_settings",
+        year=datetime.today().year,
+        user=user,
+        tokens=tokens,
+        revoke_forms=revoke_forms,
+    )
+
+
+@bp.route("/<username>/authorized-apps/revoke/<client_id>", methods=["POST"])
+@auth_required()
+@permissions_accepted("user-read", "user-write")
+def revoke_authorized_app(username, client_id):
+    if username != current_user.username:
+        abort(404)
+    user = db.first_or_404(sa.select(User).where(User.username == username))
+    # Delete all tokens for this user and client
+    deleted = OAuth2Token.query.filter_by(user_id=user.id, client_id=client_id).delete()
+    db.session.commit()
+    if deleted:
+        flash("Access revoked for this app.", "success")
+    else:
+        flash("No access found for this app.", "error")
+    return redirect(url_for("user.authorized_apps_overview", username=username))
 
 
 @bp.route("/username-changed")

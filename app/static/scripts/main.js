@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const togglePasswordContainer = document.querySelector(".password-toggle-icon");
     const togglePassword = document.querySelector(".password-toggle-icon i");
     const verifyForm = document.querySelector('[name="verify_form"]');
+    const addURIBtn = document.querySelector('#add-redirect-uri');
 
     function convertToUserTimezone(datetimeString) {
         // Get the parts
@@ -346,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     if (togglePasswordContainer) {
+        togglePasswordContainer.style.pointerEvents = 'initial';
         togglePasswordContainer.style.opacity = '1';
         const passwordField = document.querySelector("#password, #auth-key");
         togglePassword.addEventListener("click", () => {
@@ -575,5 +577,63 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             event.target.classList.add("active-tab"); /* set active class on current node */
         }
+    }
+
+    if (addURIBtn) {
+        const lastURIInput = document.querySelector('.redirectURI:last-child input');
+        if (lastURIInput.value.length > 8) {
+            addURIBtn.removeAttribute('disabled');
+        }
+
+        lastURIInput.addEventListener('input', function () {
+            if (this.value.length > 8) {
+                addURIBtn.removeAttribute('disabled');
+            } else {
+                addURIBtn.setAttribute('disabled', '');
+            }
+        });
+
+        lastURIInput.addEventListener('focus', function () {
+            if (this.value.length > 8) {
+                addURIBtn.removeAttribute('disabled');
+            } else {
+                addURIBtn.setAttribute('disabled', '');
+            }
+        });
+
+        addURIBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const firstURI = document.querySelector('.redirectURI');
+            const newURI = document.createElement('div');
+            newURI.classList.add('redirectURI');
+            newURI.innerHTML = firstURI.innerHTML;
+
+            const newIndex = document.querySelectorAll('.redirectURI').length;
+            const redirectURI = newURI.querySelector('#redirect_uris-0-redirect_uri');
+            redirectURI.id = `redirect_uris-${newIndex}-redirect_uri`;
+            redirectURI.name = redirectURI.id;
+            redirectURI.value = '';
+
+            document.getElementById('redirectURIs').appendChild(newURI);
+            document.querySelector('.redirectURI:last-child input').focus();
+            addURIBtn.setAttribute('disabled', '');
+
+            const lastURIInput = document.querySelector('.redirectURI:last-child input');
+            lastURIInput.addEventListener('input', function () {
+                if (this.value.length > 8) {
+                    addURIBtn.removeAttribute('disabled');
+                } else {
+                    addURIBtn.setAttribute('disabled', '');
+                }
+            });
+
+            lastURIInput.addEventListener('focus', function () {
+                if (this.value.length > 8) {
+                    addURIBtn.removeAttribute('disabled');
+                } else {
+                    addURIBtn.setAttribute('disabled', '');
+                }
+            });
+        });
     }
 });

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<header class="container">
+    <h1 id="header-title">{{ title }}</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="client-container">
+        <a class="client-container-btn" href="{{ url_for('user.user_settings', username=user.username) }}">
+            <button>
+                Back to Settings
+            </button>
+        </a>
+        {% if tokens %}
+        {% for token, client in tokens %}
+        <article class="client-card info no-margin-btm flex-row space-between">
+            <div class="flex-row left client-info">
+                <div class="client-img">
+                    <span>{{ client.client_metadata["client_name"][0] }}</span>
+                </div>
+                <div>
+                    <h3 class="no-margin-btm">{{ client.client_metadata["client_name"] }}</h3>
+                    <small class="client-desc">{{ client.client_metadata["client_description"] }}</small>
+                </div>
+            </div>
+            <div class="service-action">
+                <form
+                    action="{{ url_for('user.revoke_authorized_app', username=user.username, client_id=client.client_id) }}"
+                    method="post">
+                    {{ revoke_forms[client.client_id].csrf_token(id="csrf_token_revoke_" ~ client.client_id) }}
+                    {{ revoke_forms[client.client_id].submit(class="delete-btn") }}
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+        {% else %}
+        <p class="text-in-article">No authorized apps found.</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

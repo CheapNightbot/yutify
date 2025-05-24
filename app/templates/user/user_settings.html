@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block header %}
-<h1 id="header-title">{{ title }}</h1>
+<header class="container">
+    <h1 id="header-title">{{ title }}</h1>
+</header>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +16,7 @@
 
     <form action="" method="post" name="username_form">
         {{ username_form.csrf_token(id="csrf_token_username") }}
-        {{ username_form.form_name() }}
+        {{ username_form.form_name(id="change_username", value="change_username") }}
         <label for="username">Username</label>
         <fieldset role="group">
             <input id="username" type="text" value="{{ user.username }}" readonly>
@@ -24,7 +26,7 @@
 
     <form action="" method="post" name="email_form">
         {{ email_form.csrf_token(id="csrf_token_email") }}
-        {{ email_form.form_name() }}
+        {{ email_form.form_name(id="change_email", value="change_email") }}
         <label for="email">Email</label>
         <fieldset role="group">
             <input id="email" type="text"
@@ -105,6 +107,30 @@
         </div>
         <div class="service-action">
             <a href="{{ url_for_security('two_factor_setup') }}">Manage</a>
+        </div>
+        {% endif %}
+    </article>
+
+    <article class="service-item">
+        {% if authorized_apps|length > 0 %}
+        <div class="service-info">
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Authorized Apps: <span class="status connected">{{ authorized_apps|length }}</span></span>
+            </div>
+        </div>
+        <div class="service-action">
+            <a href="{{ url_for('user.authorized_apps_overview', username=user.username) }}">Manage</a>
+        </div>
+        {% else %}
+        <div class="service-info">
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Authorized Apps: <span class="status not-connected">{{ authorized_apps|length }}</span></span>
+            </div>
+        </div>
+        <div class="service-action">
+            <a href="{{ url_for('user.authorized_apps_overview', username=user.username) }}">Manage</a>
         </div>
         {% endif %}
     </article>

@@ -21,3 +21,7 @@ class EditProfileForm(FlaskForm):
 class LastfmLinkForm(FlaskForm):
     lastfm_username = StringField("Last.fm Username", validators=[DataRequired()])
     submit = SubmitField("Link")
+
+
+class RevokeAppForm(FlaskForm):
+    submit = SubmitField("Revoke")

@@ -1,0 +1,70 @@
+{% set title = 'Edit App Information' %}
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<header class="container">
+    <h1 id="header-title">{{ title }}</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <form action="" method="post">
+        {{ edit_client_form.hidden_tag() }}
+        <fieldset>
+            {{ edit_client_form.client_name.label }}
+            {% if edit_client_form.client_name.errors %}
+            {{ edit_client_form.client_name(autofocus="", aria_label="Client Name", aria_describedby="client-name-helper", aria_invalid="true") }}
+            {% else %}
+            {{ edit_client_form.client_name(autofocus="", aria_label="Client Name", aria_describedby="client-name-helper") }}
+            {% endif %}
+            {% for error in edit_client_form.client_name.errors %}
+            <small id="client-name-helper">{{ error }}</small>
+            {% endfor %}
+
+            {{ edit_client_form.client_description.label }}
+            {% if edit_client_form.client_description.errors %}
+            {{ edit_client_form.client_description(autofocus="", aria_label="Client Description", aria_describedby="client-description-helper", aria_invalid="true") }}
+            {% else %}
+            {{ edit_client_form.client_description(autofocus="", aria_label="Client Description", aria_describedby="client-description-helper") }}
+            {% endif %}
+            {% for error in edit_client_form.client_description.errors %}
+            <small id="client-description-helper">{{ error }}</small>
+            {% endfor %}
+
+            {{ edit_client_form.client_uri.label }}
+            {% if edit_client_form.client_uri.errors %}
+            {{ edit_client_form.client_uri(autofocus="", aria_label="Website", aria_describedby="website-helper", aria_invalid="true") }}
+            {% else %}
+            {{ edit_client_form.client_uri(autofocus="", aria_label="Website", aria_describedby="website-helper") }}
+            {% endif %}
+            {% for error in edit_client_form.client_uri.errors %}
+            <small id="website-helper">{{ error }}</small>
+            {% endfor %}
+
+            <p>Redirect URIs</p>
+            <div id="redirectURIs">
+                {% for redirect_uri in edit_client_form.redirect_uris.entries %}
+                <div class="redirectURI">
+                    <span class="remove-redirect_uri"><i class="fa-solid fa-xmark"></i></span>
+                    {% if redirect_uri.redirect_uri.errors %}
+                    {{ redirect_uri.redirect_uri(autofocus="", aria_label="Redirect URI", aria_describedby="redirect-uri-helper", aria_invalid="true") }}
+                    {% else %}
+                    {{ redirect_uri.redirect_uri(aria_label="Redirect URI", aria_describedby="redirect-uri-helper") }}
+                    {% endif %}
+                    {% for error in redirect_uri.redirect_uri.errors %}
+                    <small id="redirect-uri-helper">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <input class="custom-inp-btn" id="add-redirect-uri" type="button" value="Add Another Redirect URI" disabled>
+        </fieldset>
+        {{ edit_client_form.submit }}
+    </form>
+</main>
+{% endblock %}

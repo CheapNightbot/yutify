@@ -1,0 +1,63 @@
+{% set title = 'App Information' %}
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<header class="container">
+    <h1 id="header-title">{{ title }}</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <article class="client-card margin-btm info">
+        <div class="flex-row left">
+            <span>
+                <h6>Client ID</h6>
+                <code>{{ client.client_info["client_id"] }}</code>
+            </span>
+            <span>
+                <h6>Client Secret</h6>
+                <code>{{ client.client_info["client_secret"] }}</code>
+            </span>
+        </div>
+    </article>
+
+    <article class="client-card info">
+        <div class="margin-btm">
+            <h6 class="no-margin-btm">Name</h6>
+            <code>{{ client.client_metadata["client_name"] }}</code>
+        </div>
+        <div class="margin-btm"v>
+            <h6 class="no-margin-btm">Description</h6>
+            <code>{{ client.client_metadata["client_description"] }}</code>
+        </div>
+        <div class="margin-btm">
+            <h6 class="no-margin-btm">Website</h6>
+            <code>{{ client.client_metadata["client_uri"] }}</code>
+        </div>
+        <div class="margin-btm">
+            <h6 class="no-margin-btm">Redirect URIs</h6>
+            <code>
+                {% for uri in client.client_metadata["redirect_uris"] %}
+                <li>{{ uri }}</li>
+                {% endfor %}
+            </code>
+        </div>
+    </article>
+    <form action="" method="post" id="edit_client_form">
+        {{ edit_req_form.csrf_token(id="csrf_token_edit") }}
+    </form>
+    <form action="" method="post" id="delete_client_form">
+        {{ delete_req_form.csrf_token(id="csrf_token_delete") }}
+    </form>
+
+    <div class="flex-row left">
+        {{ edit_req_form.edit(class="custom-fixed-width-btn", form="edit_client_form") }}
+        {{ delete_req_form.delete(class="custom-fixed-width-btn secondary delete-btn", form="delete_client_form") }}
+    </div>
+</main>
+{% endblock %}

@@ -48,8 +48,16 @@ a {
     justify-content: initial;
 }
 
+.flex-row.space-between {
+    justify-content: space-between;
+}
+
 .margin-btm {
     margin-bottom: var(--pico-spacing) !important;
+}
+
+.no-margin-btm {
+    margin-bottom: 0 !important;
 }
 
 .padding-r {
@@ -408,6 +416,7 @@ footer {
 
 .text-in-article {
     padding: 1rem 0 0 1rem;
+    text-align: center;
 }
 
 .service-info {
@@ -452,6 +461,11 @@ footer {
 
 .custom-btn {
     width: 100%;
+}
+
+.custom-fixed-width-btn {
+    width: fit-content !important;
+    min-width: 6rem;
 }
 
 .delete-user-account,
@@ -609,6 +623,7 @@ td button,
 }
 
 /* -------------- */
+.remove-redirect_uri,
 .password-toggle-icon {
     opacity: 0;
     height: 0;
@@ -618,6 +633,7 @@ td button,
     transform: translate(-2rem, 0.8rem);
     cursor: pointer;
     transition: .3s all cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    pointer-events: none;
 }
 
 .password-toggle-icon i {
@@ -757,6 +773,77 @@ dt::before {
     max-width: initial;
 }
 
+.client-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem 2rem 3rem 2rem;
+    border-radius: 0.725rem;
+    background-color: var(--pico-form-element-background-color);}
+
+.client-card-link {
+    color: inherit;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto
+}
+
+.client-card {
+    border: 0.01px solid #a68cc469;
+    transition: all 0.1s ease-out;
+}
+
+.client-card:not(.info):hover {
+    transform: scale(1.01);
+    border: 0.1px solid #a68cc4;
+    transition: all 0.1s ease-in;
+}
+
+.client-info {
+    padding: 0rem 0.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.client-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    min-width: 4rem;
+    height: 4rem;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(#655CD6, #BD9FDF);
+    border: 1.5px solid;
+    border-radius: 0.725rem;
+}
+
+.client-desc {
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.client-container-btn {
+    margin-left: auto;
+}
+
+.custom-inp-btn {
+    width: fit-content !important;
+    background: none !important;
+    font-size: 0.875em !important;
+    border: none !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    padding: 0 !important;
+    color: var(--pico-primary) !important;
+}
+
 @media (max-width: 1024px) {
 
     #main-nav,
@@ -835,6 +922,5 @@ dt::before {
         display: block;
         width: 100%;
         margin-bottom: 1rem;
-        /* border-top: 1px solid var(--pico-accordion-border-color); */
     }
 }

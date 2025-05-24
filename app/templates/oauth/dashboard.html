@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<header class="container">
+  <h1 id="header-title">{{ title }}</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <div class="client-container">
+
+    <a class="client-container-btn" href="{{ url_for('oauth.create_client') }}">
+      <button>Create App</button>
+    </a>
+
+    {% if clients %}
+    {% for client in clients %}
+    <a class="client-card-link" href="{{ url_for('oauth.dashboard', client_id=client.client_info['client_id']) }}">
+      <article class="client-card no-margin-btm">
+        <div class="flex-row left client-info">
+          <div class="client-img">
+            <span>{{ client.client_metadata["client_name"][0] }}</s>
+          </div>
+          <div>
+            <h3 class="no-margin-btm">{{ client.client_metadata["client_name"] }}</h3>
+            <small class="client-desc">{{ client.client_metadata["client_description"] }}</small>
+          </div>
+        </div>
+      </article>
+    </a>
+    {% endfor %}
+    {% else %}
+      <p class="text-in-article">You haven't created any apps yet. Create one by clicking the above button!</p>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}
