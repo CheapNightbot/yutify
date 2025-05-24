@@ -580,60 +580,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (addURIBtn) {
-        const lastURIInput = document.querySelector('.redirectURI:last-child input');
-        if (lastURIInput.value.length > 8) {
-            addURIBtn.removeAttribute('disabled');
+        const redirectURIsContainer = document.getElementById('redirectURIs');
+        if (redirectURIsContainer && addURIBtn) {
+            // Initially disable the add button
+            addURIBtn.disabled = true;
+
+            function updateRemoveButtons() {
+                const removeBtns = document.querySelectorAll('.remove-redirect_uri');
+                if (removeBtns.length > 1) {
+                    removeBtns.forEach(btn => {
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                    });
+                } else {
+                    removeBtns.forEach(btn => {
+                        btn.style.opacity = '0';
+                        btn.style.pointerEvents = 'none';
+                    });
+                }
+            }
+
+            function updateAddBtnState() {
+                const lastInput = redirectURIsContainer.querySelector('.redirectURI:last-child input');
+                const uriDivs = redirectURIsContainer.querySelectorAll('.redirectURI');
+                const helper = document.getElementById('redirect-uri-helper-two');
+                if (uriDivs.length >= 10) {
+                    if (helper) helper.textContent = 'You have reached the maximum of 10 redirect URIs.';
+                    addURIBtn.style.display = 'none';
+                } else {
+                    if (helper) helper.textContent = '';
+                    addURIBtn.style.display = '';
+                }
+                if (lastInput && lastInput.value.length > 8 && uriDivs.length < 10) {
+                    addURIBtn.disabled = false;
+                } else {
+                    addURIBtn.disabled = true;
+                }
+            }
+
+            function updateInputIndices() {
+                const uriDivs = redirectURIsContainer.querySelectorAll('.redirectURI');
+                uriDivs.forEach((div, idx) => {
+                    const input = div.querySelector('input');
+                    if (input) {
+                        input.id = `redirect_uris-${idx}-redirect_uri`;
+                        input.name = `redirect_uris-${idx}-redirect_uri`;
+                    }
+                });
+            }
+
+            // Attach input listeners to all current inputs
+            function attachInputListeners() {
+                const uriDivs = redirectURIsContainer.querySelectorAll('.redirectURI');
+                uriDivs.forEach((div, idx) => {
+                    const input = div.querySelector('input');
+                    if (input) {
+                        input.removeEventListener('input', updateAddBtnState);
+                        input.addEventListener('input', updateAddBtnState);
+                    }
+                });
+            }
+
+            // Initial setup
+            updateRemoveButtons();
+            updateInputIndices();
+            attachInputListeners();
+            updateAddBtnState();
+
+            addURIBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const uriDivs = redirectURIsContainer.querySelectorAll('.redirectURI');
+                if (uriDivs.length >= 10) return; // Prevent adding more than 10
+                const lastURI = redirectURIsContainer.querySelector('.redirectURI:last-child');
+                const newURI = lastURI.cloneNode(true);
+                // Clear the input value
+                const input = newURI.querySelector('input');
+                if (input) input.value = '';
+                // Remove any error messages
+                const error = newURI.querySelector('small');
+                if (error) error.innerText = '';
+                redirectURIsContainer.appendChild(newURI);
+                updateInputIndices();
+                attachInputListeners();
+                updateRemoveButtons();
+                updateAddBtnState();
+                // Focus new input
+                const lastInput = redirectURIsContainer.querySelector('.redirectURI:last-child input');
+                if (lastInput) lastInput.focus();
+            });
+
+            // Remove URI
+            redirectURIsContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.remove-redirect_uri')) {
+                    const allURIs = redirectURIsContainer.querySelectorAll('.redirectURI');
+                    if (allURIs.length > 1) {
+                        e.target.closest('.redirectURI').remove();
+                        updateInputIndices();
+                        attachInputListeners();
+                        updateRemoveButtons();
+                        updateAddBtnState();
+                    }
+                }
+            });
         }
-
-        lastURIInput.addEventListener('input', function () {
-            if (this.value.length > 8) {
-                addURIBtn.removeAttribute('disabled');
-            } else {
-                addURIBtn.setAttribute('disabled', '');
-            }
-        });
-
-        lastURIInput.addEventListener('focus', function () {
-            if (this.value.length > 8) {
-                addURIBtn.removeAttribute('disabled');
-            } else {
-                addURIBtn.setAttribute('disabled', '');
-            }
-        });
-
-        addURIBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const firstURI = document.querySelector('.redirectURI');
-            const newURI = document.createElement('div');
-            newURI.classList.add('redirectURI');
-            newURI.innerHTML = firstURI.innerHTML;
-
-            const newIndex = document.querySelectorAll('.redirectURI').length;
-            const redirectURI = newURI.querySelector('#redirect_uris-0-redirect_uri');
-            redirectURI.id = `redirect_uris-${newIndex}-redirect_uri`;
-            redirectURI.name = redirectURI.id;
-            redirectURI.value = '';
-
-            document.getElementById('redirectURIs').appendChild(newURI);
-            document.querySelector('.redirectURI:last-child input').focus();
-            addURIBtn.setAttribute('disabled', '');
-
-            const lastURIInput = document.querySelector('.redirectURI:last-child input');
-            lastURIInput.addEventListener('input', function () {
-                if (this.value.length > 8) {
-                    addURIBtn.removeAttribute('disabled');
-                } else {
-                    addURIBtn.setAttribute('disabled', '');
-                }
-            });
-
-            lastURIInput.addEventListener('focus', function () {
-                if (this.value.length > 8) {
-                    addURIBtn.removeAttribute('disabled');
-                } else {
-                    addURIBtn.setAttribute('disabled', '');
-                }
-            });
-        });
     }
 });
