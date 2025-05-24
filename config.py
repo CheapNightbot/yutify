@@ -21,7 +21,7 @@ class Config:
 
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = "strict"
+    SESSION_COOKIE_SAMESITE = "lax"
     REMEMBER_COOKIE_SAMESITE = "strict"
 
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL") or "sqlite:///" + os.path.join(
@@ -64,9 +64,9 @@ class Config:
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
     ]
-    SECURITY_RETURN_GENERIC_RESPONSES = bool(int(os.getenv("RETURN_GENERIC_RESPONSES", True)))
-    SECURITY_FRESHNESS = timedelta(minutes=10)
-    SECURITY_FRESHNESS_GRACE_PERIOD = timedelta(minutes=5)
+    SECURITY_RETURN_GENERIC_RESPONSES = bool(
+        int(os.getenv("RETURN_GENERIC_RESPONSES", True))
+    )
 
     # ### Core - Passwords and Tokens ###
     SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT")
@@ -155,3 +155,6 @@ class Config:
     # ### Recovery Codes ###
     SECURITY_MULTI_FACTOR_RECOVERY_CODES = True
     SECURITY_MULTI_FACTOR_RECOVERY_CODES_KEYS = [ENCRYPTION_KEY]
+
+    # ######################
+    OAUTH2_TOKEN_EXPIRES_IN = {"authorization_code": 3600}
