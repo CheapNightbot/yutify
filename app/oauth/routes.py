@@ -3,14 +3,20 @@ from time import time
 
 from authlib.oauth2 import OAuth2Error
 from flask import abort, flash, redirect, render_template, request, url_for
-from flask_security import auth_required, current_user
+from flask_security import auth_required, current_user, url_for_security
 from werkzeug.security import gen_salt
 
 from app.extensions import db
 from app.models import OAuth2Client, User
 from app.oauth import bp
-from app.oauth.forms import CreateClientForm, DeleteClientForm, EditClientForm
+from app.oauth.forms import (
+    CreateClientForm,
+    DeleteClientForm,
+    EditClientForm,
+    AuthorizeConsentForm,
+)
 from app.oauth.oauth2 import authorization
+from app.extensions import csrf
 
 
 @bp.route("/dashboard", methods=["GET", "POST"])
@@ -95,7 +101,7 @@ def create_client():
                 for data in create_client_form.redirect_uris.data
             ],
             "response_types": ["code"],
-            "scope": "profile",
+            "scope": "activity",
             "token_endpoint_auth_method": "client_secret_basic",
         }
         client.set_client_metadata(client_metadata)
@@ -152,7 +158,7 @@ def edit_client(client_id):
                     for data in edit_client_form.redirect_uris.data
                 ],
                 "response_types": ["code"],
-                "scope": "profile",
+                "scope": "activity",
                 "token_endpoint_auth_method": "client_secret_basic",
             }
         )
@@ -170,33 +176,44 @@ def edit_client(client_id):
     )
 
 
-@bp.route("/oauth/authorize", methods=["GET", "POST"])
+@bp.route("/authorize", methods=["GET", "POST"])
 def authorize():
-    user = User.query.get(current_user.id)
-    # if user log status is not true (Auth server), then to log it in
-    if not user:
-        return redirect(url_for("security.login", next=request.url))
+    try:
+        user = User.query.get(current_user.id)
+    except AttributeError:
+        return redirect(url_for_security("login", next=request.url))
+
+    form = AuthorizeConsentForm()
     if request.method == "GET":
         try:
             grant = authorization.get_consent_grant(end_user=user)
         except OAuth2Error as error:
             return error.error
-        return render_template("oauth/authorize.html", user=user, grant=grant)
+        return render_template(
+            "oauth/authorize.html", user=user, grant=grant, form=form
+        )
     if not user and "username" in request.form:
         username = request.form.get("username")
         user = User.query.filter_by(username=username).first()
-    if request.form.get("confirm"):
+    # Handle Deny button
+    if request.form.get("confirm") == "no":
+        # Return OAuth2 error response for access_denied
+        return authorization.create_authorization_response(grant_user=None)
+    # Handle Allow button
+    if form.validate_on_submit() and request.form.get("confirm") == "yes":
         grant_user = user
     else:
         grant_user = None
     return authorization.create_authorization_response(grant_user=grant_user)
 
 
-@bp.route("/oauth/token", methods=["POST"])
+@csrf.exempt
+@bp.route("/token", methods=["POST"])
 def issue_token():
     return authorization.create_token_response()
 
 
-@bp.route("/oauth/revoke", methods=["POST"])
+@csrf.exempt
+@bp.route("/revoke", methods=["POST"])
 def revoke_token():
     return authorization.create_endpoint_response("revocation")
