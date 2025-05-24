@@ -3,10 +3,19 @@ import pickle
 import random
 from datetime import datetime, timezone
 from pathlib import Path
+from time import time
 from typing import Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+
+# ==== OAuth 2.0 Related ====
+from authlib.integrations.sqla_oauth2 import (
+    OAuth2AuthorizationCodeMixin,
+    OAuth2ClientMixin,
+    OAuth2TokenMixin,
+)
+# ===========================
 from cryptography.exceptions import InvalidKey
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
@@ -132,6 +141,9 @@ class User(db.Model, fsqla.FsUserMixin):
             current_app.logger.warning(f"Error setting avatar: {e}")
             self.avatar = "favicon.svg"  # Fallback if something goes wrong
 
+    def get_user_id(self):
+        return self.id
+
 
 class Service(Base):
     """Service model representing an external service integrated with the application."""
@@ -230,9 +242,7 @@ class UserData(Base):
         """Insert or update user data for a given user_service_id."""
 
         existing_data = db.session.scalar(
-            sa.select(UserData).where(
-                UserData.user_service_id == user_service.id
-            )
+            sa.select(UserData).where(UserData.user_service_id == user_service.id)
         )
 
         if existing_data:
@@ -251,3 +261,40 @@ class UserData(Base):
 
     def __repr__(self):
         return f"<UserData: user_service_id={self.user_service_id}, updated_at={self.updated_at}>"
+
+
+# ==== OAuth 2.0 Related ====
+class OAuth2Client(db.Model, OAuth2ClientMixin):
+    __tablename__ = "oauth2_client"
+
+    id: so.Mapped[int] = so.mapped_column(sa.Integer(), primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
+    )
+    user: so.Mapped["User"] = db.relationship('User')
+
+
+class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
+    __tablename__ = "oauth2_code"
+
+    id: so.Mapped[int] = so.mapped_column(sa.Integer(), primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
+    )
+    user: so.Mapped["User"] = db.relationship('User')
+
+
+class OAuth2Token(db.Model, OAuth2TokenMixin):
+    __tablename__ = "oauth2_token"
+
+    id: so.Mapped[int] = so.mapped_column(sa.Integer(), primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
+    )
+    user: so.Mapped["User"] = db.relationship('User')
+
+    def is_refresh_token_active(self):
+        if self.revoked:
+            return False
+        expires_at = self.issued_at + self.expires_in * 2
+        return expires_at >= time()
