@@ -28,8 +28,6 @@ def make_shell_context():
 def set_security_headers(response):
     response.headers["Strict-Transport-Security"] = "max-age=31536000"
     response.headers["Content-Security-Policy"] = (
-        "script-src-attr 'none'; "
-        "style-src-attr 'none'; "
         "style-src-elem 'self' https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.indigo.min.css "
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css "
         "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/tokyo-night-dark.min.css "
