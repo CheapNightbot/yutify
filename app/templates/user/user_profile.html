@@ -14,63 +14,66 @@
 {% endblock %}
 
 {% block header %}
-<article class="profile-header">
-    <img class="profile-header-img" src="{{ url_for('static', filename=user.avatar) }}"
-        alt="User Avatar" width="128px" height="128px">
+<header class="container">
+    <article class="profile-header">
+        <img class="profile-header-img" src="{{ url_for('static', filename=user.avatar) }}" alt="User Avatar"
+            width="128px" height="128px">
 
-    <div class="profile-header-info">
-        <div>
-            <h2 >{{ user.name }}</h2>
-            <small>@{{ user.username }}</small>
+        <div class="profile-header-info">
+            <div>
+                <h2>{{ user.name }}</h2>
+                <small>@{{ user.username }}</small>
+            </div>
+            {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
         </div>
-        {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-    </div>
-    <div class="profile-header-edit">
-        {% if user == current_user %}
-        <button id="edit-profile-btn" class="outline secondary" data-target="edit-profile-modal">Edit Profile</button>
-        {% endif %}
-    </div>
-</article>
-
+        <div class="profile-header-edit">
+            {% if user == current_user %}
+            <button id="edit-profile-btn" class="outline secondary" data-target="edit-profile-modal">Edit
+                Profile</button>
+            {% endif %}
+        </div>
+    </article>
+</header>
 {% endblock %}
 
 {% block content %}
 <main class="container">
-<article class="user-activity-container" aria-busy="true"></article>
+    <article class="user-activity-container" aria-busy="true"></article>
 
-{% if user == current_user %}
-<dialog id="edit-profile-modal">
-    <article>
-        <header>
-            <h3>Edit Profile</h3>
-            <button id="close-edit-profile" aria-label="Close" class="close" data-target="edit-profile-modal"></button>
-        </header>
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <fieldset>
-                {{ form.name.label }}
-                {% if form.name.errors %}
-                {{ form.name(aria_label="Name", aria_describedby="name-helper", aria_invalid="true") }}
-                {% else %}
-                {{ form.name(aria_label="Name", aria_describedby="name-helper") }}
-                {% endif %}
-                {% for error in form.name.errors %}
-                <small id="name-helper">{{ error }}</small>
-                {% endfor %}
-                {{ form.about_me.label }}
-                {% if form.about_me.errors %}
-                {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper", aria_invalid="true") }}
-                {% else %}
-                {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper") }}
-                {% endif %}
-                {% for error in form.about_me.errors %}
-                <smaall id="about_me-helper">{{ error }}</smaall>
-                {% endfor %}
-            </fieldset>
-            <p>{{ form.submit() }}</p>
-        </form>
-    </article>
-</dialog>
-{% endif %}
+    {% if user == current_user %}
+    <dialog id="edit-profile-modal">
+        <article>
+            <header>
+                <h3>Edit Profile</h3>
+                <button id="close-edit-profile" aria-label="Close" class="close"
+                    data-target="edit-profile-modal"></button>
+            </header>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <fieldset>
+                    {{ form.name.label }}
+                    {% if form.name.errors %}
+                    {{ form.name(aria_label="Name", aria_describedby="name-helper", aria_invalid="true") }}
+                    {% else %}
+                    {{ form.name(aria_label="Name", aria_describedby="name-helper") }}
+                    {% endif %}
+                    {% for error in form.name.errors %}
+                    <small id="name-helper">{{ error }}</small>
+                    {% endfor %}
+                    {{ form.about_me.label }}
+                    {% if form.about_me.errors %}
+                    {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper", aria_invalid="true") }}
+                    {% else %}
+                    {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper") }}
+                    {% endif %}
+                    {% for error in form.about_me.errors %}
+                    <smaall id="about_me-helper">{{ error }}</smaall>
+                    {% endfor %}
+                </fieldset>
+                <p>{{ form.submit() }}</p>
+            </form>
+        </article>
+    </dialog>
+    {% endif %}
 </main>
 {% endblock %}
