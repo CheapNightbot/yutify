@@ -13,7 +13,7 @@ from flask_security import (
 from flask_security.utils import verify_password
 
 from app import db
-from app.models import OAuth2Token, Service, User, UserService, OAuth2Client
+from app.models import OAuth2Client, OAuth2Token, Service, User, UserService
 from app.user import bp
 from app.user.forms import DeleteAccountForm, EditProfileForm, EmptyForm, LastfmLinkForm
 
@@ -55,11 +55,12 @@ def user_settings(username):
 
     security = current_app.security
     user = db.first_or_404(sa.select(User).where(User.username == username))
-    # Only count tokens for existing clients
+    # Only count unique clients for authorized apps
     authorized_apps = (
-        db.session.query(OAuth2Token)
-        .join(OAuth2Client, OAuth2Token.client_id == OAuth2Client.client_id)
+        db.session.query(OAuth2Client)
+        .join(OAuth2Token, OAuth2Token.client_id == OAuth2Client.client_id)
         .filter(OAuth2Token.user_id == user.id)
+        .distinct(OAuth2Client.client_id)
         .all()
     )
 
@@ -144,13 +145,19 @@ def authorized_apps_overview(username):
     if username != current_user.username:
         abort(404)
     user = db.first_or_404(sa.select(User).where(User.username == username))
-    # Only show tokens for existing clients
+    # Get all tokens for this user, join with client
     tokens = (
         db.session.query(OAuth2Token, OAuth2Client)
         .join(OAuth2Client, OAuth2Token.client_id == OAuth2Client.client_id)
         .filter(OAuth2Token.user_id == user.id)
         .all()
     )
+    # Remvove duplicates by client_id
+    unique_clients = {}
+    for token, client in tokens:
+        if client.client_id not in unique_clients:
+            unique_clients[client.client_id] = (token, client)
+    tokens = list(unique_clients.values())
     from app.user.forms import RevokeAppForm
 
     revoke_forms = {
