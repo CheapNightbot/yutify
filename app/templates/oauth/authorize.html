@@ -1,27 +1,69 @@
+{% set title = 'Authorize ' + grant.client.client_name + ' ?' %}
 {% extends "base.html" %}
+
+{% block nav_title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+<header class="container">
+    <h1 id="header-title">{{ title }}</h1>
+</header>
+{% endblock %}
 
 {% block content %}
 <main class="container">
-    <p>The application <strong>{{grant.client.client_name}}</strong> is requesting:
-        <strong>{{ grant.request.scope }}</strong>
-    </p>
+    <article class="custom-article margin-btm">
+        <p>You are logged in as:</p>
+        <div class="flex-row left">
+            <img class="profile-header-img small" src="{{ url_for('static', filename=user.avatar) }}" alt="User Avatar"
+                width="64px" height="64px">
 
-    <p>
-        from You - a.k.a. <strong>{{ user.username }}</strong>
-    </p>
+            <div>
+                <strong>{{ user.name }}</strong>
+                <small>@{{ user.username }}</small>
+            </div>
 
-    <form action="" method="post">
-        <label>
-            <input type="checkbox" name="confirm">
-            <span>Consent?</span>
-        </label>
-        {% if not user %}
-        <p>You haven't logged in. Log in with:</p>
-        <div>
-            <input type="text" name="username">
+            <a
+                href="{{ url_for_security('logout', next=url_for('security.login', next=request.url, _external=True)) }}">Not
+                You?</a>
         </div>
-        {% endif %}
-        <br>
-        <button>Submit</button> </form>
+    </article>
+    <article class="custom-article">
+        <p>The application <strong>{{ grant.client.client_name }}</strong> is requesting access to your account:</p>
+        <div class="flex-row left" style="margin-bottom: 1rem;">
+            <strong>
+                {% if grant.request.scope == 'activity' %}
+                <dl>
+                    <dt>
+                        <i class="fa-solid fa-headphones-simple"></i>
+                        Activity
+                    </dt>
+                    <dd>View your listening activity on your linked services.</dd>
+                </dl>
+
+                {% else %}
+                <i class="fa-solid fa-question"></i>
+                Unknown permission requested
+                {% endif %}
+            </strong>
+        </div>
+        <small>You can remove this access at any time in your account settings.</small>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                {% if not user %}
+                <p>You haven't logged in. Log in with:</p>
+                <div>
+                    {{ form.username(placeholder="Username") }}
+                </div>
+                {% endif %}
+            </fieldset>
+            <div class="flex-row space-between">
+                <button type="submit" name="confirm" value="yes" class="primary">Allow</button>
+                <button type="submit" name="confirm" value="no" class="secondary">Deny</button>
+            </div>
+        </form>
+    </article>
 </main>
 {% endblock %}
