@@ -844,6 +844,10 @@ dt::before {
     color: var(--pico-primary) !important;
 }
 
+.invalid {
+    color: var(--pico-form-element-invalid-border-color);
+}
+
 @media (max-width: 1024px) {
 
     #main-nav,
