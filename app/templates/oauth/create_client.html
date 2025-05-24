@@ -41,9 +41,9 @@
         <div class="redirectURI">
           <span class="remove-redirect_uri"><i class="fa-solid fa-xmark"></i></span>
           {% if redirect_uri.form.redirect_uri.errors %}
-          {{ redirect_uri.form.redirect_uri(autofocus="", aria_label="Redirect URI", aria_describedby="redirect-uri-helper", aria_invalid="true") }}
+          {{ redirect_uri.form.redirect_uri(autofocus="", aria_label="Redirect URI", aria_describedby="redirect-uri-helper redirect-uri-helper-two", aria_invalid="true") }}
           {% else %}
-          {{ redirect_uri.form.redirect_uri(aria_label="Redirect URI", aria_describedby="redirect-uri-helper") }}
+          {{ redirect_uri.form.redirect_uri(aria_label="Redirect URI", aria_describedby="redirect-uri-helper redirect-uri-helper-two") }}
           {% endif %}
           {% for error in redirect_uri.form.redirect_uri.errors %}
           <small id="redirect-uri-helper">{{ error }}</small>
@@ -51,6 +51,7 @@
         </div>
         {% endfor %}
       </div>
+      <small class="invalid" id="redirect-uri-helper-two"></small>
       <input class="custom-inp-btn" id="add-redirect-uri" type="button" value="Add Another Redirect URI" disabled>
     </fieldset>
     {{ create_client_form.submit }}
