@@ -40,3 +40,9 @@ class DeleteClientForm(FlaskForm):
 
 class EditClientForm(FlaskForm):
     edit = SubmitField("Edit")
+
+
+class AuthorizeConsentForm(FlaskForm):
+    confirm = SubmitField("Allow")
+    consent = StringField("Consent", render_kw={"type": "checkbox"})
+    username = StringField("Username")
