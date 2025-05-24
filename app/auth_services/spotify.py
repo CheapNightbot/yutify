@@ -7,6 +7,7 @@ import sqlalchemy as sa
 from flask import flash, redirect, request, session, url_for
 from flask_security import current_user
 from yutipy.spotify import SpotifyAuth, SpotifyAuthException
+from yutipy.exceptions import AuthenticationException
 
 from app import db
 from app.models import Service, User, UserData, UserService
@@ -125,9 +126,7 @@ def handle_spotify_auth():
     spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
 
     # Fetch the service dynamically by name
-    service = db.session.scalar(
-        sa.select(Service).where(Service.name.ilike("spotify"))
-    )
+    service = db.session.scalar(sa.select(Service).where(Service.name.ilike("spotify")))
     if not service:
         flash("Service 'Spotify' not found in the database.", "error")
         return redirect(url_for("user.user_settings", username=current_user.username))
@@ -177,7 +176,7 @@ def handle_spotify_callback(request):
 
     try:
         spotify_auth.callback_handler(code, state, expected_state)
-    except SpotifyAuthException:
+    except AuthenticationException:
         flash("Something went wrong while authenticating with Spotify.", "error")
         session.pop("state")
 
@@ -190,20 +189,26 @@ def handle_spotify_callback(request):
     return redirect(url_for("user.user_settings", username=current_user.username))
 
 
-def get_spotify_activity():
+def get_spotify_activity(user=None):
     """Fetch the user's listening activity from Spotify."""
     if not spotify_auth:
         flash(
             "Spotify Authentication is not available! You may contact the admin(s).",
             "error",
         )
-        return redirect(url_for("user.user_settings", username=current_user.username))
+        return redirect(
+            url_for(
+                "user.user_settings",
+                username=(user.username if user else current_user.username),
+            )
+        )
 
+    user = user or current_user
     spotify_service = db.session.scalar(
         sa.select(UserService)
         .join(Service)
         .where(
-            UserService.user_id == current_user.id,
+            UserService.user_id == user.id,
             Service.name.ilike("spotify"),
         )
     )
@@ -211,7 +216,7 @@ def get_spotify_activity():
     if not spotify_service:
         return None
 
-    spotify_auth.user = current_user
+    spotify_auth.user = user
     spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
     activity = spotify_auth.get_currently_playing()
     if activity:
@@ -253,7 +258,9 @@ def get_spotify_activity():
             data = existing_data.data
             data["activity_info"]["is_playing"] = False
             if not data.get("activity_info").get("timestamp"):
-                data["activity_info"]["timestamp"] = existing_data.updated_at.timestamp()
+                data["activity_info"][
+                    "timestamp"
+                ] = existing_data.updated_at.timestamp()
 
             # Update the activity in the database
             UserData.insert_or_update_user_data(spotify_service, data)
