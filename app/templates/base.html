@@ -7,7 +7,8 @@
     <meta name="color-scheme" content="light dark">
     <meta name="description" content="Simple RESTful API for retrieving music info for various steaming platforms.">
     <meta name="author" content="Cheap Nightbot">
-    <meta name="keywords" content="{{ config['SERVICE'] }}, music, rest-api, api, python, flask, free-api, Cheap Nighbot">
+    <meta name="keywords"
+        content="{{ config['SERVICE'] }}, music, rest-api, api, python, flask, free-api, Cheap Nighbot">
     {% block metadata %}{% endblock %}
     <title>{{ config["SERVICE"] }}: {{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
@@ -32,8 +33,22 @@
             </li>
             {% if current_user.has_role('admin') %}
             <li class="{% if active_page == 'dashboard' %}active{% endif %}">
-                <a data-tooltip="Admin Dashboard" data-placement="bottom"
-                    href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                <details class="dropdown">
+                    <summary>Dashboard</summary>
+                    <ul dir="rtl">
+                        <li>
+                            <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('oauth.dashboard') }}">Dev</a>
+                        </li>
+                    </ul>
+                </details>
+            </li>
+            {% elif current_user.has_role('user') %}
+            <li class="{% if active_page == 'dev_dashboard' %}active{% endif %}">
+                <a data-tooltip="Dev Dashboard" data-placement="bottom"
+                    href="{{ url_for('oauth.dashboard') }}">Dashboard</a>
             </li>
             {% endif %}
         </ul>
@@ -92,9 +107,7 @@
     {% endif %}
     {% endwith %}
 
-    <header class="container">
-        {% block header %}{% endblock %}
-    </header>
+    {% block header %}{% endblock %}
 
     {% block content %}{% endblock %}
 
