@@ -88,7 +88,7 @@ def create_client():
         client_metadata = {
             "client_name": create_client_form.client_name.data,
             "client_description": create_client_form.client_description.data,
-            "client_uri": create_client_form.website.data,
+            "client_uri": create_client_form.client_uri.data,
             "grant_types": ["authorization_code"],
             "redirect_uris": [
                 data.get("redirect_uri")
