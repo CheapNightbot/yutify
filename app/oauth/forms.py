@@ -28,6 +28,7 @@ class CreateClientForm(FlaskForm):
         FormField(RedirectURIForm),
         "Redirect URIs",
         min_entries=1,
+        max_entries=10,
         validators=[DataRequired()],
     )
     submit = SubmitField("Save")
