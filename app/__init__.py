@@ -13,6 +13,7 @@ from app.common.utils import MyUsernameUtil
 from app.email import MyMailUtil
 from app.extensions import api, cache, cors, csrf, db, mail, migrate
 from app.models import Role, Service, User, WebAuthn
+from app.oauth.oauth2 import config_oauth
 from config import Config
 
 load_dotenv()
@@ -94,6 +95,7 @@ def create_app(config_class=Config):
         register_form=RegistrationForm,
         login_form=MyLoginForm,
     )
+    config_oauth(app)
     api.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -114,6 +116,9 @@ def create_app(config_class=Config):
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    from app.oauth import bp as oauth2_bp
+    app.register_blueprint(oauth2_bp)
 
     from app.docs import bp as docs_bp
     app.register_blueprint(docs_bp, url_prefix="/docs")
