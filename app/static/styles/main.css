@@ -382,6 +382,11 @@ footer {
     pointer-events: none;
 }
 
+.profile-header-img.small {
+    width: 64px;
+    height: 64px;
+}
+
 .profile-header-info {
     display: flex;
     flex-direction: column;
@@ -779,7 +784,8 @@ dt::before {
     gap: 1.25rem;
     padding: 2rem 2rem 3rem 2rem;
     border-radius: 0.725rem;
-    background-color: var(--pico-form-element-background-color);}
+    background-color: var(--pico-form-element-background-color);
+}
 
 .client-card-link {
     color: inherit;
@@ -846,6 +852,11 @@ dt::before {
 
 .invalid {
     color: var(--pico-form-element-invalid-border-color);
+}
+
+.custom-article {
+    margin: auto;
+    max-width: 1000px;
 }
 
 @media (max-width: 1024px) {
