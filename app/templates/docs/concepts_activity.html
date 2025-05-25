@@ -1,0 +1,40 @@
+{% extends "docs/base.html" %}
+
+{% block main %}
+<main class="container">
+    <p>
+        The metadata / information about a user's currently listening music on a linked service(s).
+        This guide explains how to link a service to your account and access your activity data.
+    </p>
+
+    <p>
+        To link a service to your account, first <a href="{{ url_for_security('login') }}">Login</a> or <a
+            href="{{ url_for_security('register') }}">Sign Up</a>.
+        Then, go to your {% if current_user.is_authenticated %} <a
+            href="{{ url_for('user.user_settings', username=current_user.username) }}">Settings</a>{% else %} "Settings"
+        {%
+        endif %} page and scroll to the "Services" section. Now click on the "Link" button next to the service you want
+        to link and follow the instructions.
+        <img src="{{ url_for('static', filename='docs/settings-page.png') }}" alt="Settings Screenshot"
+            class="screenshot">
+    </p>
+    <p>
+        After successfully linking a service, you will be redirected back to the settings page where you can see the
+        linked service. And for this example, I linked my Spotify account:
+        <img src="{{ url_for('static', filename='docs/settings-linked-spotify.png') }}" alt="Settings Screenshot"
+            class="screenshot">
+    </p>
+    <p>
+        Now that you have linked a service, listen to some music on that service and then go to your {% if
+        current_user.is_authenticated %}<a
+            href="{{ url_for('user.user_profile', username=current_user.username) }}">Profile</a>{% else %}"Profile"{%
+        endif %} page, you should see the metadata about your currently listening music:
+        <img src="{{ url_for('static', filename='docs/user-profile-activity.png') }}" alt="Profile Screenshot"
+            class="screenshot">
+    </p>
+    <p>
+        You can also access your activity data by making a request to the <code>/api/me</code> endpoint.
+        This endpoint will return the metadata of your currently listening music on the linked service(s).
+    </p>
+</main>
+{% endblock %}

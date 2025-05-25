@@ -1,0 +1,46 @@
+{% extends "docs/base.html" %}
+
+{% block main %}
+<main class="container">
+    <p>
+        <strong>Apps</strong> allow you to access protected endpoints like
+        <a href="{{ url_for('docs.reference_activity')}}">Activity</a>. This guide explains how to create and manage
+        apps.
+    </p>
+
+    <p>
+        To create an app, go to your <a href="{{ url_for('oauth.dashboard') }}">Dashboard</a> and click on "Create
+        App" button.
+        <img src="{{ url_for('static', filename='docs/dashboard.png') }}" alt="Dashboard Screenshot" class="screenshot">
+    </p>
+    <p>
+        Then fill in the details for your app:
+    <ul>
+        <li><strong>App Name:</strong> A unique name for your app.</li>
+        <li><strong>App Description:</strong> A brief description of what your app does.</li>
+        <li><strong>Website</strong> [OPTIONAL]: A URL to website where users can get more information about your
+            application.</li>
+        <li><strong>Redirect URIs:</strong> The URL where users will be redirected after authorizing your app.
+            This is where you will receive the authorization code. You can add multiple redirect URIs if needed.
+    </ul>
+    <img src="{{ url_for('static', filename='docs/dashboard-create-app-filled.png') }}" alt="Dashboard Screenshot"
+        class="screenshot">
+    </p>
+    <p>
+        After creating the app, you will receive a <strong>Client ID</strong> and <strong>Client Secret</strong>.
+        Keep
+        these safe as they are used to authenticate your app.
+        <img src="{{ url_for('static', filename='docs/dashboard-app-info.png') }}" alt="Dashboard Screenshot"
+            class="screenshot">
+
+    </p>
+    <p>
+        Your app is now created and you can use the Client ID and Client Secret to authenticate your app with the yutify
+        API.
+    </p>
+    <p>
+        If you want to edit your app details, you can do so by clicking on the "Edit" button next to your app in the
+        dashboard. And if you want to delete your app, you can click on the "Delete" button.
+    </p>
+</main>
+{% endblock %}
