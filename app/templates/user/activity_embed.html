@@ -62,7 +62,83 @@
                     {% endif %}
                 </span>
             </p>
+
+            <div class="streaming-platforms-container">
+                <div class="streaming-platforms">
+                    <!-- Deezer Music -->
+                    {% if activity.music_info.url.deezer %}
+                    <a class="music-link" href="{{ activity.music_info.url.deezer }}" target="_blank" title="Deezer">
+                    {% else %}
+                    <a class="music-link" href="#deezer" title="Deezer">
+                    {% endif %}
+                    <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="Deezer Logo" width="32px" height="32px">
+                    </a>
+
+                    <!-- iTunes Store -->
+                    {% if activity.music_info.url.itunes %}
+                    <a class="music-link" href="{{ activity.music_info.url.itunes }}" target="_blank" title="Apple Music">
+                    {% else %}
+                    <a class="music-link" href="#apple-music" title="Apple Music">
+                    {% endif %}
+                    <img src="{{ url_for('static', filename='logos/apple-music.svg') }}" alt="Apple Music Logo" width="32px" height="32px">
+                    </a>
+
+                    <!-- KKBOX -->
+                    {% if activity.music_info.url.kkbox %}
+                    <a class="music-link" href="{{ activity.music_info.url.kkbox }}" target="_blank" title="KKBOX">
+                    {% else %}
+                    <a class="music-link" href="#kkbox" title="KKBOX">
+                    {% endif %}
+                    <img src="{{ url_for('static', filename='logos/kkbox.svg') }}" alt="KKBOX Logo" width="32px" height="32px">
+                    </a>
+
+                    <!-- Spotify Music -->
+                    {% if activity.music_info.url.spotify %}
+                    <a class="music-link" href="{{ activity.music_info.url.spotify }}" target="_blank" title="Spotify">
+                    {% else %}
+                    <a class="music-link" href="#spotify" title="Spotify">
+                    {% endif %}
+                    <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="Spotify Logo" width="32px" height="32px">
+
+                    </a>
+
+                    <!-- YouTube Music -->
+                    {% if activity.music_info.url.yt_music %}
+                    <a class="music-link" href="{{ activity.music_info.url.yt_music }}" target="_blank" title="YouTube Music">
+                    {% else %}
+                    <a class="music-link" href="#ytmusic" title="YouTube Music">
+                    {% endif %}
+                    <img src="{{ url_for('static', filename='logos/ytmusic.svg') }}" alt="YouTube Music Logo" width="32px" height="32px">
+                    </a>
+                </div>
+
+                <div>
+                    <button class="outline secondary" id="show-lyrics" data-target="lyrics"><span class="material-symbols-outlined">lyrics</span>Lyrics</button>
+                </div>
         </div>
     </article>
+
+    <dialog id="lyrics">
+        <article>
+            <header>
+                <button id="close-lyrics" aria-label="Close" rel="prev" data-target="lyrics"></button>
+                <p>
+                    {% if title_ %}
+                    <strong>{{ title_ }} ~ Lyrics:</strong>
+                    {% else %}
+                    <strong>{{ config["SERVICE"] }} ~ Lyrics:</strong>
+                    {% endif %}
+                </p>
+            </header>
+            <p>
+                {% if lyrics %}
+                {{ lyrics | safe }}
+                {% else %}
+                No lyrics found...
+                {% endif %}
+            </p>
+        </article>
+    </dialog>
+
     {% endif %}
 </section>
