@@ -158,3 +158,4 @@ class Config:
 
     # ######################
     OAUTH2_TOKEN_EXPIRES_IN = {"authorization_code": 3600}
+    OAUTH2_REFRESH_TOKEN_GENERATOR = True
