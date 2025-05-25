@@ -30,7 +30,7 @@
         </div>
     </article>
     <article class="custom-article">
-        <p>The application <strong>{{ grant.client.client_name }}</strong> is requesting access to your account:</p>
+        <p>The application <a href="{{ grant.client.client_uri }}"><strong>{{ grant.client.client_name }}</strong></a> is requesting access to your account:</p>
         <div class="flex-row left" style="margin-bottom: 1rem;">
             <strong>
                 {% if grant.request.scope == 'activity' %}
