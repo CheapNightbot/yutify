@@ -1,3 +1,5 @@
+import time
+
 from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProtector
 from authlib.integrations.sqla_oauth2 import (
     create_bearer_token_validator,
@@ -47,6 +49,9 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
+    TOKEN_ENDPOINT_AUTH_METHODS = ["client_secret_basic"]
+    INCLUDE_NEW_REFRESH_TOKEN = True
+
     def authenticate_refresh_token(self, refresh_token):
         token = OAuth2Token.query.filter_by(refresh_token=refresh_token).first()
         if token and token.is_refresh_token_active():
@@ -56,7 +61,8 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
         return User.query.get(credential.user_id)
 
     def revoke_old_credential(self, credential):
-        credential.revoked = True
+        credential.access_token_revoked_at = int(time.time())
+        credential.refresh_token_revoked_at = int(time.time())
         db.session.add(credential)
         db.session.commit()
 
@@ -75,6 +81,7 @@ def config_oauth(app):
 
     # add grants to support
     authorization.register_grant(AuthorizationCodeGrant, [CodeChallenge(required=True)])
+    authorization.register_grant(RefreshTokenGrant)
 
     # support revocation
     revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
