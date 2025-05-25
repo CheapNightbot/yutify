@@ -1,5 +1,3 @@
-import time
-
 from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProtector
 from authlib.integrations.sqla_oauth2 import (
     create_bearer_token_validator,
