@@ -61,9 +61,8 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
         return User.query.get(credential.user_id)
 
     def revoke_old_credential(self, credential):
-        credential.access_token_revoked_at = int(time.time())
-        credential.refresh_token_revoked_at = int(time.time())
-        db.session.add(credential)
+        """Delete old credential instead of marking it as revoked."""
+        db.session.delete(credential)
         db.session.commit()
 
 
