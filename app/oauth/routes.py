@@ -95,7 +95,7 @@ def create_client():
             "client_name": create_client_form.client_name.data,
             "client_description": create_client_form.client_description.data,
             "client_uri": create_client_form.client_uri.data,
-            "grant_types": ["authorization_code"],
+            "grant_types": ["authorization_code", "refresh_token"],
             "redirect_uris": [
                 data.get("redirect_uri")
                 for data in create_client_form.redirect_uris.data
@@ -152,7 +152,7 @@ def edit_client(client_id):
                 "client_name": edit_client_form.client_name.data,
                 "client_description": edit_client_form.client_description.data,
                 "client_uri": edit_client_form.client_uri.data,
-                "grant_types": ["authorization_code"],
+                "grant_types": ["authorization_code", "refresh_token"],
                 "redirect_uris": [
                     data.get("redirect_uri")
                     for data in edit_client_form.redirect_uris.data
