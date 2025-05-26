@@ -2,26 +2,20 @@
 
 {% block main %}
 <main class="container">
-    <dl>
-        <dt><a href="{{ url_for('docs.concepts', concept='apps') }}">Apps</a></dt>
-        <dd>
-            Apps allow you to access protected endpoints like
-            <a href="{{ url_for('docs.reference_activity')}}">Activity</a>.
-        </dd>
-    </dl>
-
-    <dl>
-        <dt><a href="{{ url_for('docs.concepts', concept='tokens') }}">Tokens</a></dt>
-        <dd>
-            Tokens are used to authenticate your app and access protected endpoints.
-        </dd>
-    </dl>
-
-    <dl>
-        <dt><a href="{{ url_for('docs.concepts', concept='activity') }}">Activity</a></dt>
-        <dd>
-            The metadata / information about a user's currently listening music on a linked service(s).
-        </dd>
-    </dl>
+    <ul>
+        <li>
+            <a href="{{ url_for('docs.concepts', concept='apps') }}">Apps</a>: Apps allow you to access protected
+            endpoints like
+            <a href="{{ url_for('docs.references', reference='activity')}}">Activity</a>.
+        </li>
+        <li>
+            <a href="{{ url_for('docs.concepts', concept='tokens') }}">Tokens</a>: Tokens are used to authenticate your
+            app and access protected endpoints.
+        </li>
+        <li>
+            <a href="{{ url_for('docs.concepts', concept='activity') }}">Activity</a>: The metadata / information about
+            a user's currently listening music on a linked service(s).
+        </li>
+    </ul>
 </main>
 {% endblock %}

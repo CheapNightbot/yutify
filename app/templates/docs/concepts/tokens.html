@@ -1,0 +1,81 @@
+{% extends "docs/base.html" %}
+
+{% block main %}
+<main class="container">
+    <p>
+        Tokens are used to authenticate your app and access protected endpoints. This guide explains how to use access
+        tokens and refresh tokens.
+    </p>
+
+    <h2>Access Tokens</h2>
+
+    <p>
+        An access token is a string that is used to authenticate your app and access protected endpoints. It is a
+        short-lived token.
+    </p>
+    <p>
+        To use the access token, you must include the following HTTP header in your API calls:
+    </p>
+
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td><code>Authorization</code></td>
+            <td><code>Bearer &lt;ACCESS_TOKEN&gt;</code></td>
+        </tr>
+    </table>
+
+    <p>
+        Note that the access token is valid for 1 hour (3600 seconds). After that time, the token expires and you need to
+        request a new one.
+    </p>
+
+    <h2>Refresh Tokens</h2>
+    <p>
+        A refresh token is a long-lived token that can be used to obtain a new access token without requiring the user
+        to re-authorize your app. This is useful when the access token expires, allowing you to maintain access without
+        user intervention.
+        Refresh tokens are typically issued alongside access tokens during the authorization flow. When you exchange
+        the authorization code for an access token, you will also receive a refresh token.
+    </p>
+
+    <p>
+        To obtain a new access token using a refresh token, you must send a POST request to the token endpoint with the
+        following parameters:
+    </p>
+
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td><code>grant_type</code></td>
+            <td><code>refresh_token</code></td>
+        </tr>
+        <tr>
+            <td><code>refresh_token</code></td>
+            <td>A valid refresh token that you previously obtained.</td>
+        </tr>
+    </table>
+
+    And the following HTTP headers:
+    <table>
+        <tr>
+            <th>Header</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td><code>Content-Type</code></td>
+            <td><code>application/x-www-form-urlencoded</code></td>
+        </tr>
+        <tr>
+            <td><code>Authorization</code></td>
+            <td><code>Basic &lt;base64 encoded CLIENT_ID:CLIENT_SECRET&gt;</code></td>
+        </tr>
+    </table>
+</main>
+{% endblock %}

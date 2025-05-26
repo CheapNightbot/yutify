@@ -2,6 +2,80 @@
 
 {% block main %}
 <main class="container">
-    <p></p>
+    <p>
+        Welcome, this guide will walk you through how to use <strong>{{ config["SERVICE"] }}</strong> to retrieve music
+        information from various streaming platforms as well as how to request your listening activity data by calling
+        OAuth 2.0 protected endpoints.
+    </p>
+
+    <h2>Search for Music</h2>
+
+    <h3>Prerequisites</h3>
+    <ul>
+        <li>
+            Make sure your are familier working with CLI (Command Line Interface).
+        </li>
+        <li>
+            We will be using <strong>cURL</strong> for making API requests, so make sure you have it installed on your
+            system. But you can also use any HTTP client of your choice.
+            You may download it from <a href="https://curl.se/download.html">here</a> and scroll down to find
+            download for your operating system. Or you can use package manager came with your OS to install it.
+        </li>
+    </ul>
+
+    <p>
+        We can use the <a href="{{ url_for('docs.references', reference='search') }}">Search</a> endpoint
+        to find music information. You just need to provide the artist and song or album name.
+        So, let's search for "<i>Shelter</i>" by "<i>Porter Robinson</i>". We will make a GET request to the
+        <code>/api/search</code> endpoint like this:
+    <pre><code class="language-bash">curl -X GET "{{ base_url }}/api/search/Porter%20Robinson:Shelter"</code></pre>
+    </p>
+    <blockquote>
+        Notice we are not using query parameters to search for music, instead we are using a path parameter
+        to pass the search query. And a colon (<code>:</code>) is used to separate the artist and song name in the URL.
+        This is how the API is designed and the primary reason for this is to avoid issues with
+        special characters in the query string. For example, if the song or artist name contains a slash
+        (<code>/</code>), it is misunderstood as a path separator when using query parameters.
+    </blockquote>
+    <p>If everything goes well, the API will return the a JSON response with the metadata about requested music.</p>
+
+    <blockquote>&#10024; Congratulations, you just used the search endpoint to retrieve music information!</blockquote>
+
+    <h3>What's Next?</h3>
+    <p>
+        You can explore the <a href="{{ url_for('docs.references', reference='search') }}">Search Reference</a>
+        for more details on how to use the search endpoint, including how to retrieve music information from a specific
+        streaming platform by using the <code>platform</code> query parameter.
+    </p>
+
+    <hr>
+
+    <h2>Retrieve Listening Activity</h2>
+    <p>
+        To retrieve a user's listening activity, we need to use the
+        <a href="{{ url_for('docs.references', reference='activity') }}">Activity</a> endpoint.
+    </p>
+
+    <ul>
+        <li><strong>Create an Account</strong>: If you haven't already, you need to create an account on the
+            <strong>{{ config["SERVICE"] }}</strong>.
+            Go to <a href="{{ url_for_security('register', next=request.url) }}">Sign Up</a> page and create an account.
+        </li>
+        <li><strong>Link a Service</strong>: After creating an account and/or logging in, Follow the <a
+                href="{{ url_for('docs.concepts', concept='activity') }}">Activity</a> guide to link a service to
+            your account.</li>
+        <li>Now go to the <a href="{{ base_url }}/api/me"><code>/api/me</code></a> route in your browser.</li>
+    </ul>
+
+    <blockquote>
+        &#10024; Congratulations, if you are listening to music on a linked service, you will see metadata about your
+        current listening activity
+        in JSON format!
+    </blockquote>
+
+    <h3>What's Next?</h3>
+    <p>
+        You can explore the <a href="{{ url_for('docs.references', reference='activity') }}">Activity Reference</a>.
+    </p>
 </main>
 {% endblock %}

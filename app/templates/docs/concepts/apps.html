@@ -4,10 +4,15 @@
 <main class="container">
     <p>
         <strong>Apps</strong> allow you to access protected endpoints like
-        <a href="{{ url_for('docs.reference_activity')}}">Activity</a>. This guide explains how to create and manage
+        <a href="{{ url_for('docs.references', reference='activity')}}">Activity</a>. This guide explains how to create
+        and manage
         apps.
     </p>
 
+    <p>
+        If you haven't already, go ahead and <a href="{{ url_for_security('register', next=request.url) }}">Create an
+            Account</a> and/or <a href="{{ url_for_security('login', next=request.url) }}">Login</a>.
+    </p>
     <p>
         To create an app, go to your <a href="{{ url_for('oauth.dashboard') }}">Dashboard</a> and click on "Create
         App" button.
@@ -41,6 +46,16 @@
     <p>
         If you want to edit your app details, you can do so by clicking on the "Edit" button next to your app in the
         dashboard. And if you want to delete your app, you can click on the "Delete" button.
+    </p>
+
+    <h3><i class="fa-solid fa-triangle-exclamation"></i> Important</h3>
+    <p>
+        <strong>You should never share your <i>Client Secret</i> with anyone or expose it in public
+            repositories!</strong>
+        It should be kept private, as it is used to authenticate your app and access protected resources.
+        If someone gains access to your <i>Client Secret</i>, they can impersonate your app and access user data. Always
+        treat your <i>Client Secret</i> like a password.
+        If you believe your <i>Client Secret</i> has been compromised, you can regenerate it from the dashboard.
     </p>
 </main>
 {% endblock %}

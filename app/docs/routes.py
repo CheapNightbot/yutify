@@ -11,7 +11,7 @@ def index():
     """Render the API documentation page."""
     base_url = request.host_url.rstrip("/")  # Remove trailing slash
     return render_template(
-        "docs/index.html",
+        "docs/overview.html",
         title="Overview",
         active_page="docs",
         aside_active="Overview",
@@ -41,7 +41,7 @@ def concepts(concept=None):
     match concept:
         case "apps":
             return render_template(
-                "docs/concepts_apps.html",
+                "docs/concepts/apps.html",
                 title="Concepts - Apps",
                 active_page="docs",
                 aside_active="Concepts",
@@ -49,7 +49,7 @@ def concepts(concept=None):
             )
         case "tokens":
             return render_template(
-                "docs/concepts_tokens.html",
+                "docs/concepts/tokens.html",
                 title="Concepts - Tokens",
                 active_page="docs",
                 aside_active="Concepts",
@@ -57,7 +57,7 @@ def concepts(concept=None):
             )
         case "activity":
             return render_template(
-                "docs/concepts_activity.html",
+                "docs/concepts/activity.html",
                 title="Concepts - Activity",
                 active_page="docs",
                 aside_active="Concepts",
@@ -74,65 +74,46 @@ def concepts(concept=None):
             )
 
 
+@bp.route("/tutorials/<tutorial>")
 @bp.route("/tutorials")
-def tutorials():
+def tutorials(tutorial=None):
     """Render the "Tutorials" page in the API documentation page."""
-    return render_template(
-        "docs/tutorials.html",
-        title="Tutorials",
-        active_page="docs",
-        aside_active="Tutorials",
-        year=datetime.today().year,
-    )
+    match tutorial:
+        case "authorization-guide":
+            return render_template(
+                "docs/tutorials/authorization_guide.html",
+                title="Tutorials - Authorization Guide",
+                active_page="docs",
+                aside_active="Tutorials",
+                year=datetime.today().year,
+            )
+        case _:
+            return render_template(
+                "docs/tutorials.html",
+                title="Tutorials",
+                active_page="docs",
+                aside_active="Tutorials",
+                year=datetime.today().year,
+            )
 
 
-@bp.route("/reference/search")
-def reference_search():
-    """Render the "Search" page in the API documentation page."""
-    return render_template(
-        "docs/reference_search.html",
-        title="API Reference Search",
-        active_page="docs",
-        aside_active="Search",
-        year=datetime.today().year,
-    )
-
-
-@bp.route("/reference/activity")
-def reference_activity():
-    """Render the "Activity" page in the API documentation page."""
-    return render_template(
-        "docs/reference_activity.html",
-        title="API Reference Activity",
-        active_page="docs",
-        aside_active="Activity",
-        year=datetime.today().year,
-    )
-
-
-@bp.route("/authorization")
-def authorization():
-    """Render the Authorization Guide page in the API documentation."""
-    base_url = request.host_url.rstrip("/")
-    return render_template(
-        "docs/authorization.html",
-        title="Authorization Guide",
-        active_page="docs",
-        aside_active="Get Started",
-        base_url=base_url,
-        year=datetime.today().year,
-    )
-
-
-@bp.route("/token-guide")
-def token_guide():
-    """Render the Token Guide page in the API documentation."""
-    base_url = request.host_url.rstrip("/")
-    return render_template(
-        "docs/token_guide.html",
-        title="Token Guide",
-        active_page="docs",
-        aside_active="Get Started",
-        base_url=base_url,
-        year=datetime.today().year,
-    )
+@bp.route("/references/<reference>")
+def references(reference):
+    """Render the API reference pages based on the provided reference type."""
+    match reference:
+        case "activity":
+            return render_template(
+                "docs/references/activity.html",
+                title="API Reference Activity",
+                active_page="docs",
+                aside_active="Search",
+                year=datetime.today().year,
+            )
+        case "search":
+            return render_template(
+                "docs/references/search.html",
+                title="API Reference Search",
+                active_page="docs",
+                aside_active="Search",
+                year=datetime.today().year,
+            )

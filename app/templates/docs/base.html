@@ -51,10 +51,10 @@
                 </li>
                 <li>REFERENCE</li>
                 <li class="{% if aside_active == 'Search' %}aside-active{% endif %}">
-                    <a href="{{ url_for('docs.reference_search') }}">Search</a>
+                    <a href="{{ url_for('docs.references', reference='search') }}">Search</a>
                 </li>
                 <li class="{% if aside_active == 'Activity' %}aside-active{% endif %}">
-                    <a href="{{ url_for('docs.reference_activity') }}">Activity</a>
+                    <a href="{{ url_for('docs.references', reference='activity') }}">Activity</a>
                 </li>
             </ul>
         </nav>

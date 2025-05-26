@@ -2,5 +2,15 @@
 
 {% block main %}
 <main class="container">
+    <h1>Tutorials</h1>
+    <p>
+        Welcome to the tutorials section! Here, you will find step-by-step guides on how to use <strong>{{ config["SERVICE"] }}</strong> effectively.
+        Each tutorial covers a specific aspect of the service, from basic usage to advanced features.
+    </p>
+
+    <ul>
+        <li><a href="{{ url_for('docs.tutorials', tutorial='authorization-guide') }}">Authorization Guide</a></li>
+    </ul>
+
 </main>
 {% endblock %}
