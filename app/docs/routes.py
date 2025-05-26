@@ -106,7 +106,7 @@ def references(reference):
                 "docs/references/activity.html",
                 title="API Reference Activity",
                 active_page="docs",
-                aside_active="Search",
+                aside_active="Activity",
                 year=datetime.today().year,
             )
         case "search":
