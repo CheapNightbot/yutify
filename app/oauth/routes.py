@@ -208,12 +208,12 @@ def authorize():
 
 
 @csrf.exempt
-@bp.route("/token", methods=["POST"])
+@bp.route("/api/token", methods=["POST"])
 def issue_token():
     return authorization.create_token_response()
 
 
 @csrf.exempt
-@bp.route("/revoke", methods=["POST"])
+@bp.route("/api/revoke", methods=["POST"])
 def revoke_token():
     return authorization.create_endpoint_response("revocation")
