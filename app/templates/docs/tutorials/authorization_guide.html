@@ -52,7 +52,7 @@
     </p>
     <ul>
         <li>You have created an app following the <a href="{{ url_for('docs.concepts', concept='apps') }}">Apps
-                Guide</a>.</li>
+                Guide</a>. Make sure to add <code>http://localhost:3500/callback</code> as redirect URI.</li>
         <li>You have basic understanding of either <a href="https://www.python.org/">Python</a> or <a
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a> programming language.
         </li>
@@ -67,6 +67,82 @@
             href="{{ url_for('docs.concepts', concept='tokens') }}">access
             token</a>.
     </p>
+
+    <h3>Setup</h3>
+    <p>
+        Create a new directory for your project (e.g. <code>mkdir auth_code && cd $_</code>) and set up a basic Flask
+        application.
+    </p>
+    <li><strong>Final directory structure:</strong></li>
+    <pre class="codeblock"><code>auth_code/
+    app/
+        templates/
+            base.html
+            index.html
+        __init__.py
+        routes.py
+    .env
+    app.py
+</code></pre>
+
+    <li><strong>Install dependencies:</strong></li>
+    <pre class="codeblock"><code>pip install flask requests python-dotenv</code></pre>
+
+    <li><strong>Update <code>.env</code> file</strong>:</li>
+    <pre class="codeblock"><code># auth_code/.env
+CLIENT_ID=&lt;your_client_id&gt;
+CLIENT_SECRET=&lt;your_client_secret&gt;
+REDIRECT_URI=http://127.0.0.1:3500/callback</code></pre>
+
+    <li><strong>Update <code>routes.py</code></strong>:</li>
+    <pre class="codeblock"><code># auth_code/app/routes.py
+from flask import Blueprint
+
+main = Blueprint("main", __name__)
+
+@main.route("/")
+def index():
+    return "Hello, World!"
+</code></pre>
+
+    <li><strong>Update <code>__init__.py</code></strong>:</li>
+    <pre class="codeblock"><code># auth_code/app/__init__.py
+from flask import Flask
+
+
+def create_app():
+    app = Flask(__name__)
+
+    # Change this to a secure key in production
+    app.config["SECRET_KEY"] = "potatoes"
+
+    # Import and register blueprints
+    from app.routes import main
+    app.register_blueprint(main)
+
+    return app</code></pre>
+
+    <li><strong>Update <code>app.py</code></strong>:</li>
+    <pre class="codeblock"><code># auth_code/app.py
+from app import create_app
+
+app = create_app()
+
+
+if __name__ == "__main__":
+    # Run the Flask application
+    app.run(port=3500, debug=True)</code></pre>
+
+    <p>Now run following command to make sure our Flask application works:</p>
+    <pre class="codeblock"><code>python app.py</code></pre>
+    <p>
+        You should see the Flask development server running on <a href="http://127.0.0.1:3500" target="_blank"><code>http://127.0.0.1:3500</code></a>. Open this URL in
+        your browser, and you should see a simple "Hello, World!" message.
+    </p>
+
+    <blockquote>
+        Pheew! With the basic setup done, we can now proceed to implement the Authorization Code flow. 😺
+    </blockquote>
 
     <h3>Request User Authorization</h3>
     <p>
@@ -107,5 +183,50 @@
             </tr>
         </tbody>
     </table>
+
+    <p>
+        To implement this in our Flask app, we will create a new route that redirects the user to the authorization
+        endpoint with the required parameters.
+    </p>
+
+    <li><strong>Update <code>routes.py</code></strong>:</li>
+    <pre class="codeblock"><code># auth_code/app/routes.py
+import os
+import secrets
+
+from dotenv import load_dotenv
+from flask import abort, redirect, session, url_for ... # Existing imports ...
+
+load_dotenv()
+
+... # Existing code ...
+
+@main.route("/authorize")
+def authorize():
+    """
+    Redirect the user to the authorization endpoint
+    to ask for permission to access their data.
+    """
+
+    auth_endpoint = "http://127.0.0.1:5000/authorize"
+
+    client_id = os.getenv("CLIENT_ID")
+    redirect_uri = os.getenv("REDIRECT_URI")
+    response_type = "code"
+    scope = "activity"
+    state = secrets.token_urlsafe()
+
+    # Store the state in the session for later validation
+    session["state"] = state
+
+    # Construct the authorization URL with the necessary parameters
+    authorization_url = (
+    f"{auth_endpoint}?client_id={client_id}&redirect_uri={redirect_uri}"
+    f"&response_type={response_type}&scope={scope}&state={state}"
+    )
+
+    # Redirect the user to the authorization URL
+    # This is where the user will be asked to grant or deny access.
+    return redirect(authorization_url)</code></pre>
 </main>
 {% endblock %}
