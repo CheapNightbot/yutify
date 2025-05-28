@@ -117,3 +117,6 @@ def references(reference):
                 aside_active="Search",
                 year=datetime.today().year,
             )
+        case _:
+            # Return a 404 page if the reference is not found
+            return render_template("404.html"), 404
