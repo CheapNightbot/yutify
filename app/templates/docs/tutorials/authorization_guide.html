@@ -135,8 +135,10 @@ if __name__ == "__main__":
 
     <p>Now run following command to make sure our Flask application works:</p>
     <pre class="codeblock"><code>python app.py</code></pre>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/run-flask-app.gif') }}" alt="Running Flask app" />
     <p>
-        You should see the Flask development server running on <a href="http://127.0.0.1:3500" target="_blank"><code>http://127.0.0.1:3500</code></a>. Open this URL in
+        You should see the Flask development server running on <a href="http://127.0.0.1:3500"
+            target="_blank"><code>http://127.0.0.1:3500</code></a>. Open this URL in
         your browser, and you should see a simple "Hello, World!" message.
     </p>
 
@@ -199,6 +201,8 @@ from flask import abort, redirect, session, url_for ... # Existing imports ...
 
 load_dotenv()
 
+BASE_URL = "{{ base_url }}"
+
 ... # Existing code ...
 
 @main.route("/authorize")
@@ -208,7 +212,7 @@ def authorize():
     to ask for permission to access their data.
     """
 
-    auth_endpoint = "http://127.0.0.1:5000/authorize"
+    auth_endpoint = "/authorize"
 
     client_id = os.getenv("CLIENT_ID")
     redirect_uri = os.getenv("REDIRECT_URI")
@@ -221,12 +225,28 @@ def authorize():
 
     # Construct the authorization URL with the necessary parameters
     authorization_url = (
-    f"{auth_endpoint}?client_id={client_id}&redirect_uri={redirect_uri}"
+    f"{BASE_URL}{auth_endpoint}?client_id={client_id}&redirect_uri={redirect_uri}"
     f"&response_type={response_type}&scope={scope}&state={state}"
     )
 
     # Redirect the user to the authorization URL
     # This is where the user will be asked to grant or deny access.
     return redirect(authorization_url)</code></pre>
+
+    <p>
+        Now, we can test this route (i.e. authorization) by running our Flask app (<code>python app.py</code>) and
+        navigating to <a href="http://127.0.0.1:3500/authorize"
+            target="_blank"><code>http://127.0.1:3500/authorize</code></a> in
+        your browser.
+        You should be redirected to the authorization page of <strong>{{ config["SERVICE"] }}</strong>, where you can
+        log in and authorize your app to access your data.
+    </p>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/user-authorization-page.png') }}"
+        alt="Authorize app page asking for user authorization" />
+
+    <p>
+        Before moving forward and authorizing the app, let's first "deny" the app access to our data and see what
+        happens. So, go ahead and click on the "Deny" button on the authorization page.
+    </p>
 </main>
 {% endblock %}

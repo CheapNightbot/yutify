@@ -78,6 +78,7 @@ def concepts(concept=None):
 @bp.route("/tutorials")
 def tutorials(tutorial=None):
     """Render the "Tutorials" page in the API documentation page."""
+    base_url = request.host_url.rstrip("/")  # Remove trailing slash
     match tutorial:
         case "authorization-guide":
             return render_template(
@@ -85,6 +86,7 @@ def tutorials(tutorial=None):
                 title="Tutorials - Authorization Guide",
                 active_page="docs",
                 aside_active="Tutorials",
+                base_url=base_url,
                 year=datetime.today().year,
             )
         case _:
