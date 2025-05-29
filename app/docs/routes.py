@@ -10,6 +10,8 @@ from app.docs import bp
 def index():
     """Render the API documentation page."""
     base_url = url_for("main.index", _external=True).rstrip("/")
+    if "localhost" not in base_url or "127.0.0.1" not in base_url:
+        base_url = base_url.replace("http://", "https://")
     return render_template(
         "docs/overview.html",
         title="Overview",
@@ -24,6 +26,8 @@ def index():
 def get_started():
     """Render the "Get Started" page in the API documentation page."""
     base_url = url_for("main.index", _external=True).rstrip("/")
+    if "localhost" not in base_url or "127.0.0.1" not in base_url:
+        base_url = base_url.replace("http://", "https://")
     return render_template(
         "docs/get_started.html",
         title="Get Started",
@@ -79,6 +83,8 @@ def concepts(concept=None):
 def tutorials(tutorial=None):
     """Render the "Tutorials" page in the API documentation page."""
     base_url = url_for("main.index", _external=True).rstrip("/")
+    if "localhost" not in base_url or "127.0.0.1" not in base_url:
+        base_url = base_url.replace("http://", "https://")
     match tutorial:
         case "authorization-guide":
             return render_template(

@@ -226,6 +226,8 @@ def get_spotify_activity(user=None):
 
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = url_for("main.index", _external=True).rstrip("/")
+        if "localhost" not in base_url or "127.0.0.1" not in base_url:
+            base_url = base_url.replace("http://", "https://")
         search_url = f"{base_url}/api/search/{activity['artists']}:{activity['title']}"
 
         # Call the /api/search endpoint using requests
