@@ -247,8 +247,155 @@ def authorize():
         alt="Authorize app page asking for user authorization" />
 
     <p>
-        Before moving forward and authorizing the app, let's first "deny" the app access to our data and see what
+        Before moving forward and authorizing the app, let's first deny the app access to our data and see what
         happens. So, go ahead and click on the "Deny" button on the authorization page.
     </p>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/deny-authorization.png') }}"
+        alt="Deny authorization page asking for user authorization" />
+    <p>
+        Notice we are redirected to the <code>redirect_uri</code> specified in our app settings, which is
+        <code>http://127.0.1:3500/callback</code> in this case. And also notice that the URL contains following query
+        parameters:
+    </p>
+    <ul>
+        <li><code>error</code>: Indicates that the user denied the authorization request.</li>
+        <li><code>error_description</code>: Provides a description of the error.</li>
+        <li><code>state</code>: The state parameter we sent in the authorization request to prevent CSRF attacks.</li>
+    </ul>
+    <p>
+        Now go to <a href="http://127.0.0.1:3500/authorize"
+            target="_blank"><code>http://127.0.1:3500/authorize</code></a> one more time, and this time click on "Allow"
+        button to grant the app access to your listening activity.
+        You will be again redirected back to the redirect URI specified in your app settings:
+    </p>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/redirect-uri-after-authorization.png') }}"
+        alt="Redirect URI after user authorization" />
+    <p>
+        This time notice that the URL contains following query parameters:
+    </p>
+    <ul>
+        <li><code>code</code>: The authorization code that can be exchanged for an access token.</li>
+        <li><code>state</code>: The state parameter we sent in the authorization request to prevent CSRF attacks.</li>
+    </ul>
+
+    <p>
+        Did you notice in both cases (denying and allowing the app access), the page says "Not Found"? Yes, that's
+        because we haven't implemented the callback route yet to handle the redirect/callback after authorization.
+        And before we do that, let's create a simple HTML template with a link to authorize route so that we can
+        easily test the authorization flow.
+    </p>
+    <li><strong>Create <code>base.html</code> in templates directory</strong> with the following code:</li>
+    <pre class="codeblock"><code>&lt;!-- auth_code/app/templates/base.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"&gt;
+    &lt;title&gt;yutify OAuth 2.0 Example&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;yutify OAuth 2.0 Example&lt;/h1&gt;
+        &lt;p&gt;Welcome to the yutify OAuth 2.0 example application!&lt;/p&gt;
+    &lt;/header&gt;
+
+    &lt;main&gt;
+        &lbrace;% block main %&rbrace;&lbrace;% endblock %&rbrace;
+    &lt;/main&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</code></pre>
+
+    <li><strong>Create <code>index.html</code> in templates directory</strong> with the following code:</li>
+    <pre class="codeblock"><code>&lt;!-- auth_code/app/templates/index.html --&gt;
+&lbrace;% extends "base.html" %&rbrace;
+
+&lbrace;% block main %&rbrace;
+&lt;h2&gt;
+    Step 1, Request User Authorization:
+&lt;/h2&gt;
+&lt;a class="btn" href="&lbrace;&lbrace; url_for('main.authorize') &rbrace;&rbrace;"&gt;Authenticate with yutify&lt;/a&gt;
+&lbrace;% endblock %&rbrace;</code></pre>
+
+    <li><strong>Update <code>routes.py</code></strong> to render the <code>index.html</code>:</li>
+    <pre class="codeblock"><code># auth_code/app/routes.py
+... # Existing imports ...
+from flask import  render_template ... # Existing imports ...
+
+@main.route("/")
+def index():
+    return render_template("index.html")
+
+... # Existing code ...</code></pre>
+
+    <p>
+        Run the Flask app again if you stopped it and navigate to <a href="http://127.0.0.1:3500"
+            target="_blank"><code>http://127.0.1:3500</code></a>, you should see a simple page with a link
+        to authorization route:
+    </p>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/updated-index-page.png') }}"
+        alt="Updated index page" />
+
+    <p>
+        While, we are here, let's also add a simple CSS styling to make the page look better.
+    </p>
+    <li><strong>Create <code>style.css</code> in static directory</strong> with the following code:</li>
+    <pre class="codeblock"><code>/* auth_code/app/static/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: #202020;
+    color: #ffffff;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+main {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem 1rem;
+    background-color: #303030;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}</code></pre>
+    <p>
+        Now, if you refresh the page, you should see the updated styles applied to the page:
+    </p>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/updated-index-page-with-styles.png') }}"
+        alt="Updated index page with styles" />
 </main>
 {% endblock %}
