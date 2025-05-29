@@ -32,11 +32,11 @@
 
   |                                           OwO                                             |
   | ----------------------------------------------------------------------------------------- |
-  | ![image](https://github.com/user-attachments/assets/5b976d5e-edf4-4701-8591-95ac54cafdf4) |
-  | ![image](https://github.com/user-attachments/assets/ca3cd475-b52d-4011-8e96-39ca5280ff1a) |
-  | ![image](https://github.com/user-attachments/assets/d536a7b0-642a-44ff-989b-87d4a1e23972) |
-  | ![image](https://github.com/user-attachments/assets/2c568977-ae61-4cea-b547-6c863c1aac0f) |
-  | ![image](https://github.com/user-attachments/assets/9eab7b03-dcd8-48ea-a53b-2feee19b83fb) |
+  | ![home page](https://github.com/user-attachments/assets/d01e69f2-f8cb-4290-8190-cf8542086b6f) |
+  | ![home page with seach results](https://github.com/user-attachments/assets/efc0a37d-d58c-4a99-830d-448e1b6fdfdd) |
+  | ![api search response](https://github.com/user-attachments/assets/d536a7b0-642a-44ff-989b-87d4a1e23972) |
+  | ![user profile page](https://github.com/user-attachments/assets/87b7badf-b281-451c-bc9c-31244e459659) |
+  | ![user settings page](https://github.com/user-attachments/assets/7aae2377-bc29-4f93-b954-5359daad1219) |
 
   </span>
 
