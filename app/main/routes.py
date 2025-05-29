@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import requests
-from flask import render_template, request
+from flask import render_template, url_for
 
 from app.main import bp
 from app.main.forms import SearchForm
@@ -17,7 +17,7 @@ def index():
         song = form.song.data
 
         # Dynamically determine the base URL for the /api/search endpoint
-        base_url = request.host_url.rstrip("/")  # Remove trailing slash
+        base_url = url_for("main.index", _external=True).rstrip("/")
         search_url = f"{base_url}/api/search/{artist}:{song}"
 
         # Call the /api/search endpoint using requests

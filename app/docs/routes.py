@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import render_template, request
+from flask import render_template, request, url_for
 
 from app.docs import bp
 
@@ -9,7 +9,7 @@ from app.docs import bp
 @bp.route("")
 def index():
     """Render the API documentation page."""
-    base_url = request.host_url.rstrip("/")  # Remove trailing slash
+    base_url = url_for("main.index", _external=True).rstrip("/")
     return render_template(
         "docs/overview.html",
         title="Overview",
@@ -23,7 +23,7 @@ def index():
 @bp.route("/get-started")
 def get_started():
     """Render the "Get Started" page in the API documentation page."""
-    base_url = request.host_url.rstrip("/")  # Remove trailing slash
+    base_url = url_for("main.index", _external=True).rstrip("/")
     return render_template(
         "docs/get_started.html",
         title="Get Started",
@@ -78,7 +78,7 @@ def concepts(concept=None):
 @bp.route("/tutorials")
 def tutorials(tutorial=None):
     """Render the "Tutorials" page in the API documentation page."""
-    base_url = request.host_url.rstrip("/")  # Remove trailing slash
+    base_url = url_for("main.index", _external=True).rstrip("/")
     match tutorial:
         case "authorization-guide":
             return render_template(
