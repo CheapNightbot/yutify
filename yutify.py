@@ -55,5 +55,7 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",
         port=app.config["PORT"],
+        threads=6,
+        url_scheme="https" if app.config.get("HOST_URL") != "localhost" else "http",
         ident=app.config.get("SERVICE"),
     )
