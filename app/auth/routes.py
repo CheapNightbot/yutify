@@ -29,6 +29,9 @@ def post_user_registration(app: Flask, user: User, **extra_args):
     user.set_avatar()
     datastore.db.session.commit()
 
+    if not app.config.get("SECURITY_CONFIRMABLE"):
+        datastore.add_role_to_user(user, "user")
+
 
 def post_email_confirmed(app: Flask, user: User, **extra_args):
     """
