@@ -73,14 +73,14 @@ class BaseOverride:
         return None
 
 
-class MySpotify(BaseOverride, Spotify):
+class MySpotify(Spotify, BaseOverride):
     """Custom Spotify class to override the `save_access_token` and `load_access_token` methods."""
 
     SERVICE_NAME = "Spotify"
     SERVICE_URL = "https://open.spotify.com"
 
 
-class MyKKBox(BaseOverride, KKBox):
+class MyKKBox(KKBox, BaseOverride):
     """Custom KKBox class to override the `save_access_token` and `load_access_token` methods."""
 
     SERVICE_NAME = "KKBox"
