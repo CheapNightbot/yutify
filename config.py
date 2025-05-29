@@ -88,8 +88,12 @@ class Config:
 
     # ### Registerable ###
     SECURITY_REGISTERABLE = bool(int(os.getenv("SECURITY_REGISTERABLE", False)))
-    SECURITY_EMAIL_SUBJECT_REGISTER = f"[{SERVICE}] Verify Email Address!"
-    SECURITY_POST_REGISTER_VIEW = "main.index"
+    SECURITY_EMAIL_SUBJECT_REGISTER = (
+        f"[{SERVICE}] Verify Email Address!"
+        if bool(int(os.getenv("SECURITY_CONFIRMABLE", True)))
+        else f"[{SERVICE}] Welcome!"
+    )
+    SECURITY_POST_REGISTER_VIEW = "auth.login"
     SECURITY_REGISTER_URL = "/signup"
     SECURITY_USERNAME_ENABLE = True
     SECURITY_MSG_USERNAME_DISALLOWED_CHARACTERS = (
