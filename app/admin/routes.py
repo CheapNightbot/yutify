@@ -184,7 +184,7 @@ def manage_services():
 def manage_users():
     security: Security = current_app.security
     roles = Role.query.all()
-    users = User.query.all()
+    users = User.query.order_by(User.id).all()
     manage_user_account_form = ManageUserAccount()
 
     manage_user_account_form.roles.choices = [role.name for role in roles]
