@@ -191,7 +191,8 @@ if __name__ == "__main__":
     <p>
         So, the final URL will look something like this:
     </p>
-<pre class="codeblock"><code>{{ base_url }}/authorize?client_id=&lt;YOUR_CLIENT_ID&gt;&redirect_uri=&lt;YOUR_REDIRECT_URI&gt;&response_type=code&scope=activity&state=&lt;STATE_STRING&gt;</code></pre>
+    <pre
+        class="codeblock"><code>{{ base_url }}/authorize?client_id=&lt;YOUR_CLIENT_ID&gt;&redirect_uri=&lt;YOUR_REDIRECT_URI&gt;&response_type=code&scope=activity&state=&lt;STATE_STRING&gt;</code></pre>
 
     <p>
         To implement this in our Flask app, we will create a new route that redirects the user to the authorization
@@ -204,7 +205,7 @@ import os
 import secrets
 
 from dotenv import load_dotenv
-from flask import abort, redirect, session, url_for ... # Existing imports ...
+from flask import redirect, session ... # Existing imports ...
 
 load_dotenv()
 
@@ -328,7 +329,7 @@ def authorize():
     <li><strong>Update <code>routes.py</code></strong> to render the <code>index.html</code>:</li>
     <pre class="codeblock"><code># auth_code/app/routes.py
 ... # Existing imports ...
-from flask import  render_template ... # Existing imports ...
+from flask import render_template ... # Existing imports ...
 
 @main.route("/")
 def index():
@@ -402,5 +403,107 @@ main {
     </p>
     <img class="screenshot" src="{{ url_for('static', filename='docs/updated-index-page-with-styles.png') }}"
         alt="Updated index page with styles" />
+
+    <p>
+        Okay with basic HTML template with CSS styling out of our way, let's get back to implementing and handing the
+        "callback"!
+    </p>
+    <li><strong>Update <code>routes.py</code></strong>:</li>
+    <pre class="codeblock"><code># auth_code/app/routes.py
+from flask import abort, request ... # Existing imports ...
+
+... # Existing code ...
+
+@main.route("/callback")
+def callback():
+    """
+    Handles the callback from the authorization server.
+    This is where the user is redirected after granting or rejecting the access.
+    """
+
+    # Retrieve the state and code from the query parameters
+    # and validate the state from the session.
+    if "state" not in session:
+        abort(400, "State not found in session!")
+
+    state = session.pop("state")
+    received_state = request.args.get("state")
+
+    # Validate the state
+    if state != received_state:
+        abort(400, "State mismatch. Possible CSRF attack!")
+
+    code = request.args.get("code")
+    error = request.args.get("error")
+    if error:
+        msg = request.args.get("error_description", "An error occurred during authorization.")
+        abort(400, f"Authorization error: {msg}")
+
+    # TODO: Process the authorization code (i.e., exchange it for an access token)
+    return f"Authorization successful! Code: {code}"
+</code></pre>
+
+    <article class="res-example">
+        <details>
+            <summary>
+                <small>
+                    The code is self-explainatory, but if you are not sure, expand this by clicking for a brief
+                    explaination!
+                </small>
+            </summary>
+            <ul>
+                <li>
+                    In the first <code>if</code> statement, we are checking if the <code>state</code> exists in our
+                    Flask session. As we know in the <code>authorize()</code> view function, we set / saved the state
+                    string, so if it is not there by the time we reach the <code>callback()</code> view, there might be
+                    something wrong, and we should not proceed with the further authorization flow.
+                </li>
+                <li>
+                    Then, if that first <code>if</code> statement was <code>False</code>, we know that we can safetly
+                    retrieve the state string from the session. So, we are doing just that in the next line of code and
+                    also retrieving the state recieved from the authorization server (i.e. <b>yutify</b>) in the
+                    <code>state</code> and <code>recieved_state</code> variables respectively.
+                </li>
+                <li>
+                    The next <code>if</code> just compares if the state from our session and the one returned by the
+                    authorization server matches or not. Again, if the state does not match, we should immedietly abort
+                    the authorization process.
+                </li>
+                <li>
+                    If the states did match, we try to retrieve the authorization "code" and/or "error" returned by the
+                    authorization server from the query parameters (remember from above that we get those key-values in
+                    the URL query parameter?). Notice we are using <code>request.args.get()</code> for both, and it will
+                    either return the values or <code>None</code> if they don't exist in the query parameter.
+                </li>
+                <li>
+                    Then, first we check if the <code>error</code> contains value (i.e. it is not <code>None</code>),
+                    which means the authorization server returned error and the user most probably denied the access
+                    (there might be other reasons as well, like bad request or query parameters). So, if that is the
+                    case, we again abort the authorization flow as there nothing to do left.
+                </li>
+                <li>
+                    Phew! After all that checking, if everything went well, by this point we will have authorization
+                    code in <code>code</code> variable. For now, let's just show that code in the HTML body.
+                </li>
+            </ul>
+        </details>
+    </article>
+
+    <p>
+        You should see the the code returned by the authorization server (i.e. <b>yutify</b>) on the HTML body and of
+        course like before, in the URL:
+    </p>
+    <img class="screenshot" src="{{ url_for('static', filename='docs/authorization-code-shown-in-html-body.png') }}"
+        alt="The Authorization Code shown in HTML body" />
+
+    <p>
+        We need to exchange this code for an access token. That is, we will be senting this code back to <b>yutify</b>
+        with our client credentials and it will return an access token along with a refresh token. We can use access
+        token to access protected API endpoints (i.e. <a
+            href="{{ url_for('docs.references', reference='activity') }}"><code>/api/me</code></a>) by sending this access token
+        with each API call to that endpoint. And the refresh token can be used to get a new access token after it
+        expires (which is 3600 seconds or 1 hour, see <a href="{{ url_for('docs.concepts', concept='tokens') }}">Tokens</a> for
+        more information).
+    </p>
 </main>
 {% endblock %}
