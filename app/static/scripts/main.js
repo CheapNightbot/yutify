@@ -250,12 +250,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return scrollbarWidth;
     };
 
-    if (lyricsModal) {
+    // Attach event listeners for lyrics modal after dynamic content load
+    function attachLyricsModalListeners() {
+        const lyricsModal = document.querySelector("#lyrics");
         const showLyrics = document.querySelector("#show-lyrics");
         const closeLyrics = document.querySelector("#close-lyrics");
-        showLyrics.addEventListener('click', toggleModal);
-        closeLyrics.addEventListener('click', toggleModal);
+        if (lyricsModal && showLyrics && closeLyrics) {
+            showLyrics.addEventListener('click', toggleModal);
+            closeLyrics.addEventListener('click', toggleModal);
+        }
     }
+
+    // Ensure lyrics modal listeners are attached on initial page load (for static content like index.html)
+    attachLyricsModalListeners();
 
     if (editProfileModal) {
         const showProfileEditor = document.querySelector('#edit-profile-btn');
@@ -427,8 +434,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         newContent.style.opacity = '0';
                         setTimeout(() => {
                             newContent.style.opacity = '1';
+                            attachLyricsModalListeners(); // Attach lyrics modal listeners after DOM update
                         }, 50); // Delay to trigger fade-in
                     }, 300); // Match fade-out duration
+                } else {
+                    // If not replaced, still try to attach listeners (for initial load)
+                    attachLyricsModalListeners();
                 }
             }
         }
