@@ -189,6 +189,11 @@ if __name__ == "__main__":
     </table>
 
     <p>
+        So, the final URL will look something like this:
+    </p>
+<pre class="codeblock"><code>{{ base_url }}/authorize?client_id=&lt;YOUR_CLIENT_ID&gt;&redirect_uri=&lt;YOUR_REDIRECT_URI&gt;&response_type=code&scope=activity&state=&lt;STATE_STRING&gt;</code></pre>
+
+    <p>
         To implement this in our Flask app, we will create a new route that redirects the user to the authorization
         endpoint with the required parameters.
     </p>
