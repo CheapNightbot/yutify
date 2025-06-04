@@ -105,15 +105,16 @@ class MySpotifyAuth(SpotifyAuth):
         return None
 
 
-def handle_spotify_auth():
-    try:
-        spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
-    except SpotifyAuthException as e:
-        logger.warning(
-            f"Spotify Authentication will be disabled due to following error:\n{e}"
-        )
-        spotify_auth = None
+try:
+    spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
+except SpotifyAuthException as e:
+    logger.warning(
+        f"Spotify Authentication will be disabled due to following error:\n{e}"
+    )
+    spotify_auth = None
 
+
+def handle_spotify_auth():
     if not spotify_auth:
         flash(
             "Spotify Authentication is not available! You may contact the admin(s).",
@@ -149,14 +150,6 @@ def handle_spotify_auth():
 
 
 def handle_spotify_callback(request):
-    try:
-        spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
-    except SpotifyAuthException as e:
-        logger.warning(
-            f"Spotify Authentication will be disabled due to following error:\n{e}"
-        )
-        spotify_auth = None
-
     if not spotify_auth:
         flash(
             "Spotify Authentication is not available! You may contact the admin(s).",
@@ -198,14 +191,6 @@ def handle_spotify_callback(request):
 
 def get_spotify_activity(user=None):
     """Fetch the user's listening activity from Spotify."""
-    try:
-        spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
-    except SpotifyAuthException as e:
-        logger.warning(
-            f"Spotify Authentication will be disabled due to following error:\n{e}"
-        )
-        spotify_auth = None
-
     if not spotify_auth:
         flash(
             "Spotify Authentication is not available! You may contact the admin(s).",
