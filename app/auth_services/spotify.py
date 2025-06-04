@@ -37,7 +37,7 @@ class MySpotifyAuth(SpotifyAuth):
                 logger.warning("Service 'Spotify' not found in the database.")
                 return
 
-            # Check if the UserService entry already exists
+            # Check if the UserService entry already exists for this user and service
             user_service = db.session.scalar(
                 sa.select(UserService)
                 .where(UserService.user_id == user.id)
@@ -53,12 +53,14 @@ class MySpotifyAuth(SpotifyAuth):
             else:
                 result = self.get_user_profile()
                 if not result:
-                    logger.warning("Could not fetch Spotify user profile. Aborting UserService creation.")
+                    logger.warning(
+                        "Could not fetch Spotify user profile. Aborting UserService creation."
+                    )
                     return
                 username = result.get("display_name", None)
                 profile_url = result.get("url", None)
 
-                # Create a new entry if it doesn't exist
+                # Always set user_id and service_id explicitly
                 user_service = UserService(
                     user_id=user.id,
                     service_id=spotify_service.id,
@@ -69,8 +71,6 @@ class MySpotifyAuth(SpotifyAuth):
                     username=username,
                     profile_url=profile_url,
                 )
-                user_service.user = user
-                user_service.service = spotify_service
                 db.session.add(user_service)
             db.session.commit()
 
