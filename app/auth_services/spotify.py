@@ -52,9 +52,11 @@ class MySpotifyAuth(SpotifyAuth):
                 user_service.requested_at = token_info.get("requested_at")
             else:
                 result = self.get_user_profile()
-                if result:
-                    username = result.get("display_name")
-                    profile_url = result.get("url")
+                if not result:
+                    logger.warning("Could not fetch Spotify user profile. Aborting UserService creation.")
+                    return
+                username = result.get("display_name", None)
+                profile_url = result.get("url", None)
 
                 # Create a new entry if it doesn't exist
                 user_service = UserService(
