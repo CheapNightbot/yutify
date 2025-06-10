@@ -11,7 +11,7 @@ Flask-Security[common,fsqla,mfa]==5.6.2
 Flask-SQLAlchemy==3.1.1
 psycopg2==2.9.10
 python-dotenv==1.1.0
-requests==2.32.3
+requests==2.32.4
 waitress==3.0.2
 yutipy==2.2.13
 zxcvbn==4.5.0
