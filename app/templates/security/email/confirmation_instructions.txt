@@ -1,0 +1,10 @@
+{% extends "security/email/email_base.txt" %}
+{% block content %}
+Heyo {{ user.name }} ~
+
+To verify your email address, use this link: {{ confirmation_link }}
+
+This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.
+
+If you did not signup for an account, you may simply ignore this message.
+{% endblock %}
