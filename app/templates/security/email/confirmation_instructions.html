@@ -1,0 +1,16 @@
+{% extends "security/email/email_base.html" %}
+
+{% block content %}
+<h3>Heyo {{ user.name }} ~</h3>
+<p>
+  To verify your email address, click <a href="{{ confirmation_link }}">HERE</a>.
+  Alternatively, you can copy and paste the following link in your browser's address bar:
+</p>
+
+<div class="codeblock">
+  {{ confirmation_link }}
+</div>
+
+<p>This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
+<p>If you did not signup for an account, you may simply ignore this message.</p>
+{% endblock %}
