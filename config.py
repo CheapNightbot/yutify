@@ -111,7 +111,7 @@ class Config:
     SECURITY_CONFIRMABLE = bool(int(os.getenv("SECURITY_CONFIRMABLE", True)))
     SECURITY_CONFIRM_URL = "/verify-email"
     SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{SERVICE}] Verify Email Address!"
-    # SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
+    SECURITY_POST_CONFIRM_VIEW = "security.login"
     SECURITY_MSG_EMAIL_CONFIRMED = (
         "Thank you for verifying your email! You're all set, now login with your credentials!",
         "success",
