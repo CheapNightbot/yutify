@@ -93,6 +93,9 @@ def login():
 
     set this to `SECURITY_POST_LOGIN_VIEW` variable in config.py for Flask-Security.
     """
+    if not current_user.is_authenticated:
+        return redirect(url_for_security("login"))
+
     if current_user.has_role("admin"):
         return redirect(url_for("admin.dashboard"))
     return redirect(url_for("user.user_profile", username=current_user.username))
@@ -111,23 +114,3 @@ def logout():
         return redirect(url_for_security("logout"))
     flash("You've been logged out successfully!", "success")
     return redirect(url_for("main.index"))
-
-
-# @bp.route("/signup")
-# def signup():
-#     if current_user.is_authenticated:
-#         return redirect(url_for("user.user_profile", username=current_user.username))
-#     return redirect(url_for("auth.login"))
-
-
-@bp.route("/email-verified")
-def email_verified():
-    if current_user.is_authenticated:
-        return redirect(url_for("user.user_profile", username=current_user.username))
-
-    flash(
-        "Thank you for verifying your email! You're all set, now login with your credentials!",
-        "success",
-    )
-    print(current_user)
-    return redirect(url_for_security("login"))
