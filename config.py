@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from dotenv import load_dotenv
 from flask_security.utils import uia_username_mapper
 
@@ -61,6 +60,7 @@ class Config:
     SECURITY_EMAIL_VALIDATOR_ARGS = {
         "check_deliverability": bool(int(os.getenv("CHECK_EMAIL_DELIVERABILITY", True)))
     }
+    SECURITY_EMAIL_SENDER = f"no-reply@{HOST_URL}"
     SECURITY_USER_IDENTITY_ATTRIBUTES = [
         {"username": {"mapper": uia_username_mapper, "case_insensitive": True}},
     ]
@@ -111,7 +111,11 @@ class Config:
     SECURITY_CONFIRMABLE = bool(int(os.getenv("SECURITY_CONFIRMABLE", True)))
     SECURITY_CONFIRM_URL = "/verify-email"
     SECURITY_EMAIL_SUBJECT_CONFIRM = f"[{SERVICE}] Verify Email Address!"
-    SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
+    # SECURITY_POST_CONFIRM_VIEW = "auth.email_verified"
+    SECURITY_MSG_EMAIL_CONFIRMED = (
+        "Thank you for verifying your email! You're all set, now login with your credentials!",
+        "success",
+    )
 
     # ### Changeable
     SECURITY_CHANGEABLE = True
