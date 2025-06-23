@@ -3,34 +3,33 @@
 {% block title %}Account Deletion Notice{% endblock %}
 
 {% block content %}
-<h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
-<p style="margin-bottom: 1rem; line-height: 1.6;">
+  <h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">
     This is to notify that
     <strong style="color: #E5E0F4;">your account has been deleted</strong>
     {% if not admin_delete %} successfully! {% else %} for the following reasons: {% endif %}
-</p>
-
-{% if admin_delete %}
-{% if reason_for_deletion %}
-<p style="margin-bottom: 1rem; line-height: 1.6;">{{ reason_for_deletion }}</p>
-{% else %}
-<p style="margin-bottom: 1rem; line-height: 1.6;">
-    An admin decided to delete your account. No explaination or reason was provided.
-</p>
-{% endif %}
-{% else %}
-<p style="margin-bottom: 1rem; line-height: 1.6;">
-    The username and email that were previously associated with your account are now available
-    to be used to create a new account.
-</p>
-<p style="margin-bottom: 1rem; line-height: 1.6;">
-    We are sorry to see you go... But if you think we can improve
-    <strong style="color: #E5E0F4;">{{ config["SERVICE"] }}</strong>, or your reason for leaving
-    was some feature / functionality missing from it or maybe just a bug, please consider letting
-    us know by simply opening an issue on GitHub
-    <a href="https://github.com/CheapNightbot/yutify/issues/new/choose"
+  </p>
+  {% if admin_delete %}
+    {% if reason_for_deletion %}
+      <p style="margin-bottom: 1rem; line-height: 1.6;">{{ reason_for_deletion }}</p>
+    {% else %}
+      <p style="margin-bottom: 1rem; line-height: 1.6;">
+        An admin decided to delete your account. No explaination or reason was provided.
+      </p>
+    {% endif %}
+  {% else %}
+    <p style="margin-bottom: 1rem; line-height: 1.6;">
+      The username and email that were previously associated with your account are now available
+      to be used to create a new account.
+    </p>
+    <p style="margin-bottom: 1rem; line-height: 1.6;">
+      We are sorry to see you go... But if you think we can improve
+      <strong style="color: #E5E0F4;">{{ config["SERVICE"] }}</strong>, or your reason for leaving
+      was some feature / functionality missing from it or maybe just a bug, please consider letting
+      us know by simply opening an issue on GitHub
+      <a href="https://github.com/CheapNightbot/yutify/issues/new/choose"
         style="color: #524ED2; text-decoration: underline;">HERE</a>.
-</p>
-<p style="margin-bottom: 1rem; line-height: 1.6;">This is the last email you recieved from us, goodbye ~ </p>
-{% endif %}
+    </p>
+    <p style="margin-bottom: 1rem; line-height: 1.6;">This is the last email you recieved from us, goodbye ~ </p>
+  {% endif %}
 {% endblock %}

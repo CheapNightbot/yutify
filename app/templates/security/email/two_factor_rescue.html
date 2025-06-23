@@ -3,7 +3,9 @@
 {% block title %}2FA Rescue Request{% endblock %}
 
 {% block content %}
-<h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo ~</h3>
-<p style="margin-bottom: 1rem; line-height: 1.6;">It looks like "<strong style="color: #E5E0F4;">{{ user.name }}</strong> (@{{ user.username }})" can't access their account due to 2FA and requesting a 2FA reset for their account.</p>
-<p style="margin-bottom: 1rem; line-height: 1.6;">For additional information, you may contact them via this email: <code style="background: #23273a; color: #E5E0F4; padding: 0.1em 0.4em; border-radius: 0.2em; font-size: 1em;">{{ user.email }}</code></p>
+  <h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo ~</h3>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">It looks like "<strong style="color: #E5E0F4;">{{ user.name }}</strong> (@{{ user.username }})" can't access their account due to 2FA and requesting a 2FA reset for their account.</p>
+  <table class="row" style="margin-bottom: 1rem;"><tr><td class="columns first last">
+    <p style="margin-bottom: 1rem; line-height: 1.6;">For additional information, you may contact them via this email: <code style="background: #23273a; color: #E5E0F4; padding: 0.1em 0.4em; border-radius: 0.2em; font-size: 1em;">{{ user.email }}</code></p>
+  </td></tr></table>
 {% endblock %}

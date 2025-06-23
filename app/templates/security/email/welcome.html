@@ -4,17 +4,16 @@
 
 {% block content %}
 {% if security.confirmable %}
-<h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
-<p style="margin-bottom: 1rem; line-height: 1.6;">To verify your email address, click <a href="{{ confirmation_link }}" style="color: #524ED2; text-decoration: underline;">HERE</a>.
-    Alternatively, you can copy and paste the following link in your browser's address bar:
-</p>
-<div style="background: #23273a; color: #E5E0F4; padding: 0.5em 1em; border-radius: 0.2em; font-family: monospace; word-break: break-all; margin-bottom: 1rem; font-size: 1em;">
-    {{ confirmation_link }}
-</div>
-<p style="margin-bottom: 1rem; line-height: 1.6;">This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
-<p style="margin-bottom: 1rem; line-height: 1.6;">If you did not signup for an account, you may simply ignore this message.</p>
+  <h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">To verify your email address, click <a href="{{ confirmation_link }}" style="color: #524ED2; text-decoration: underline;">HERE</a>.
+      Alternatively, you can copy and paste the following link in your browser's address bar:</p>
+  <table class="row" style="margin-bottom: 1rem;"><tr><td class="columns first last">
+    <div style="background: #23273a; color: #E5E0F4; padding: 0.5em 1em; border-radius: 0.2em; font-family: monospace; word-break: break-all; font-size: 1em;">{{ confirmation_link }}</div>
+  </td></tr></table>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">If you did not signup for an account, you may simply ignore this message.</p>
 {% else %}
-<p style="margin-bottom: 1rem; line-height: 1.6;">Heyo {{ user.name }} !!</p>
-<p style="margin-bottom: 1rem; line-height: 1.6;">Welcome to {{ config["SERVICE"] }} ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔</p>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">Heyo {{ user.name }} !!</p>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">Welcome to {{ config["SERVICE"] }} ~ um, what else-.. yea, do you like potatoes? (。・∀・)ノ🥔</p>
 {% endif %}
 {% endblock %}

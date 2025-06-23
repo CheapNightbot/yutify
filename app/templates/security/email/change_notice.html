@@ -3,12 +3,7 @@
 {% block title %}Password Change Notice{% endblock %}
 
 {% block content %}
-<h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
-<p style="margin-bottom: 1rem; line-height: 1.6;">This is to notify that <strong style="color: #E5E0F4;">your account password has been changed.</strong>
-</p>
-{% if security.recoverable %}
-<p style="margin-bottom: 1rem; line-height: 1.6;">If you did not change your password,
-  <a href="{{ url_for_security('forgot_password', _external=True) }}" style="color: #524ED2; text-decoration: underline;"> click here to reset it</a> immedietly!
-</p>
-{% endif %}
+  <h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">This is a notice that your password was recently changed.</p>
+  <p style="margin-bottom: 1rem; line-height: 1.6;">If you did not perform this action, please reset your password immediately or contact support.</p>
 {% endblock %}

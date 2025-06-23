@@ -1,23 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="foundation-emails/css/foundation-emails.css" />
+  <style>
+    .brand {
+      font-size: clamp(4rem, 10vw, 4rem);
+      background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      padding-bottom: 0.5rem;
+      transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+      text-align: center;
+    }
+
+    .custom-container {
+      background-color: #181c25;
+      color: #c2c7d0;
+      border-radius: 0.25rem;
+      box-shadow: 0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024), 0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03), 0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036), 0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302), 0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06), 0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015);
+      padding: 1rem 2rem;
+    }
+
+    .footer-text {
+      line-height: 1.6;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      color: #c2c7d0;
+    }
+  </style>
 </head>
 
-<body style="font-family: Arial, sans-serif; background-color: rgb(19, 22.5, 30.5); color: #c2c7d0; white-space: wrap; display: flex; flex-direction: column; align-items: center; padding-bottom: 2rem;">
-    <h1 id="brand" style="font-size: clamp(4rem, 10vw, 4rem); background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.5rem; transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);">
-        {{ config["SERVICE"] }}
-    </h1>
-    <div class="email-container" style="width: min(80%, 1000px); margin: auto; background-color: #181c25; box-shadow: 0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024), 0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03), 0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036), 0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302), 0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06), 0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015); padding: 1rem 2rem; border-radius: 0.25rem;">
-        {% block content %}{% endblock %}
-        <hr style="border: none; border-top: 1px solid #2b2e38; margin: 1.5rem 0;">
-        <div>
-            <p style="line-height: 1.6; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;">Sincerely,<br><strong>{{ config["SERVICE"] }} team</strong></p>
-        </div>
-    </div>
+<body>
+  <table class="body" data-made-with-foundation style="background: rgb(19, 22.5, 30.5); width: 100%;">
+    <tr>
+      <td align="center" valign="top">
+        <center>
+          <table class="container">
+            <tr>
+              <td>
+                <div class="brand">{{ config["SERVICE"] }}</div>
+                <table class="row custom-container">
+                  <tr>
+                    <td class="columns first last">
+                      {% block content %}{% endblock %}
+                      <hr style="border: none; border-top: 1px solid #2b2e38; margin: 1.5rem 0;" />
+                      <div class="footer-text">
+                        Sincerely,<br><strong>{{ config["SERVICE"] }} team</strong>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </center>
+      </td>
+    </tr>
+  </table>
 </body>
 
 </html>
