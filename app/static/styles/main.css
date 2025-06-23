@@ -871,6 +871,13 @@ dt::before {
     transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+.warning {
+    color: #ca3443;
+}
+.warning::before {
+    content: "⚠️ ";
+}
+
 @media (max-width: 1024px) {
 
     #main-nav,
