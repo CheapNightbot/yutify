@@ -4,7 +4,7 @@
 
 [![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%236f6cc7)](LICENSE)
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.cheapnightbot.me%2F&style=for-the-badge&color=%236f6cc7)](https://yutify.cheapnightbot.me/)
-[![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/docs)
+[![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%236f6cc7)](https://yutify.cheapnightbot.me/docs)
 
 </div>
 
@@ -50,8 +50,8 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 - Get streaming links for [various streaming platforms](#available-music-platforms-). ♪(´▽ ｀)
 - Retrieve detailed music information OwO ~ artists, album, lyrics, release date, etc.!
 - Retrieve music metadata for your currently playing tracks from Last.fm and/or Spotify.
-- Request information for a specific streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
-- Use API endpoints to search for music programmatically or explore directly on the [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ ♪
+- Request information for a specific streaming platform. Read the [docs](https://yutify.cheapnightbot.me/docs) for more info.
+- Use API endpoints to search for music programmatically or explore directly on the [website](https://yutify.cheapnightbot.me/). ヾ(⌐■_■)ノ ♪
 - Account sign-up for personalized features like currently playing tracks.
 - It's FREE. \_(:з)∠)\_ (but you can always support me on [ko-fi](https://ko-fi.com/cheapnightbot))
 
