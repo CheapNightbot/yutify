@@ -3,7 +3,7 @@
 ![Banner](https://github.com/user-attachments/assets/ce43c4c7-5716-472d-b834-588f6559048d)
 
 [![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%236f6cc7)](LICENSE)
-[![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.onrender.com%2F&style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/)
+[![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.cheapnightbot.me%2F&style=for-the-badge&color=%236f6cc7)](https://yutify.cheapnightbot.me/)
 [![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/docs)
 
 </div>
