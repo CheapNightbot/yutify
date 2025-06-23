@@ -34,7 +34,7 @@ def set_security_headers(response):
         "https://fonts.googleapis.com/ "
         "https://hcaptcha.com https://*.hcaptcha.com;"
         "font-src 'self' https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/webfonts/; "
-        "script-src-elem https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js "
+        "script-src-elem 'self' https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js "
         "https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.5/purify.min.js "
         "https://hcaptcha.com https://*.hcaptcha.com;"
         "frame-src https://hcaptcha.com https://*.hcaptcha.com;"
