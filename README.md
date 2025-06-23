@@ -1,11 +1,10 @@
 <div align=center>
 
-  ![Banner](https://github.com/user-attachments/assets/ce43c4c7-5716-472d-b834-588f6559048d)
+![Banner](https://github.com/user-attachments/assets/ce43c4c7-5716-472d-b834-588f6559048d)
 
-
-  [![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%236f6cc7)](LICENSE)
-  [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.onrender.com%2F&style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/)
-  [![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/docs)
+[![GitHub License](https://img.shields.io/github/license/CheapNightbot/yutify?style=for-the-badge&color=%236f6cc7)](LICENSE)
+[![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fyutify.onrender.com%2F&style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/)
+[![Read Docs](https://img.shields.io/badge/READ-DOCS-blue?style=for-the-badge&color=%236f6cc7)](https://yutify.onrender.com/docs)
 
 </div>
 
@@ -30,13 +29,13 @@
 
   <span align="center">
 
-  |                                           OwO                                             |
-  | ----------------------------------------------------------------------------------------- |
-  | ![home page](https://github.com/user-attachments/assets/d01e69f2-f8cb-4290-8190-cf8542086b6f) |
-  | ![home page with seach results](https://github.com/user-attachments/assets/efc0a37d-d58c-4a99-830d-448e1b6fdfdd) |
-  | ![api search response](https://github.com/user-attachments/assets/d536a7b0-642a-44ff-989b-87d4a1e23972) |
-  | ![user profile page](https://github.com/user-attachments/assets/87b7badf-b281-451c-bc9c-31244e459659) |
-  | ![user settings page](https://github.com/user-attachments/assets/7aae2377-bc29-4f93-b954-5359daad1219) |
+| OwO                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------- |
+| ![home page](https://github.com/user-attachments/assets/d01e69f2-f8cb-4290-8190-cf8542086b6f)                    |
+| ![home page with seach results](https://github.com/user-attachments/assets/efc0a37d-d58c-4a99-830d-448e1b6fdfdd) |
+| ![api search response](https://github.com/user-attachments/assets/d536a7b0-642a-44ff-989b-87d4a1e23972)          |
+| ![user profile page](https://github.com/user-attachments/assets/87b7badf-b281-451c-bc9c-31244e459659)            |
+| ![user settings page](https://github.com/user-attachments/assets/7aae2377-bc29-4f93-b954-5359daad1219)           |
 
   </span>
 
@@ -48,11 +47,11 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 
 ### Features ™️
 
-- Get streaming links for [various streaming platforms](#available-music-platforms-). ♪(´▽｀)
+- Get streaming links for [various streaming platforms](#available-music-platforms-). ♪(´▽ ｀)
 - Retrieve detailed music information OwO ~ artists, album, lyrics, release date, etc.!
 - Retrieve music metadata for your currently playing tracks from Last.fm and/or Spotify.
 - Request information for a specific streaming platform. Read the [docs](https://yutify.onrender.com/docs) for more info.
-- Use API endpoints to search for music programmatically or explore directly on the [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ♪
+- Use API endpoints to search for music programmatically or explore directly on the [website](https://yutify.onrender.com/). ヾ(⌐■_■)ノ ♪
 - Account sign-up for personalized features like currently playing tracks.
 - It's FREE. \_(:з)∠)\_ (but you can always support me on [ko-fi](https://ko-fi.com/cheapnightbot))
 
@@ -173,6 +172,7 @@ python yutify.py
 
 > [!WARNING]
 > Regardless of the user registeration / signup is enabled or disabled, a default admin user with the email set in the `ADMIN_EMAIL` environment variable will be created when you will run the project. It will be created only if a user with that email does not exist in the database. You must change the username and password for it after logging in as this user. Please check the default values below:
+>
 > - `name`: "Admin"
 > - `userrname`: "admin"
 > - `email`: value set in `ADMIN_EMAIL` envrionment variable
@@ -205,3 +205,4 @@ Any logos or trademarks displayed in this project and/or on the website remain t
 - User Profile Icons by <a href="https://www.figma.com/@rrgraph?ref=svgrepo.com" target="_blank">Rrgraph</a> in CC Attribution License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a> 🧑‍🎨
 - Thanks to [OhaJoq](https://github.com/Joqnix) for inspiring this project ✨
 - Thanks to everyone who starred the repo—it means a lot! 🫂
+- Uses [Foundation for Emails](https://github.com/foundation/foundation-emails) for responsive email templates ✉️
