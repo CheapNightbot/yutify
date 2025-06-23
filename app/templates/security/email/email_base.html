@@ -4,89 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: rgb(19, 22.5, 30.5);
-            color: #c2c7d0;
-            white-space: wrap;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-bottom: 2rem;
-        }
-
-        #brand {
-            font-size: clamp(4rem, 10vw, 4rem);
-            background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%);
-            background-clip: text;
-            color: transparent;
-            padding-bottom: 0.5rem;
-            transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
-        }
-
-        .email-container {
-            width: min(80%, 1000px);
-            margin: auto;
-            background-color: #181c25;
-            box-shadow: 0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024), 0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03), 0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036), 0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302), 0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06), 0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015);
-            padding: 1rem 2rem;
-            border-radius: 0.25rem;
-        }
-
-        .email-container p {
-            line-height: 1.6;
-        }
-
-        a {
-            color: #a294e5;
-        }
-
-        p {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-width: 100%;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #2b2e38;
-            margin: 1.5rem 0;
-        }
-
-        .codeblock {
-            background: #2a2f33;
-            border: 1px solid #e1e4e8;
-            border-radius: 3px;
-            padding: 16px;
-            overflow: auto;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 16px 0;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-width: 100%;
-        }
-
-        code {
-            background: #2a2f33;
-            border: 1px solid #e1e4e8;
-            border-radius: 3px;
-            padding: 2px 4px;
-            font-family: 'Courier New', Courier, monospace;
-        }
-    </style>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 
-<body>
-    <h1 id="brand">{{ config["SERVICE"] }}</h1>
-    <div class="email-container">
+<body style="font-family: Arial, sans-serif; background-color: rgb(19, 22.5, 30.5); color: #c2c7d0; white-space: wrap; display: flex; flex-direction: column; align-items: center; padding-bottom: 2rem;">
+    <h1 id="brand" style="font-size: clamp(4rem, 10vw, 4rem); background: linear-gradient(45deg, #524ED2 0%, #E5E0F4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.5rem; transition: all .3s cubic-bezier(0.445, 0.05, 0.55, 0.95);">
+        {{ config["SERVICE"] }}
+    </h1>
+    <div class="email-container" style="width: min(80%, 1000px); margin: auto; background-color: #181c25; box-shadow: 0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024), 0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03), 0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036), 0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302), 0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06), 0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015); padding: 1rem 2rem; border-radius: 0.25rem;">
         {% block content %}{% endblock %}
-        <hr>
+        <hr style="border: none; border-top: 1px solid #2b2e38; margin: 1.5rem 0;">
         <div>
-            <p>Sincerely,<br><strong>{{ config["SERVICE"] }} team</strong></p>
+            <p style="line-height: 1.6; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;">Sincerely,<br><strong>{{ config["SERVICE"] }} team</strong></p>
         </div>
-        </di>
+    </div>
 </body>
 
 </html>

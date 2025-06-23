@@ -1,16 +1,15 @@
 {% extends "security/email/email_base.html" %}
 
+{% block title %}Email Confirmation Instructions{% endblock %}
+
 {% block content %}
-<h3>Heyo {{ user.name }} ~</h3>
-<p>
-  To verify your email address, click <a href="{{ confirmation_link }}">HERE</a>.
+<h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
+<p style="margin-bottom: 1rem; line-height: 1.6;">To verify your email address, click <a href="{{ confirmation_link }}" style="color: #524ED2; text-decoration: underline;">HERE</a>.
   Alternatively, you can copy and paste the following link in your browser's address bar:
 </p>
-
-<div class="codeblock">
+<div style="background: #23273a; color: #E5E0F4; padding: 0.5em 1em; border-radius: 0.2em; font-family: monospace; word-break: break-all; margin-bottom: 1rem; font-size: 1em;">
   {{ confirmation_link }}
 </div>
-
-<p>This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
-<p>If you did not signup for an account, you may simply ignore this message.</p>
+<p style="margin-bottom: 1rem; line-height: 1.6;">This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
+<p style="margin-bottom: 1rem; line-height: 1.6;">If you did not signup for an account, you may simply ignore this message.</p>
 {% endblock %}

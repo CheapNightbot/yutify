@@ -1,23 +1,27 @@
 {% extends "security/email/email_base.html" %}
 
+{% block title %}Change Email Instructions{% endblock %}
+
 {% block content %}
-<h3>Heyo {{ user.name }} ~</h3>
-<p>
-  You requested to change the email address associated with your account. <br>
-  Your currently registered email is: <code>{{ user.email }}</code>
+<h3 style="margin-top: 0; font-size: 1.5rem; color: #E5E0F4;">Heyo {{ user.name }} ~</h3>
+<p style="margin-bottom: 1rem; line-height: 1.6;">
+  You requested to change the email address associated with your account. <br>Your currently registered email is:
+  <code style="background: #23273a; color: #E5E0F4; padding: 0.1em 0.4em; border-radius: 0.2em; font-size: 1em;">{{ user.email }}</code>
 </p>
-<p>
-  To verify your new email address, click <a href="{{ link }}">HERE</a>.
-  Alternatively, you can copy and paste the following link in your browser's address bar:
+<p style="margin-bottom: 1rem; line-height: 1.6;">
+  To verify your new email address, click
+  <a href="{{ link }}" style="color: #524ED2; text-decoration: underline;">HERE</a>. Alternatively, you can copy and paste
+  the following link in your browser's address bar:
 </p>
 
-<div class="codeblock">
+<div style="background: #23273a; color: #E5E0F4; padding: 0.5em 1em; border-radius: 0.2em; font-family: monospace; word-break: break-all; margin-bottom: 1rem; font-size: 1em;">
   {{ link }}
 </div>
 
-<p>This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
-<p>
-  If you did not request email change, it might be that someone has access to your account.
-  You are suggested to <a href="{{ url_for_security('forgot_password', _external=True) }}">reset your password</a> immedietly!
+<p style="margin-bottom: 1rem; line-height: 1.6;">This link is only valid for {{ security.app.config.get("SECURITY_CONFIRM_EMAIL_WITHIN") }}.</p>
+<p style="margin-bottom: 1rem; line-height: 1.6;">
+  If you did not request email change, it might be that someone has access to your account. You are suggested to
+  <a href="{{ url_for_security('forgot_password', _external=True) }}" style="color: #524ED2; text-decoration: underline;">reset your password</a>
+  immedietly!
 </p>
 {% endblock %}
