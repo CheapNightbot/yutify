@@ -15,18 +15,24 @@ from flask_security.utils import verify_password
 from app import db
 from app.models import OAuth2Client, OAuth2Token, Service, User, UserService
 from app.user import bp
-from app.user.forms import DeleteAccountForm, EditProfileForm, EmptyForm, LastfmLinkForm
+from app.user.forms import (
+    DeleteAccountForm,
+    EditProfileForm,
+    EmptyForm,
+    LastfmLinkForm,
+    ProfileVisibilityForm,
+)
 
 
 @bp.route("/<username>", methods=["GET", "POST"])
-@auth_required()
-@permissions_accepted("user-read", "user-write")
 def user_profile(username):
     """Render user profile page."""
-    if username != current_user.username and not current_user.has_role("admin"):
+    user = db.first_or_404(sa.select(User).where(User.username == username))
+
+    # Restrict access if profile is private and not the owner
+    if not user.is_profile_public and current_user.username != user.username:
         abort(404)
 
-    user = db.first_or_404(sa.select(User).where(User.username == username))
     form = EditProfileForm(obj=user)
     if form.validate_on_submit():
         user.name = form.name.data.strip()
@@ -83,6 +89,7 @@ def user_settings(username):
     delete_account_form = DeleteAccountForm()
     service_action_form = EmptyForm()
     lastfm_link_form = None if "lastfm" in connected_services else LastfmLinkForm()
+    profile_visibility_form = ProfileVisibilityForm()
 
     # User clicked on "Change" button for username
     if (
@@ -119,6 +126,21 @@ def user_settings(username):
         flash("Your account has been deleted successfully!", "success")
         return redirect(url_for("main.index"))
 
+    if profile_visibility_form.validate_on_submit():
+        user.is_profile_public = bool(profile_visibility_form.is_profile_public.data)
+        db.session.commit()
+        if user.is_profile_public:
+            flash(
+                "Your profile is now public. Anyone with your profile link can view your information.",
+                "success",
+            )
+        else:
+            flash(
+                "Your profile is now private. Only you can view your profile page.",
+                "success",
+            )
+        return redirect(url_for("user.user_settings", username=user.username))
+
     # Default: Render the empty form on "GET" request
     return render_template(
         "user/user_settings.html",
@@ -133,6 +155,7 @@ def user_settings(username):
         delete_account_form=delete_account_form,
         service_action_form=service_action_form,
         lastfm_link_form=lastfm_link_form,
+        profile_visibility_form=profile_visibility_form,
         authorized_apps=authorized_apps,
     )
 
