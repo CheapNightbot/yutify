@@ -15,6 +15,7 @@ from authlib.integrations.sqla_oauth2 import (
     OAuth2ClientMixin,
     OAuth2TokenMixin,
 )
+
 # ===========================
 from cryptography.exceptions import InvalidKey
 from cryptography.fernet import Fernet
@@ -99,6 +100,9 @@ class User(db.Model, fsqla.FsUserMixin):
     avatar: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), nullable=True)
     username: so.Mapped[str] = so.mapped_column(
         sa.String(64), unique=True, nullable=False
+    )
+    is_profile_public: so.Mapped[bool] = so.mapped_column(
+        sa.Boolean(), server_default=sa.false(), nullable=False
     )
     create_datetime: so.Mapped[datetime] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc)
@@ -271,7 +275,7 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
     )
-    user: so.Mapped["User"] = db.relationship('User')
+    user: so.Mapped["User"] = db.relationship("User")
 
 
 class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
@@ -281,7 +285,7 @@ class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
     )
-    user: so.Mapped["User"] = db.relationship('User')
+    user: so.Mapped["User"] = db.relationship("User")
 
 
 class OAuth2Token(db.Model, OAuth2TokenMixin):
@@ -291,7 +295,7 @@ class OAuth2Token(db.Model, OAuth2TokenMixin):
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
     )
-    user: so.Mapped["User"] = db.relationship('User')
+    user: so.Mapped["User"] = db.relationship("User")
 
     def is_refresh_token_active(self):
         if self.is_revoked():
