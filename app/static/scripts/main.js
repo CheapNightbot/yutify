@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let url = '/api/me?type=html';
-        const username = activityContainer.getAttribute('data-username');
+        const username = document.getElementById('username').getAttribute('data-username');
         if (username) {
             url += `&username=${encodeURIComponent(username)}`;
         }

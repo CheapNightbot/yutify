@@ -22,7 +22,11 @@
         <div class="profile-header-info">
             <div>
                 <h2>{{ user.name }}</h2>
-                <small>@{{ user.username }}</small>
+                {% if user == current_user %}
+                <small id="username">@{{ user.username }}</small>
+                {% else %}
+                <small id="username" data-username="{{ user.username }}">@{{ user.username }}</small>
+                {% endif %}
             </div>
             {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
         </div>
@@ -38,11 +42,7 @@
 
 {% block content %}
 <main class="container">
-    {% if user == current_user %}
     <article class="user-activity-container" aria-busy="true"></article>
-    {% else %}
-    <article class="user-activity-container" aria-busy="true" data-username="{{ user.username }}"></article>
-    {% endif %}
 
     {% if user == current_user %}
     <dialog id="edit-profile-modal">
