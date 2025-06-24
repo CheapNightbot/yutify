@@ -45,7 +45,9 @@ def set_security_headers(response):
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
 
     # Allow embedding for the search endpoiont
-    if request.path.startswith("/api/search") and "embed" in request.args:
+    if (
+        request.path.startswith("/api/search") or request.path.startswith("/api/me")
+    ) and "embed" in request.args:
         if "X-Frame-Options" in response.headers:
             del response.headers["X-Frame-Options"]
 
