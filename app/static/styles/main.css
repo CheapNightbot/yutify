@@ -874,9 +874,17 @@ dt::before {
 .warning {
     color: #ca3443;
 }
+
 .warning::before {
     content: "⚠️ ";
 }
+
+
+.custom-tooltip [data-tooltip]::before {
+    white-space: initial !important;
+    min-width: 600px;
+}
+
 
 @media (max-width: 1024px) {
 
