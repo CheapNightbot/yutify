@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, TextAreaField, HiddenField
+from wtforms import (
+    PasswordField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+    HiddenField,
+    BooleanField,
+)
 from wtforms.validators import DataRequired, Length
 
 
@@ -25,3 +32,8 @@ class LastfmLinkForm(FlaskForm):
 
 class RevokeAppForm(FlaskForm):
     submit = SubmitField("Revoke")
+
+
+class ProfileVisibilityForm(FlaskForm):
+    is_profile_public = BooleanField("Profile Public")
+    submit = SubmitField("Save")
