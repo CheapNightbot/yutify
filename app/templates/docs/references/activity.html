@@ -86,6 +86,35 @@
         </p>
     </div>
 
+    <div class="req-para-info">
+        <div>
+            <kbd>embed</kbd> <code>string</code>
+        </div>
+        <div class="flex-row">
+            <span class="line"></span>
+            <mark>Optional</mark>
+        </div>
+    </div>
+    <p>
+        If provided, the API will return a ready-to-embed HTML user activity card (instead of JSON) for the requested
+        user. You should use it inside an <code>&lt;iframe&gt;</code>.
+    </p>
+    <p>
+        <b>Example</b>:
+    <ul>
+        <li>
+            <pre
+                class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/me?embed" frameborder="0" width="100%" height="722" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
+        </li>
+        <li>
+            <pre
+                class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/me?username=potato&amp;embed" frameborder="0" width="100%" height="722" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
+        </li>
+    </ul>
+    </p>
+    <img class="screenshot medium" src="{{ url_for('static', filename='docs/activity-embed-example.png') }}"
+        alt="Activity embed example" />
+
     <div class="flex-row left">
         <h3>Response</h3>
         <nav role="tab-control">
