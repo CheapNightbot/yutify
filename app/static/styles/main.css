@@ -871,6 +871,10 @@ dt::before {
     transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+.screenshot.medium {
+    max-width: 800px;
+}
+
 .warning {
     color: #ca3443;
 }
