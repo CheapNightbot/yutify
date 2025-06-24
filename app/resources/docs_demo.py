@@ -2,10 +2,11 @@
 API responses to showcase in Documentation. Just to avoid calling real third-party APIs in documentation.
 """
 
-from yutipy.models import MusicInfo, MusicInfos, UserPlaying
+from yutipy.models import MusicInfo, MusicInfos
+from config import Config
 
 ALL = MusicInfos(
-    album_art="https://deezer.com/6663629/album_art.jpg",
+    album_art="https://" + Config.HOST_URL + "/static/favicon.svg",
     album_art_source="deezer",
     album_title="Song",
     album_type="single",
