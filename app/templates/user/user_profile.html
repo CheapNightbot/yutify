@@ -38,7 +38,11 @@
 
 {% block content %}
 <main class="container">
+    {% if user == current_user %}
     <article class="user-activity-container" aria-busy="true"></article>
+    {% else %}
+    <article class="user-activity-container" aria-busy="true" data-username="{{ user.username }}"></article>
+    {% endif %}
 
     {% if user == current_user %}
     <dialog id="edit-profile-modal">
