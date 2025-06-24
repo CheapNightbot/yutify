@@ -3,7 +3,7 @@
 {% block main %}
 <main class="container">
     <h1>Get Currently Playing Music</h1>
-    <p>Get information about music you are currently listening to.</p>
+    <p>Get information about music you are currently listening to, or about another user if their profile is public.</p>
 
     <div class="flex-row left padding-r">
         <select id="methods" name="methods">
@@ -15,8 +15,41 @@
         </span>
     </div>
 
+    <blockquote>
+        <ul>
+            <li>
+                OAuth Authorization Code is (only) required for private profiles or if no username is provided. For
+                public profiles, anyone can
+                access the activity without OAuth by providing the <code>username</code> query parameter.
+            </li>
+            <li>
+                If <code>username</code> is provided and the user's profile is public, OAuth is
+                <b>not required</b> and anyone can access the activity.
+            </li>
+            <li>
+                If the profile is private or <code>username</code> is not provided, OAuth or authentication is required.
+            </li>
+        </ul>
+    </blockquote>
+
     <h3>Request</h3>
     <div>
+        <div class="req-para-info">
+            <div>
+                <kbd>username</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            The username of the user whose activity you want to retrieve.
+        </p>
+        <p>
+            <b>Example</b>: <code>/api/me<ins>?username=potato</ins></code>
+        </p>
+
         <div class="req-para-info">
             <div>
                 <kbd>service</kbd> <code>string</code>
@@ -167,7 +200,8 @@
                                         Whether the user is currently listening to this music or not. <br>
                                         It will be <code>true</code> if user is currently listening this music,
                                         otherwise <code>false</code> indicating that user is not currently listening to
-                                        this music, but this was the last music they were listening to that <strong>{{ config["SERVICE"] }}</strong> fetched.
+                                        this music, but this was the last music they were listening to that
+                                        <strong>{{ config["SERVICE"] }}</strong> fetched.
                                     </p>
                                 </div>
                             </li>
