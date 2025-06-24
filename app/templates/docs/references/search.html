@@ -97,17 +97,16 @@
         </div>
         <p>
             If provided, the API will return a ready-to-embed HTML music info card (instead of JSON) for the requested
-            song and artist.<br>
-            The HTML response includes all necessary styles, so you should use it inside an <code>&lt;iframe&gt;</code>.
+            song and artist. You should use it inside an <code>&lt;iframe&gt;</code>.
         </p>
         <p>
             <b>Note</b>: When using this query parameter, the API will ignore the <code>platform</code> query
             parameter and always return the music information/metadata from all the available music platforms. <br>
-            <b>Example</b>:
+            <b>Examples</b>:
         <pre
             class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/search/Madeon:Shelter?embed" frameborder="0" width="100%" height="380" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
         </p>
-        <img class="screenshot" src="{{ url_for('static', filename='docs/search-embed-example.png') }}" alt="Search embed example" />
+        <img class="screenshot medium" src="{{ url_for('static', filename='docs/search-embed-example.png') }}" alt="Search embed example" />
     </div>
 
     <div class="flex-row left">
