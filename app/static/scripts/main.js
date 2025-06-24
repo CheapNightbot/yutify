@@ -386,7 +386,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const response = await fetch('/api/me?type=html', {
+        let url = '/api/me?type=html';
+        const username = activityContainer.getAttribute('data-username');
+        if (username) {
+            url += `&username=${encodeURIComponent(username)}`;
+        }
+
+        const response = await fetch(url, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
