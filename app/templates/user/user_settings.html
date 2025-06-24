@@ -87,6 +87,36 @@
 
     <h3>Privacy & Security:</h3>
 
+    <form method="post" action="">
+        <article class="service-item">
+            {{ profile_visibility_form.csrf_token() }}
+            <div class="service-info">
+                <div>
+                    <i class="fa-solid fa-user-shield"></i>
+                    {% if user.is_profile_public %}
+                    <span>
+                        Profile Visibility: <span class="status not-connected">
+                            Your profile is public. Anyone with your profile link can view your profile & activity.
+                            <span class="custom-tooltip">
+                                <span
+                                    data-tooltip="When your profile is public, anyone can view your profile and activity via the public API. OAuth is not required, but still supported. If you make your profile private, only you and authorized apps (via OAuth) can access your profile and activity.">
+                                    ℹ️ </span>
+                            </span>
+                        </span>
+                    </span>
+                    {% else %}
+                    <span>Profile Visibility: <span class="status connected">Your profile is private. Only you can view
+                            your profile page.</span></span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="service-action">
+                <small>{{ "Public" if user.is_profile_public else "Private" }}</small>
+                {{ profile_visibility_form.is_profile_public(type="checkbox", role="switch", onchange="this.form.submit()", checked=user.is_profile_public) }}
+            </div>
+        </article>
+    </form>
+
     <article class="service-item">
         {% if user.tf_primary_method %}
         <div class="service-info">
@@ -115,7 +145,7 @@
         {% if authorized_apps|length > 0 %}
         <div class="service-info">
             <div>
-                <i class="fa-solid fa-shield-halved"></i>
+                <i class="fa-solid fa-user-lock"></i>
                 <span>Authorized Apps: <span class="status connected">{{ authorized_apps|length }}</span></span>
             </div>
         </div>
@@ -125,7 +155,7 @@
         {% else %}
         <div class="service-info">
             <div>
-                <i class="fa-solid fa-shield-halved"></i>
+                <i class="fa-solid fa-user-lock"></i>
                 <span>Authorized Apps: <span class="status not-connected">{{ authorized_apps|length }}</span></span>
             </div>
         </div>
