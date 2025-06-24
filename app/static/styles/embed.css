@@ -88,3 +88,16 @@ body {
     transform: scale(1.1);
     transition: all ease-in-out 0.2s;
 }
+
+@media (max-width: 800px) {
+    .music-card {
+        flex-direction: column;
+        width: 512px;
+        height: 722px;
+        justify-content: center;
+    }
+
+    .music-info {
+        align-items: center;
+    }
+}
