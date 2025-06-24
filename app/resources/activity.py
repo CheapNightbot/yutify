@@ -3,48 +3,55 @@ import random
 
 import sqlalchemy as sa
 from authlib.integrations.flask_oauth2 import current_token
-from flask import abort, make_response, render_template, request
+from flask import current_app, make_response, render_template, request
 from flask_restful import Resource
-from flask_security import current_user, permissions_accepted
-from functools import wraps
+from flask_security import Security, SQLAlchemyUserDatastore, current_user
 
 from app import db
 from app.auth_services.lastfm import get_lastfm_activity
 from app.auth_services.spotify import get_spotify_activity
 from app.limiter import limiter
 from app.models import UserService
-from app.oauth.oauth2 import require_oauth
 
 RATELIMIT = os.environ.get("RATELIMIT")
-
-
-# Custom decorator to allow access if user has permissions OR valid oauth token with scope
-def user_or_oauth_required(scope=None, permissions=None):
-    def decorator(fn):
-        @wraps(fn)
-        def wrapper(*args, **kwargs):
-            if current_user.is_authenticated:
-                if permissions:
-                    checker = permissions_accepted(*permissions)
-                    return checker(fn)(*args, **kwargs)
-                return fn(*args, **kwargs)
-            if scope:
-                return require_oauth(scope)(fn)(*args, **kwargs)
-            abort(403)
-
-        return wrapper
-
-    return decorator
 
 
 class UserActivityResource(Resource):
 
     @limiter.limit(RATELIMIT if RATELIMIT else "")
-    @user_or_oauth_required(scope="activity", permissions=["user-read", "user-write"])
     def get(self):
         """Fetch the currently playing music for the authenticated user."""
+        username = request.args.get("username", "").strip().lower()
+        security: Security = current_app.security
+        datastore: SQLAlchemyUserDatastore = security.datastore
 
-        user = current_user if current_user.is_authenticated else current_token.user
+        if username:
+            # If a username is provided, fetch the user by username
+            user = datastore.find_user(username=username)
+            # If user not found or profile is private
+            if not user or not user.is_profile_public:
+                if current_user.is_authenticated or current_token:
+                    # If the user is authenticated or has a valid OAuth token, allow access
+                    return {"error": "User not found or profile is private."}, 404
+
+                else:
+                    # User must be authenticated or OAuth token must be valid
+                    return {
+                        "error": "Authentication required. Please log in or provide a valid OAuth token."
+                    }, 401
+
+        else:
+            # Otherwise, use the current user or the user from the OAuth token
+            user = (
+                current_user
+                if current_user.is_authenticated
+                else current_token.user if current_token else None
+            )
+            if not user:
+                # User must be authenticated or OAuth token must be valid
+                return {
+                    "error": "Authentication required. Please log in or provide a valid OAuth token."
+                }, 401
 
         response_type = request.args.get("type", "json").lower()
         service = "".join(list(request.args.keys())).lower() if request.args else "all"
@@ -56,7 +63,11 @@ class UserActivityResource(Resource):
 
         if not user_services:
             return {
-                "error": "No service is linked. Please link one in your settings."
+                "error": (
+                    "No service is linked. Please link one in your settings."
+                    if user == current_user
+                    else f"{user.name} is not listening to anything right now..."
+                )
             }, 404
 
         # Determine which services are linked
@@ -87,7 +98,11 @@ class UserActivityResource(Resource):
 
         if not activity:
             return {
-                "error": "No activity found. Listen to music on your linked service to see it here."
+                "error": (
+                    "No activity found. Listen to music on your linked service to see it here."
+                    if user == current_user
+                    else f"{user.name} is not listening to anything right now..."
+                )
             }, 404
 
         return self._format_response(activity, response_type)
