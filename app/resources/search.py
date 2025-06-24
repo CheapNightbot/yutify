@@ -5,7 +5,7 @@ from dataclasses import asdict
 from typing import Union
 
 import sqlalchemy as sa
-from flask import request
+from flask import request, render_template, make_response
 from flask_restful import Resource
 from yutipy import deezer, itunes, musicyt, yutipy_music
 from yutipy.exceptions import KKBoxException, SpotifyException
@@ -101,7 +101,30 @@ class YutifySearch(Resource):
         song = song.strip()
         platform = "".join(list(request.args.keys())).lower() if request.args else "all"
 
-        # Check if the result is in the cache
+        # Check for ?embed param (any value)
+        if "embed" in request.args:
+            # Always search all platforms for embed (or could respect platform param)
+            result = self.__search_music(artist, song, platform)
+            # result is (OrderedDict, status_code)
+            data, status = result if isinstance(result, tuple) else (result, 200)
+            # Normalize to dict for template
+            if isinstance(data, tuple):
+                data = data[0]
+            # Map to template context
+            music = {
+                "album_art": data.get("album_art"),
+                "album_title": data.get("album_title"),
+                "album_type": data.get("album_type"),
+                "artists": data.get("artists"),
+                "genre": data.get("genre"),
+                "title": data.get("title"),
+                "lyrics": data.get("lyrics"),
+                "url": data.get("url") if isinstance(data.get("url"), dict) else {},
+            }
+            html = render_template("embed/music_card.html", music=music)
+            return make_response(html, 200, {"Content-Type": "text/html"})
+
+        # Default: JSON response
         cache_key = f"search:{artist}:{song}:{platform}"  # Construct the cache key
         cached_result = cache.get(cache_key)
         if cached_result:

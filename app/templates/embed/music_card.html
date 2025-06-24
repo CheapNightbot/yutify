@@ -1,0 +1,114 @@
+{# Standalone music info card for API embed responses #}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>yutify: {{ music.title }} by {{ music.artists }}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/embed.css')}}">
+    </head>
+
+    <body>
+        <section id="music-embed">
+            <article class="music-card">
+                {% if music.album_art %}
+                <img src="{{ music.album_art }}" alt="{{ music.title }} - Album Art" class="album-art">
+                {% else %}
+                <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ music.title }} - Album Art"
+                    class="album-art">
+                {% endif %}
+                <div class="music-info flex-col">
+                    <span class="music-info title block">
+                        <span class="ellipsis">
+                            {% if music.title %}
+                            {{ music.title }}
+                            {% else %}
+                            Title
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="music-info album-title block">
+                        <span class="ellipsis">
+                            {% if music.album_title %}
+                            {{ music.album_title }}{% if music.album_type %} ({{ music.album_type }}){% endif %}
+                            {% elif music.title %}
+                            {{ music.title }}{% if music.album_type %} ({{ music.album_type }}){% endif %}
+                            {% else %}
+                            Album Title (Album Type)
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="music-info artists block">
+                        <span class="ellipsis">
+                            {% if music.artists %}
+                            {{ music.artists }}
+                            {% elif music.title %}
+                            Unknown
+                            {% else %}
+                            Artists
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="music-info genre block">
+                        <span class="ellipsis">
+                            {% if music.genre %}
+                            {{ music.genre }}
+                            {% elif music.title %}
+                            Unknown
+                            {% else %}
+                            Genre
+                            {% endif %}
+                        </span>
+                    </span>
+                    <div class="streaming-platforms-container">
+                        <div class="streaming-platforms">
+                            {% if music.url.deezer %}
+                            <a class="music-link" href="{{ music.url.deezer }}" target="_blank" title="Deezer">
+                            {% else %}
+                            <a class="music-link" href="#deezer" title="Deezer">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="Deezer Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if music.url.itunes %}
+                            <a class="music-link" href="{{ music.url.itunes }}" target="_blank" title="Apple Music">
+                            {% else %}
+                            <a class="music-link" href="#apple-music" title="Apple Music">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/apple-music.svg') }}" alt="Apple Music Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if music.url.kkbox %}
+                            <a class="music-link" href="{{ music.url.kkbox }}" target="_blank" title="KKBOX">
+                            {% else %}
+                            <a class="music-link" href="#kkbox" title="KKBOX">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/kkbox.svg') }}" alt="KKBOX Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if music.url.spotify %}
+                            <a class="music-link" href="{{ music.url.spotify }}" target="_blank"
+                            title="Spotify">
+                            {% else %}
+                            <a class="music-link" href="#spotify" title="Spotify">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="Spotify Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if music.url.ytmusic %}
+                            <a class="music-link" href="{{ music.url.ytmusic }}" target="_blank"
+                            title="YouTube Music">
+                            {% else %}
+                            <a class="music-link" href="#ytmusic" title="YouTube Music">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/ytmusic.svg') }}" alt="YouTube Music Logo" width="32px" height="32px">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </body>
+
+</html>

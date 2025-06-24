@@ -1,0 +1,90 @@
+body {
+    background: transparent;
+    color: #c2c7d0;
+    font-family: system-ui, sans-serif;
+    margin: 0;
+}
+
+.block {
+    display: block;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.music-card {
+    background: #181c25;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 32px 0 rgba(7, 8.5, 12, 0.12);
+    max-width: 800px;
+    margin: auto;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 800px;
+    height: 360px;
+}
+
+.album-art,
+.music-card img.album-art {
+    background: #23273a;
+    object-fit: cover;
+    display: block;
+    width: 14rem;
+    height: 16rem;
+    border-radius: .746rem;
+    pointer-events: none;
+}
+
+.music-info.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.music-info.album-title {
+    font-size: 1.125rem;
+}
+
+.music-info.artists {
+    font-size: 1.25rem;
+}
+
+.music-info.genre {
+    font-size: 1rem;
+}
+
+.ellipsis {
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: left;
+}
+
+.streaming-platforms-container {
+    margin-top: 1rem;
+}
+
+.streaming-platforms {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.music-link img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.25rem;
+    transition: box-shadow 0.2s;
+}
+
+.music-link:hover img {
+    transform: scale(1.1);
+    transition: all ease-in-out 0.2s;
+}

@@ -4,6 +4,7 @@ from waitress import serve
 
 from app import create_app, create_services, create_users, db
 from app.models import Role, Service, User, UserData, UserService, WebAuthn
+from flask import request
 
 app = create_app()
 
@@ -42,6 +43,11 @@ def set_security_headers(response):
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
+
+    # Allow embedding for the search endpoiont
+    if request.path.startswith("/api/search") and "embed" in request.args:
+        if "X-Frame-Options" in response.headers:
+            del response.headers["X-Frame-Options"]
 
     return response
 
