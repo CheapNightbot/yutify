@@ -102,6 +102,7 @@ def tutorials(tutorial=None):
 @bp.route("/references/<reference>")
 def references(reference):
     """Render the API reference pages based on the provided reference type."""
+    base_url = url_for("main.index", _external=True).rstrip("/")
     match reference:
         case "activity":
             return render_template(
@@ -117,6 +118,7 @@ def references(reference):
                 title="API Reference Search",
                 active_page="docs",
                 aside_active="Search",
+                base_url=base_url,
                 year=datetime.today().year,
             )
         case _:
