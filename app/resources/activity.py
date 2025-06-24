@@ -121,11 +121,7 @@ class UserActivityResource(Resource):
         """Format the response based on the requested type."""
         # Only allow HTML response for authenticated users (not OAuth2) and AJAX requests
         if response_type == "html":
-            if (
-                not current_user.is_authenticated
-                or current_token
-                or request.headers.get("X-Requested-With") != "XMLHttpRequest"
-            ):
+            if request.headers.get("X-Requested-With") != "XMLHttpRequest":
                 # Fallback to default JSON response if not allowed
                 return activity
             html = render_template("user/activity_embed.html", activity=activity)
