@@ -30,6 +30,8 @@ def user_profile(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
 
     # Restrict access if profile is private and not the owner
+    if not current_user.is_authenticated and not user.is_profile_public:
+        abort(404)
     if not user.is_profile_public and current_user.username != user.username:
         abort(404)
 
