@@ -1,0 +1,123 @@
+{# Standalone user activity card for API embed responses #}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>yutify: {{ user.username }} listening to "{{ activity.music_info.title }}"</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/embed.css')}}">
+    </head>
+
+    <body>
+        <section id="music-embed">
+            <article class="music-card activity">
+                <div class="user-activity-header">
+                    {% if activity.activity_info.is_playing %}
+                    <h3>{{ user.name }} Currently Playing:</h3>
+                    {% else %}
+                    <h3>{{ user.name }} Last Played:</h3>
+                    <span id="timestamp">{{ activity.activity_info.timestamp | int | relative_timestamp }}</span>
+                    {% endif %}
+                </div>
+
+                {% if activity.music_info.album_art %}
+                <img src="{{ activity.music_info.album_art }}" alt="{{ activity.music_info.title }} - Album Art" class="album-art">
+                {% else %}
+                <img src="{{ url_for('static', filename='favicon.svg') }}" alt="{{ activity.music_info.title }} - Album Art"
+                    class="album-art">
+                {% endif %}
+                <div class="music-info flex-col activity">
+                    <span class="music-info title block">
+                        <span class="ellipsis">
+                            {% if activity.music_info.title %}
+                            {{ activity.music_info.title }}
+                            {% else %}
+                            Title
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="music-info album-title block">
+                        <span class="ellipsis">
+                            {% if activity.music_info.album_title %}
+                            {{ activity.music_info.album_title }}{% if activity.music_info.album_type %} ({{ activity.music_info.album_type }}){% endif %}
+                            {% elif activity.music_info.title %}
+                            {{ activity.music_info.title }}{% if activity.music_info.album_type %} ({{ activity.music_info.album_type }}){% endif %}
+                            {% else %}
+                            Album Title (Album Type)
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="music-info artists block">
+                        <span class="ellipsis">
+                            {% if activity.music_info.artists %}
+                            {{ activity.music_info.artists }}
+                            {% elif activity.music_info.title %}
+                            Unknown
+                            {% else %}
+                            Artists
+                            {% endif %}
+                        </span>
+                    </span>
+                    <span class="music-info genre block">
+                        <span class="ellipsis">
+                            {% if activity.music_info.genre %}
+                            {{ activity.music_info.genre }}
+                            {% elif activity.music_info.title %}
+                            Unknown
+                            {% else %}
+                            Genre
+                            {% endif %}
+                        </span>
+                    </span>
+                    <div class="streaming-platforms-container">
+                        <div class="streaming-platforms">
+                            {% if activity.music_info.url.deezer %}
+                            <a class="music-link" href="{{ activity.music_info.url.deezer }}" target="_blank" title="Deezer">
+                            {% else %}
+                            <a class="music-link" href="#deezer" title="Deezer">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/deezer.svg') }}" alt="Deezer Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if activity.music_info.url.itunes %}
+                            <a class="music-link" href="{{ activity.music_info.url.itunes }}" target="_blank" title="Apple Music">
+                            {% else %}
+                            <a class="music-link" href="#apple-music" title="Apple Music">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/apple-music.svg') }}" alt="Apple Music Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if activity.music_info.url.kkbox %}
+                            <a class="music-link" href="{{ activity.music_info.url.kkbox }}" target="_blank" title="KKBOX">
+                            {% else %}
+                            <a class="music-link" href="#kkbox" title="KKBOX">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/kkbox.svg') }}" alt="KKBOX Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if activity.music_info.url.spotify %}
+                            <a class="music-link" href="{{ activity.music_info.url.spotify }}" target="_blank"
+                            title="Spotify">
+                            {% else %}
+                            <a class="music-link" href="#spotify" title="Spotify">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/spotify.svg') }}" alt="Spotify Logo" width="32px" height="32px">
+                            </a>
+
+                            {% if activity.music_info.url.ytmusic %}
+                            <a class="music-link" href="{{ activity.music_info.url.ytmusic }}" target="_blank"
+                            title="YouTube Music">
+                            {% else %}
+                            <a class="music-link" href="#ytmusic" title="YouTube Music">
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='logos/ytmusic.svg') }}" alt="YouTube Music Logo" width="32px" height="32px">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </body>
+
+</html>

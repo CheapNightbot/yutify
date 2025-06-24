@@ -33,13 +33,11 @@ class UserActivityResource(Resource):
                 if current_user.is_authenticated or current_token:
                     # If the user is authenticated or has a valid OAuth token, allow access
                     return {"error": "User not found or profile is private."}, 404
-
                 else:
                     # User must be authenticated or OAuth token must be valid
                     return {
                         "error": "Authentication required. Please log in or provide a valid OAuth token."
                     }, 401
-
         else:
             # Otherwise, use the current user or the user from the OAuth token
             user = (
@@ -55,6 +53,7 @@ class UserActivityResource(Resource):
 
         response_type = request.args.get("type", "json").lower()
         service = "".join(list(request.args.keys())).lower() if request.args else "all"
+        is_embed = "embed" in request.args
 
         # Fetch user services from the database
         user_services = db.session.scalars(
@@ -104,6 +103,17 @@ class UserActivityResource(Resource):
                     else f"{user.name} is not listening to anything right now..."
                 )
             }, 404
+
+        if is_embed:
+            # Render a standalone HTML card for embedding
+            # Pass activity and user info for header
+            return make_response(
+                render_template(
+                    "embed/activity_card.html", activity=activity, user=user
+                ),
+                200,
+                {"Content-Type": "text/html"},
+            )
 
         return self._format_response(activity, response_type)
 
