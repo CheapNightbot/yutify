@@ -1,10 +1,10 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from flask import redirect, request
 from waitress import serve
 
 from app import create_app, create_services, create_users, db
 from app.models import Role, Service, User, UserData, UserService, WebAuthn
-from flask import request
 
 app = create_app()
 
@@ -22,6 +22,23 @@ def make_shell_context():
         "UserService": UserService,
         "WebAuthn": WebAuthn,
     }
+
+
+@app.before_request
+def redirect_onrender_to_custom_domain():
+    """
+    Right now my deployment is on Render and I have a custom domain set up.
+    But yutify is accessible via the default Render domain as well.
+    Unfortunately, Render does not allow disabling the default (.onrender.com) domain
+    or redirecting it to a custom domain.
+    """
+    if request.host == "yutify.onrender.com":
+        path = request.path
+        qs = request.query_string.decode("utf-8")
+        url = f"https://{app.config.get("HOST_URL")}{path}"
+        if qs:
+            url += f"?{qs}"
+        return redirect(url, code=301)
 
 
 # # https://flask.palletsprojects.com/en/stable/web-security/
