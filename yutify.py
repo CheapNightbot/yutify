@@ -35,7 +35,7 @@ def redirect_onrender_to_custom_domain():
     if request.host == "yutify.onrender.com":
         path = request.path
         qs = request.query_string.decode("utf-8")
-        url = f"https://{app.config.get("HOST_URL")}{path}"
+        url = f"https://{app.config.get('HOST_URL')}{path}"
         if qs:
             url += f"?{qs}"
         return redirect(url, code=301)
