@@ -78,6 +78,19 @@
             {% endif %}
         </div>
     </article>
+    {% if service.name.lower() == 'spotify' %}
+    <blockquote>
+        <small>
+            <strong>Note:</strong> You can link your Spotify account, but due to Spotify's
+            new policy, the app cannot access your Spotify activity unless you are allowlisted. <a
+                href="https://developer.spotify.com/documentation/web-api/concepts/quota-modes" target="_blank"
+                rel="noopener noreferrer">More info</a>. <br>
+            If you want to fetch your Spotify activity, please email
+            <a href="mailto:{{ config['SERVICE_EMAIL'] }}">{{ config["SERVICE_EMAIL"] }}</a> with
+            the email address associated with your Spotify account and your name so we can add you to our application.
+        </small>
+    </blockquote>
+    {% endif %}
     {% endfor %}
     {% else %}
     <article class="service-item">
