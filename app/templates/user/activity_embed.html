@@ -123,16 +123,16 @@
             <header>
                 <button id="close-lyrics" aria-label="Close" rel="prev" data-target="lyrics"></button>
                 <p>
-                    {% if title_ %}
-                    <strong>{{ title_ }} ~ Lyrics:</strong>
+                    {% if activity.music_info.title %}
+                    <strong>{{ activity.music_info.title }} ~ Lyrics:</strong>
                     {% else %}
                     <strong>{{ config["SERVICE"] }} ~ Lyrics:</strong>
                     {% endif %}
                 </p>
             </header>
             <p>
-                {% if lyrics %}
-                {{ lyrics | safe }}
+                {% if activity.music_info.lyrics %}
+                {{ activity.music_info.lyrics | safe }}
                 {% else %}
                 No lyrics found...
                 {% endif %}
