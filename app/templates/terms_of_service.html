@@ -20,91 +20,97 @@
 
 {% block content %}
 <main class="container">
-<div>
-    <h1>Terms of Service</h1>
+    <div>
+        <h1>Terms of Service</h1>
 
-    <h3>1. Introduction</h3>
-    <p>
-        Welcome to <strong>{{ config["SERVICE"] }}</strong> ("we", "us", or "our"). By accessing or using our web application ("the Service"), you
-        agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use the Service.
-    </p>
+        <h3>1. Introduction</h3>
+        <p>
+            Welcome to <strong>{{ config["SERVICE"] }}</strong> ("we", "us", or "our"). By accessing or using our web
+            application ("the Service"), you
+            agree to comply with and be bound by these Terms of Service. If you do not agree, please do not use the
+            Service.
+        </p>
 
-    <h3>2. Use of the Service</h3>
-    <p>
-        The Service allows users to:
-    <ul>
-        <li>Search for music metadata, including artist name, song title, album art, and lyrics.</li>
-        <li>Retrieve streaming links for platforms such as Spotify, Deezer, Apple Music, and YouTube Music.</li>
-        <li>Link music service accounts and track recent activity.</li>
-    </ul>
-    The Service is provided for personal and non-commercial use only.
-    </p>
+        <h3>2. Use of the Service</h3>
+        <p>
+            The Service allows users to:
+        <ul>
+            <li>Search for music metadata, including artist name, song title, album art, and lyrics.</li>
+            <li>Retrieve streaming links for platforms such as Spotify, Deezer, Apple Music, and YouTube Music.</li>
+            <li>Link music service accounts and track recent activity.</li>
+        </ul>
+        The Service is provided for personal and non-commercial use only.
+        </p>
 
-    <h3>3. User Responsibilities</h3>
-    <p>
-        Users are responsible for:
-    <ul>
-        <li>Providing accurate information when using the Service.</li>
-        <li>Complying with the terms and policies of third-party services linked to the application.</li>
-        <li>Using the Service in a lawful and ethical manner.</li>
-    </ul>
-    </p>
+        <h3>3. User Responsibilities</h3>
+        <p>
+            Users are responsible for:
+        <ul>
+            <li>Providing accurate information when using the Service.</li>
+            <li>Complying with the terms and policies of third-party services linked to the application.</li>
+            <li>Using the Service in a lawful and ethical manner.</li>
+        </ul>
+        </p>
 
-    <h3>4. Third-Party Services</h3>
-    <p>
-        The Service integrates with third-party APIs, such as Spotify, Deezer, Apple Music, and YouTube Music. By
-        using the Service, you agree to be bound by the terms and privacy policies of these third-party services. We
-        are not responsible for their content, policies, or practices.
-    </p>
+        <h3>4. Third-Party Services</h3>
+        <p>
+            The Service integrates with third-party APIs, such as Spotify, Deezer, Apple Music, and YouTube Music. By
+            using the Service, you agree to be bound by the terms and privacy policies of these third-party services. We
+            are not responsible for their content, policies, or practices.
+        </p>
 
-    <h3>5. Data Persistence</h3>
-    <p>
-        The Service does not host, download, or store any music files. Only textual information and links to
-        third-party services are saved in our database for recent activity tracking.
-    </p>
+        <h3>5. Data Persistence</h3>
+        <p>
+            The Service does not host, download, or store any music files. Only textual information and links to
+            third-party services are saved in our database for recent activity tracking.
+        </p>
 
-    <h3>6. Intellectual Property</h3>
-    <p>
-        All trademarks, logos, and content displayed on the Service are the property of their respective owners.
-    </p>
-    <p>
-        This Service is an open-source project and is not affiliated with, endorsed by, or associated with any of the
-        mentioned services or
-        platforms, including but not limited to Apple Music, Spotify, KKBox, Last.fm, Deezer, and YouTube Music.
-        The use of their names, trademarks, or logos is solely to indicate compatibility or integration with these
-        platforms and to enhance the user experience.
-    </p>
-    <p>
-        Any logos or trademarks displayed on the Service remain the property of their respective owners.
-    </p>
-    <p>
-        You may not reproduce, distribute, or create derivative works based on the Service's content without proper
-        authorization.
-    </p>
+        <h3>6. Intellectual Property</h3>
+        <p>
+            All trademarks, logos, and content displayed on the Service are the property of their respective owners.
+        </p>
+        <p>
+            This Service is an open-source project and is not affiliated with, endorsed by, or associated with any of
+            the
+            mentioned services or
+            platforms, including but not limited to Apple Music, Spotify, KKBox, Last.fm, Deezer, and YouTube Music.
+            The use of their names, trademarks, or logos is solely to indicate compatibility or integration with these
+            platforms and to enhance the user experience.
+        </p>
+        <p>
+            Any logos or trademarks displayed on the Service remain the property of their respective owners.
+        </p>
+        <p>
+            You may not reproduce, distribute, or create derivative works based on the Service's content without proper
+            authorization.
+        </p>
 
-    <h3>7. Disclaimer</h3>
-    <p>
-        The Service is provided "as is" without any warranties or guarantees. We are not responsible for any
-        inaccuracies or unavailability of data retrieved from third-party services.
-    </p>
+        <h3>7. Disclaimer</h3>
+        <p>
+            The Service is provided "as is" without any warranties or guarantees. We are not responsible for any
+            inaccuracies or unavailability of data retrieved from third-party services.
+        </p>
 
-    <h3>8. Limitation of Liability</h3>
-    <p>
-        We are not liable for any damages or losses arising from your use of the Service.
-    </p>
+        <h3>8. Limitation of Liability</h3>
+        <p>
+            We are not liable for any damages or losses arising from your use of the Service.
+        </p>
 
-    <h3>9. Changes to Terms of Service</h3>
-    <p>
-        We reserve the right to update these Terms of Service at any time. Continued use of the Service after any
-        changes signifies your acceptance of the updated terms.
-    </p>
+        <h3>9. Changes to Terms of Service</h3>
+        <p>
+            We reserve the right to update these Terms of Service at any time. Continued use of the Service after any
+            changes signifies your acceptance of the updated terms.
+        </p>
 
-    <h3>10. Contact Us</h3>
-    <p>
-        If you have any questions or concerns about these Terms of Service, please contact us at {{ config["SERVICE_EMAIL"] | obfuscate_email }}.
-    </p>
+        <h3>10. Contact Us</h3>
+        <p>
+            If you have any questions or concerns about these Terms of Service, please contact us at
+            {% if current_user.is_authenticated %} <a
+                href="mailto:{{ config['SERVICE_EMAIL'] }}">{{ config["SERVICE_EMAIL"] }}</a>{% else %}
+            <code>{{ config["SERVICE_EMAIL"] | obfuscate_email }}</code>{% endif %}
+        </p>
 
-    <p>Last updated: 2025, May 15</p>
-</div>
+        <p>Last updated: 2025, May 15</p>
+    </div>
 </main>
 {% endblock %}
