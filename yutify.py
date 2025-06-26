@@ -34,7 +34,6 @@ def redirect_onrender_to_custom_domain():
     """
     if request.host == "yutify.onrender.com":
         url = f"https://{app.config.get('HOST_URL')}"
-        flash(f"yutify has moved to {url}", "info")
         return redirect(url, code=301)
 
 
