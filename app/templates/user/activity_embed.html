@@ -132,7 +132,7 @@
             </header>
             <p>
                 {% if activity.music_info.lyrics %}
-                {{ activity.music_info.lyrics | safe }}
+                {{ activity.music_info.lyrics.replace('\r', '').replace('\n', '<br>') | safe }}
                 {% else %}
                 No lyrics found...
                 {% endif %}
