@@ -41,19 +41,23 @@
 
 </details>
 
-**yutify** is a simple RESTful API for retrieving music info from various streaming platforms. Using the artist name and song name, you can get various information about the song, including streaming link(s) for multiple music platforms. To prevent abuse, the API enforces a rate limit of 20 requests per minute per user.
+**yutify** is a simple RESTful API and full-stack web application for retrieving music info, streaming links, and user activity from various platforms. It also provides beautiful, ready-to-embed music and activity cards for your website or blog. To prevent abuse, the API enforces a rate limit of 20 requests per minute per user.
 
 Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you'd like to suggest additional platforms or metadata, feel free to open an issue. You can visit the website to explore [here](https://yutify.onrender.com/) and make sure to read the [docs](https://yutify.onrender.com/docs) as well.
 
+> 💜 **Support yutify:**
+> yutify is free and open-source! If you find it useful, you can always support development on [ko-fi](https://ko-fi.com/cheapnightbot) or by starring the repo. Thank you!
+
 ### Features ™️
 
-- Get streaming links for [various streaming platforms](#available-music-platforms-). ♪(´▽ ｀)
-- Retrieve detailed music information OwO ~ artists, album, lyrics, release date, etc.!
-- Retrieve music metadata for your currently playing tracks from Last.fm and/or Spotify.
-- Request information for a specific streaming platform. Read the [docs](https://yutify.cheapnightbot.me/docs) for more info.
-- Use API endpoints to search for music programmatically or explore directly on the [website](https://yutify.cheapnightbot.me/). ヾ(⌐■_■)ノ ♪
-- Account sign-up for personalized features like currently playing tracks.
-- It's FREE. \_(:з)∠)\_ (but you can always support me on [ko-fi](https://ko-fi.com/cheapnightbot))
+- 🎵 **Multi-Platform Music Search**: Retrieve streaming links and detailed metadata for songs from [Apple Music](https://music.apple.com/), [Deezer](https://deezer.com/), [KKBox](https://kkbox.com/), [Spotify](https://spotify.com/), and [YouTube Music](https://music.youtube.com/).
+- 🧑‍💻 **RESTful & Developer-Friendly**: Clean, well-documented API with rate limiting, error handling, and easy integration for any app or website.
+- 🔍 **Flexible Search API**: Search by artist and song name, or request information from a specific platform using a simple query parameter (e.g., `?spotify`).
+- 🖼️ **Embeddable Music Info & Activity Cards**: Instantly get a ready-to-embed HTML music card for any song using the `?embed` query parameter—perfect for blogs, websites, or sharing. You can also embed your current or recent listening activity (from Spotify or Last.fm) on your own site, or share it with others. Public profiles let you share your listening activity with anyone; private profiles (default) keep your activity visible only to you.
+- 📝 **Lyrics Support**: Fetch lyrics for many tracks (where available).
+- 🔒 **OAuth 2.0 & Account Features**: Secure user authentication, service linking, and privacy controls. Supports 2FA and account management. Developer Dashboard for creating and managing apps for 2FA and OAuth 2.0 authentication.
+- 🚀 **Fast, Modern, and Open Source**: Powered by Flask (Python), [yutipy](https://github.com/CheapNightbot/yutipy), and Pico CSS. Free to use, easy to deploy, and open for contributions!
+- 🌐 **Self-Contained Embeds**: Embeds are fully self-contained (HTML+CSS without any JavaScript), require no external dependencies, and are safe to use in any site or CMS.
 
 ### Available Music Platforms 📻
 
@@ -171,11 +175,11 @@ python yutify.py
 ```
 
 > [!WARNING]
-> Regardless of the user registeration / signup is enabled or disabled, a default admin user with the email set in the `ADMIN_EMAIL` environment variable will be created when you will run the project. It will be created only if a user with that email does not exist in the database. You must change the username and password for it after logging in as this user. Please check the default values below:
+> Regardless of the user registration / signup is enabled or disabled, a default admin user with the email set in the `ADMIN_EMAIL` environment variable will be created when you will run the project. It will be created only if a user with that email does not exist in the database. You must change the username and password for it after logging in as this user. Please check the default values below:
 >
 > - `name`: "Admin"
-> - `userrname`: "admin"
-> - `email`: value set in `ADMIN_EMAIL` envrionment variable
+> - `username`: "admin"
+> - `email`: value set in `ADMIN_EMAIL` environment variable
 > - `password`: "senpai-likes-small-potatoes"
 
 # Contributing 🤝
