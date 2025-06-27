@@ -21,7 +21,10 @@
             <h1>{{ title }}</h1>
             <p>Oops~ the server fainted. Why not go back <a href="{{ url_for('main.index') }}">Home</a>?</p>
             <p>If this keep happening, feel free to open an issue on Github
-                <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a> !
+                <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a>, or contact us at
+                {% if current_user.is_authenticated %} <a
+                    href="mailto:{{ config['SERVICE_EMAIL'] }}">{{ config["SERVICE_EMAIL"] }}</a>{% else %}
+                <code>{{ config["SERVICE_EMAIL"] | obfuscate_email }}</code>{% endif %} !
                 Make sure to provide the input that caused this error.
             </p>
         </div>
