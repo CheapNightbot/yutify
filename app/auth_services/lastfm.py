@@ -57,6 +57,14 @@ def handle_lastfm_auth(lastfm_username):
     else:
         # Try to fetch the user profile with provided username in the form
         result = lastfm.get_user_profile(lastfm_username)
+        if not result:
+            flash(
+                "Failed to fetch Last.fm profile. Make sure the username is correct!",
+                "error",
+            )
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
         if "error" in result:
             flash(result.get("error") + " Make sure the username is correct!", "error")
             return redirect(
