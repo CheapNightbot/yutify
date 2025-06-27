@@ -37,7 +37,7 @@ def redirect_onrender_to_custom_domain():
         return redirect(url, code=301)
 
 
-# # https://flask.palletsprojects.com/en/stable/web-security/
+# https://flask.palletsprojects.com/en/stable/web-security/
 @app.after_request
 def set_security_headers(response):
     response.headers["Strict-Transport-Security"] = "max-age=31536000"
