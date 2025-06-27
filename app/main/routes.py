@@ -92,3 +92,14 @@ def terms_of_service():
         active_page="terms_of_service",
         year=datetime.today().year,
     )
+
+
+@bp.route("/faq")
+def faq():
+    """Render the FAQ page."""
+    return render_template(
+        "faq.html",
+        title="FAQ",
+        active_page="faq",
+        year=datetime.today().year,
+    )

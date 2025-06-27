@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block metadata %}
+<meta property="og:url" content="{{ url_for('main.index', _external=true) }}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ config['SERVICE'] }}: Home">
+<meta property="og:description"
+    content="Frequently asked questions about yutify, a simple RESTful API for retrieving music info for various steaming platforms.">
+<meta property="og:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="{{ config['HOST_URL'] }}">
+<meta property="twitter:url" content="{{ url_for('main.index', _external=true) }}">
+<meta name="twitter:title" content="{{ config['SERVICE'] }}: Home">
+<meta name="twitter:description"
+    content="Frequently asked questions about yutify, a simple RESTful API for retrieving music info for various steaming platforms.">
+<meta name="twitter:image" content="{{ url_for('static', filename='music.png', _external=true) }}">
+{% endblock %}
+
+{% block nav_title %}
+FAQ
+{% endblock %}
+
+{% block header %}
+<header class="container">
+    <h1 id="header-title">Frequently Asked Questions</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <section class="faq-section">
+        <details open>
+            <summary><strong>What is yutify?</strong></summary>
+            <p><strong>yutify</strong> is FREE and open-source RESTful API and full-stack web application for retrieving
+                music information, streaming links, and user listening activity from various platforms, including Apple
+                Music, Deezer, KKBox, Last.fm, Spotify, and YouTube Music. You can use <strong>yutify</strong> to search
+                for music, view user activity, and embed music cards on your site. It provides:</p>
+            <ul>
+                <li>Multi-platform music search with detailed metadata and streaming links.</li>
+                <li>Embeddable music and activity cards (HTML+CSS, no JS required) for blogs and websites.</li>
+            </ul>
+        </details>
+        <details>
+            <summary><strong>How do I use the yutify API?</strong></summary>
+            <p>
+                You can use the API by making a GET request to <code>/api/search/&lt;artist&gt;:&lt;song&gt;</code> to
+                search for music information.
+                Make sure to replace <code>&lt;artist&gt;</code> and <code>&lt;song&gt;</code> with the actual artist
+                and song names you want to search for.
+            </p>
+        </details>
+        <details>
+            <summary><strong>What kind of information can I get from the API?</strong></summary>
+            <p>The API provides details such as song title, album title, artist names, genres, and links to streaming
+                platforms.</p>
+        </details>
+        <details>
+            <summary><strong>Which streaming platforms does yutify support?</strong></summary>
+            <p>
+                yutify supports multiple platforms including
+                <a href="https://music.apple.com" target="_blank" rel="noopener">Apple Music</a>,
+                <a href="https://www.deezer.com" target="_blank" rel="noopener">Deezer</a>,
+                <a href="https://www.kkbox.com" target="_blank" rel="noopener">KKBOX</a>,
+                <a href="https://last.fm" target="_blank" rel="noopener">Last.fm</a>,
+                <a href="https://spotify.com" target="_blank" rel="noopener">Spotify</a>, and
+                <a href="https://music.youtube.com" target="_blank" rel="noopener">YouTube Music</a>.
+            </p>
+        </details>
+        <details>
+            <summary><strong>Is there a limit to the number of requests I can make?</strong></summary>
+            <p>To prevent abuse, the API enforces a rate limit of 20 requests per minute per user.</p>
+        </details>
+        <details>
+            <summary><strong>Can I retrieve lyrics using yutify?</strong></summary>
+            <p>The API may return lyrics if available, but if no lyrics are found, it will indicate that as well.</p>
+        </details>
+        <details>
+            <summary><strong>Is yutify free to use?</strong></summary>
+            <p>Yes, yutify is completely FREE and open-source.</p>
+        </details>
+        <details>
+            <summary><strong>How can I report an issue with the API?</strong></summary>
+            <p>You can report issues by contacting our support team through the contact information on our website. Or
+                you can open an issue on our GitHub repository.</p>
+        </details>
+        <details>
+            <summary><strong>Where can I find the API documentation?</strong></summary>
+            <p>API documentation can be found on our website at <a href="https://yutify.cheapnightbot.me/docs"
+                    target="_blank">https://yutify.cheapnightbot.me/docs</a>.</p>
+        </details>
+        <details>
+            <summary><strong>What should I do if I encounter an error?</strong></summary>
+            <p>If you encounter an error, please check the request format and ensure the artist and song names are
+                correct. If you still get errors or having trouble using yutify, feel free to open an issue on our
+                GitHub repository or contact us via contact information on our website.</p>
+        </details>
+    </section>
+
+    <blockquote>
+        Still got questions? Feel free to open an issue on Github
+        <a href="https://github.com/CheapNightbot/yutify/issues">HERE</a>, or contact us at
+        {% if current_user.is_authenticated %} <a
+            href="mailto:{{ config['SERVICE_EMAIL'] }}">{{ config["SERVICE_EMAIL"] }}</a>{% else %}
+        <code>{{ config["SERVICE_EMAIL"] | obfuscate_email }}</code>{% endif %} !
+    </blockquote>
+</main>
+{% endblock %}
+
+{% block script %}
+<script>
+    // Accordion: only one <details> open at a time
+    document.querySelectorAll('.faq-section details').forEach((detail) => {
+        detail.addEventListener('toggle', function () {
+            if (this.open) {
+                document.querySelectorAll('.faq-section details').forEach((otherDetail) => {
+                    if (otherDetail !== this) otherDetail.removeAttribute('open');
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

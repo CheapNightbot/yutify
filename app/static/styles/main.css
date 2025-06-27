@@ -889,6 +889,30 @@ dt::before {
     min-width: 600px;
 }
 
+.faq-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.faq-section details {
+    background-color: var(--pico-form-element-background-color);
+    border: 1px solid var(--pico-accordion-border-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    transition: all .6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.faq-section summary {
+    font-size: 1.25rem;
+}
+
+.faq-section summary::before {
+    content: "๑ ";
+    color: var(--pico-primary);
+    font-weight: bold;
+}
+
 
 @media (max-width: 1024px) {
 
