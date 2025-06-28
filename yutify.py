@@ -64,6 +64,12 @@ def set_security_headers(response):
         if "X-Frame-Options" in response.headers:
             del response.headers["X-Frame-Options"]
 
+    # Disable caching for user profile page (excluding "Settings page") & activity API endpoints
+    if (
+        request.path.startswith("/u/") and "settings" not in request.path
+    ) or request.path.startswith("/api/me"):
+        response.headers["Cache-Control"] = "no-store"
+
     return response
 
 
