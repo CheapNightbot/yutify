@@ -61,13 +61,20 @@ class UserActivityResource(Resource):
         ).all()
 
         if not user_services:
-            return {
-                "error": (
-                    "No service is linked. Please link one in your settings."
-                    if user == current_user
-                    else f"{user.name} is not listening to anything right now..."
+            error_msg = (
+                "No service is linked. Please link one in your settings."
+                if user == current_user
+                else f"{user.name} is not listening to anything right now..."
+            )
+            if is_embed:
+                return make_response(
+                    render_template(
+                        "embed/activity_card.html", error=error_msg, user=user
+                    ),
+                    200,
+                    {"Content-Type": "text/html"},
                 )
-            }, 404
+            return {"error": error_msg}, 404
 
         # Determine which services are linked
         linked_services = {
@@ -96,13 +103,20 @@ class UserActivityResource(Resource):
                 activity = self._fetch_activity(spotify_activity, lastfm_activity)
 
         if not activity:
-            return {
-                "error": (
-                    "No activity found. Listen to music on your linked service to see it here."
-                    if user == current_user
-                    else f"{user.name} is not listening to anything right now..."
+            error_msg = (
+                "No activity found. Listen to music on your linked service to see it here."
+                if user == current_user
+                else f"{user.name} is not listening to anything right now..."
+            )
+            if is_embed:
+                return make_response(
+                    render_template(
+                        "embed/activity_card.html", error=error_msg, user=user
+                    ),
+                    200,
+                    {"Content-Type": "text/html"},
                 )
-            }, 404
+            return {"error": error_msg}, 404
 
         if is_embed:
             # Render a standalone HTML card for embedding

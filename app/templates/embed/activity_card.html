@@ -5,7 +5,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% if activity %}
         <title>yutify: {{ user.username }} listening to "{{ activity.music_info.title }}"</title>
+        {% else %}
+        <title>yutify: {{ user.username }} not listening to any music...</title>
+        {% endif %}
         <link rel="stylesheet" href="{{ url_for('static', filename='styles/embed.css')}}">
     </head>
 
@@ -13,14 +17,20 @@
         <section id="music-embed">
             <article class="music-card activity">
                 <div class="user-activity-header">
-                    {% if activity.activity_info.is_playing %}
-                    <h3>{{ user.name }} Currently Playing:</h3>
+                    {% if activity %}
+                        {% if activity.activity_info.is_playing %}
+                        <h3>{{ user.name }} Currently Playing:</h3>
+                        {% else %}
+                        <h3>{{ user.name }} Last Played:</h3>
+                        <span id="timestamp">{{ activity.activity_info.timestamp | int | relative_timestamp }}</span>
+                        {% endif %}
                     {% else %}
-                    <h3>{{ user.name }} Last Played:</h3>
-                    <span id="timestamp">{{ activity.activity_info.timestamp | int | relative_timestamp }}</span>
+                        <h3>Activity Not Found!</h3>
+                        <span class="error" id="timestamp">{{ error }}</span>
                     {% endif %}
                 </div>
 
+                {% if activity %}
                 {% if activity.music_info.album_art %}
                 <img src="{{ activity.music_info.album_art }}" alt="{{ activity.music_info.title }} - Album Art" class="album-art">
                 {% else %}
@@ -116,6 +126,9 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <img src="{{ url_for('static', filename='errors/no.gif') }}" alt="no activity found..." class="error-image">
+                {% endif %}
             </article>
         </section>
     </body>

@@ -15,8 +15,14 @@ body {
     gap: 1rem;
 }
 
-h3, #timestamp {
+h3,
+#timestamp {
     line-height: 0;
+    max-width: 80%;
+}
+
+.error {
+    line-height: initial !important;
 }
 
 .music-card {
@@ -119,6 +125,16 @@ h3, #timestamp {
     font-size: 0.875rem;
     color: #a1a6b0;
     margin-top: 0.5rem;
+}
+
+.error-image {
+    background: #23273a;
+    object-fit: cover;
+    display: block;
+    width: 20rem;
+    height: 16rem;
+    border-radius: .746rem;
+    pointer-events: none;
 }
 
 @media (max-width: 800px) {
