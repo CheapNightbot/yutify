@@ -18,11 +18,16 @@ body {
 h3,
 #timestamp {
     line-height: 0;
-    max-width: 80%;
+}
+
+.profile-url {
+    color: #c2c7d0;
+    text-decoration: none;
 }
 
 .error {
     line-height: initial !important;
+    max-width: 80%;
 }
 
 .music-card {
