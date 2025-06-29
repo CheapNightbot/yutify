@@ -106,7 +106,7 @@ class YutifySearch(Resource):
             # Always search all platforms for embed (or could respect platform param)
             result = self.__search_music(artist, song, platform)
             # result is (OrderedDict, status_code)
-            data, status = result if isinstance(result, tuple) else (result, 200)
+            data, _ = result if isinstance(result, tuple) else (result, 200)
             # Normalize to dict for template
             if isinstance(data, tuple):
                 data = data[0]
