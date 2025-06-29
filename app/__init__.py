@@ -134,7 +134,7 @@ def create_app(config_class=Config):
 
     # Configure caching
     if not app.debug:
-        if app.config.get("REDIS_URI"):
+        if app.config.get("REDIS_URI") != "memory:///":
             app.config["CACHE_TYPE"] = "RedisCache"
             app.config["CACHE_REDIS_URL"] = app.config.get("REDIS_URI")
             app.logger.info("Caching is enabled. Using redis for cache.")
