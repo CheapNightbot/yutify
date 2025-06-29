@@ -1,19 +1,26 @@
 import logging
-from dataclasses import asdict
 from collections import OrderedDict
+from dataclasses import asdict
 
 import requests
 import sqlalchemy as sa
 from flask import flash, redirect, request, session, url_for
 from flask_security import current_user
-from yutipy.spotify import SpotifyAuth, SpotifyAuthException
 from yutipy.exceptions import AuthenticationException
+from yutipy.spotify import SpotifyAuth, SpotifyAuthException
 
 from app import db
 from app.models import Service, User, UserData, UserService
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
+
+# Constants for repeated string literals
+SPOTIFY_SERVICE_NOT_FOUND = "Service 'Spotify' not found in the database."
+SPOTIFY_AUTH_NOT_AVAILABLE = (
+    "Spotify Authentication is not available! You may contact the support team."
+)
+USER_SETTINGS_ENDPOINT = "user.user_settings"
 
 
 class MySpotifyAuth(SpotifyAuth):
@@ -34,7 +41,7 @@ class MySpotifyAuth(SpotifyAuth):
                 sa.select(Service).where(Service.name.ilike("spotify"))
             )
             if not spotify_service:
-                logger.warning("Service 'Spotify' not found in the database.")
+                logger.warning(SPOTIFY_SERVICE_NOT_FOUND)
                 return
 
             # Check if the UserService entry already exists for this user and service
@@ -87,7 +94,7 @@ class MySpotifyAuth(SpotifyAuth):
                 sa.select(Service).where(Service.name.ilike("spotify"))
             )
             if not spotify_service:
-                logger.warning("Service 'Spotify' not found in the database.")
+                logger.warning(SPOTIFY_SERVICE_NOT_FOUND)
                 return
 
             # Check if the UserService entry exists
@@ -107,165 +114,173 @@ class MySpotifyAuth(SpotifyAuth):
         return None
 
 
-try:
-    spotify_auth = MySpotifyAuth(scopes=["user-read-currently-playing"])
-except SpotifyAuthException as e:
-    logger.warning(
-        f"Spotify Authentication will be disabled due to following error:\n{e}"
-    )
-    spotify_auth = None
+def get_spotify_auth(user=None):
+    """Get an instance of MySpotifyAuth for the current user."""
+    user = user or current_user
+    return MySpotifyAuth(user=user, scopes=["user-read-currently-playing"])
 
 
 def handle_spotify_auth():
-    if not spotify_auth:
+    try:
+        with get_spotify_auth() as spotify_auth:
+            spotify_auth.user = current_user
+            spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
+
+            # Fetch the service dynamically by name
+            service = db.session.scalar(
+                sa.select(Service).where(Service.name.ilike("spotify"))
+            )
+            if not service:
+                flash(SPOTIFY_SERVICE_NOT_FOUND, "error")
+                return redirect(
+                    url_for(USER_SETTINGS_ENDPOINT, username=current_user.username)
+                )
+
+            user_service = db.session.scalar(
+                sa.select(UserService)
+                .where(UserService.user_id == current_user.id)
+                .where(UserService.service_id == service.id)
+            )
+
+            if user_service:
+                flash("You have already linked Spotify.", "success")
+                return redirect(
+                    url_for(USER_SETTINGS_ENDPOINT, username=current_user.username)
+                )
+
+            state = spotify_auth.generate_state()
+            session["state"] = state
+            auth_url = spotify_auth.get_authorization_url(state=state, show_dialog=True)
+
+            return redirect(auth_url)
+    except SpotifyAuthException:
         flash(
-            "Spotify Authentication is not available! You may contact the admin(s).",
+            SPOTIFY_AUTH_NOT_AVAILABLE,
             "error",
         )
-        return redirect(url_for("user.user_settings", username=current_user.username))
-
-    spotify_auth.user = current_user
-    spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
-
-    # Fetch the service dynamically by name
-    service = db.session.scalar(sa.select(Service).where(Service.name.ilike("spotify")))
-    if not service:
-        flash("Service 'Spotify' not found in the database.", "error")
-        return redirect(url_for("user.user_settings", username=current_user.username))
-
-    user_service = db.session.scalar(
-        sa.select(UserService)
-        .where(UserService.user_id == current_user.id)
-        .where(UserService.service_id == service.id)
-    )
-
-    if user_service:
-        flash("You have already linked Spotify.", "success")
-        spotify_auth.close_session()
-        return redirect(url_for("user.user_settings", username=current_user.username))
-
-    state = spotify_auth.generate_state()
-    session["state"] = state
-    auth_url = spotify_auth.get_authorization_url(state=state, show_dialog=True)
-
-    return redirect(auth_url)
+        return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
 
 def handle_spotify_callback(request):
-    if not spotify_auth:
-        flash(
-            "Spotify Authentication is not available! You may contact the admin(s).",
-            "error",
-        )
-        return redirect(url_for("user.user_settings", username=current_user.username))
-
-    spotify_auth.user = current_user
-    spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
-
-    code = request.args.get("code")
-    state = request.args.get("state")
-    expected_state = session.get("state")
-
-    if not code or not state:
-        flash(
-            "Authorization canceled. It seems you chose not to grant access to your Spotify account.",
-            "error",
-        )
-        session.pop("state")
-
-        spotify_auth.close_session()
-        return redirect(url_for("user.user_settings", username=current_user.username))
-
+    """Handle the Spotify OAuth callback."""
     try:
-        spotify_auth.callback_handler(code, state, expected_state)
-    except AuthenticationException:
-        flash("Something went wrong while authenticating with Spotify.", "error")
-        session.pop("state")
+        with get_spotify_auth() as spotify_auth:
+            spotify_auth.user = current_user
+            spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
 
-        spotify_auth.close_session()
-        return redirect(url_for("user.user_settings", username=current_user.username))
+            code = request.args.get("code")
+            state = request.args.get("state")
+            expected_state = session.get("state")
 
-    flash("Successfully linked Spotify!", "success")
-    session.pop("state")
+            if not code or not state:
+                flash(
+                    "Authorization canceled. It seems you chose not to grant access to your Spotify account.",
+                    "error",
+                )
+                session.pop("state")
+                return redirect(
+                    url_for(USER_SETTINGS_ENDPOINT, username=current_user.username)
+                )
 
-    return redirect(url_for("user.user_settings", username=current_user.username))
+            try:
+                spotify_auth.callback_handler(code, state, expected_state)
+            except AuthenticationException:
+                flash(
+                    "Something went wrong while authenticating with Spotify.", "error"
+                )
+                session.pop("state")
+                return redirect(
+                    url_for(USER_SETTINGS_ENDPOINT, username=current_user.username)
+                )
+
+            flash("Successfully linked Spotify!", "success")
+            session.pop("state")
+            return redirect(
+                url_for(USER_SETTINGS_ENDPOINT, username=current_user.username)
+            )
+    except SpotifyAuthException:
+        flash(
+            SPOTIFY_AUTH_NOT_AVAILABLE,
+            "error",
+        )
+        return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
 
 def get_spotify_activity(user=None):
     """Fetch the user's listening activity from Spotify."""
-    if not spotify_auth:
+    try:
+        with get_spotify_auth(user=user) as spotify_auth:
+            user = user or current_user
+            spotify_service = db.session.scalar(
+                sa.select(UserService)
+                .join(Service)
+                .where(
+                    UserService.user_id == user.id,
+                    Service.name.ilike("spotify"),
+                )
+            )
+
+            if not spotify_service:
+                return None
+
+            spotify_auth.user = user
+            spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
+            activity = spotify_auth.get_currently_playing()
+            if activity:
+                activity = asdict(activity)
+                is_playing = activity.pop("is_playing")
+                timestamp = activity.pop("timestamp")
+
+                # Dynamically determine the base URL for the /api/search endpoint
+                base_url = url_for("main.index", _external=True).rstrip("/")
+                search_url = (
+                    f"{base_url}/api/search/{activity['artists']}:{activity['title']}"
+                )
+
+                # Call the /api/search endpoint using requests
+                try:
+                    response = requests.get(search_url, params={"all": ""})
+                    activity = {"music_info": response.json()}
+                except requests.RequestException as e:
+                    logger.warning(e)
+                    activity = {"music_info": activity}
+
+                # Add activity info
+                activity["activity_info"] = {
+                    "is_playing": is_playing,
+                    "service": "spotify",
+                    "timestamp": timestamp,
+                }
+
+                # Sort the activity by keys
+                activity = OrderedDict(sorted(activity.items()))
+
+                # Save the current activity to the database
+                UserData.insert_or_update_user_data(spotify_service, activity)
+                return activity
+            else:
+                # Fetch the last activity from the database if no current activity is found
+                existing_data = db.session.scalar(
+                    sa.select(UserData).where(
+                        UserData.user_service_id == spotify_service.id
+                    )
+                )
+                if existing_data:
+                    data = existing_data.data
+                    data["activity_info"]["is_playing"] = False
+                    if not data.get("activity_info").get("timestamp"):
+                        data["activity_info"][
+                            "timestamp"
+                        ] = existing_data.updated_at.timestamp()
+
+                    # Update the activity in the database
+                    UserData.insert_or_update_user_data(spotify_service, data)
+                    return data
+
+            return None
+    except SpotifyAuthException:
         flash(
-            "Spotify Authentication is not available! You may contact the admin(s).",
+            SPOTIFY_AUTH_NOT_AVAILABLE,
             "error",
         )
-        return redirect(
-            url_for(
-                "user.user_settings",
-                username=(user.username if user else current_user.username),
-            )
-        )
-
-    user = user or current_user
-    spotify_service = db.session.scalar(
-        sa.select(UserService)
-        .join(Service)
-        .where(
-            UserService.user_id == user.id,
-            Service.name.ilike("spotify"),
-        )
-    )
-
-    if not spotify_service:
-        return None
-
-    spotify_auth.user = user
-    spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
-    activity = spotify_auth.get_currently_playing()
-    if activity:
-        activity = asdict(activity)
-        is_playing = activity.pop("is_playing")
-        timestamp = activity.pop("timestamp")
-
-        # Dynamically determine the base URL for the /api/search endpoint
-        base_url = url_for("main.index", _external=True).rstrip("/")
-        search_url = f"{base_url}/api/search/{activity['artists']}:{activity['title']}"
-
-        # Call the /api/search endpoint using requests
-        try:
-            response = requests.get(search_url, params={"all": ""})
-            activity = {"music_info": response.json()}
-        except requests.RequestException as e:
-            logger.warning(e)
-            activity = {"music_info": activity}
-
-        # Add activity info
-        activity["activity_info"] = {
-            "is_playing": is_playing,
-            "service": "spotify",
-            "timestamp": timestamp,
-        }
-
-        # Sort the activity by keys
-        activity = OrderedDict(sorted(activity.items()))
-
-        # Save the current activity to the database
-        UserData.insert_or_update_user_data(spotify_service, activity)
-        return activity
-    else:
-        # Fetch the last activity from the database if no current activity is found
-        existing_data = db.session.scalar(
-            sa.select(UserData).where(UserData.user_service_id == spotify_service.id)
-        )
-        if existing_data:
-            data = existing_data.data
-            data["activity_info"]["is_playing"] = False
-            if not data.get("activity_info").get("timestamp"):
-                data["activity_info"][
-                    "timestamp"
-                ] = existing_data.updated_at.timestamp()
-
-            # Update the activity in the database
-            UserData.insert_or_update_user_data(spotify_service, data)
-            return data
-
-    return None
+        return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
