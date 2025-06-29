@@ -20,25 +20,69 @@ from app.resources.docs_demo import ALL, DEEZER, ITUNES, KKBOX, SPOTIFY, YTMUSIC
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
-enable_logging(handler=logger)
+enable_logging()
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
 
-class BaseOverride:
-    """Custom Base class to override the `save_access_token` and `load_access_token` methods.
+class MySpotify(Spotify):
+    """Custom Spotify class to override the `save_access_token` and `load_access_token` methods."""
 
-    Only works for Client Credential grant type/flow.
-    """
-
-    SERVICE_NAME: str
-    SERVICE_URL: str
-    IS_PRIVATE: bool = False
+    SERVICE_NAME = "Spotify"
+    SERVICE_URL = "https://open.spotify.com"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def save_access_token(self, token_info: dict) -> None:
+        logger.info("Custom save_access_token called for %s", self.SERVICE_NAME)
+        service = db.session.scalar(
+            sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
+        )
+        if not service:
+            service = Service(
+                name=self.SERVICE_NAME,
+                url=self.SERVICE_URL,
+                is_private=False,
+            )
+            db.session.add(service)  # Add the new service to the session
+
+        # Set the access token values
+        service.access_token = token_info.get("access_token")
+        service.expires_in = token_info.get("expires_in")
+        service.requested_at = token_info.get("requested_at")
+
+        # Commit the changes to the database
+        db.session.commit()
+
+    def load_access_token(self) -> Union[dict, None]:
+        logger.info("Custom load_access_token called for %s", self.SERVICE_NAME)
+        service = db.session.scalar(
+            sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
+        )
+
+        if service:
+            return {
+                "access_token": service.access_token,
+                "expires_in": service.expires_in,
+                "requested_at": service.requested_at,
+            }
+
+        return None
+
+
+class MyKKBox(KKBox):
+    """Custom KKBox class to override the `save_access_token` and `load_access_token` methods."""
+
+    SERVICE_NAME = "KKBox"
+    SERVICE_URL = "https://www.kkbox.com"
+    IS_PRIVATE = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def save_access_token(self, token_info: dict) -> None:
+        logger.info("Custom save_access_token called for %s", self.SERVICE_NAME)
         service = db.session.scalar(
             sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
         )
@@ -59,6 +103,7 @@ class BaseOverride:
         db.session.commit()
 
     def load_access_token(self) -> Union[dict, None]:
+        logger.info("Custom load_access_token called for %s", self.SERVICE_NAME)
         service = db.session.scalar(
             sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
         )
@@ -71,21 +116,6 @@ class BaseOverride:
             }
 
         return None
-
-
-class MySpotify(Spotify, BaseOverride):
-    """Custom Spotify class to override the `save_access_token` and `load_access_token` methods."""
-
-    SERVICE_NAME = "Spotify"
-    SERVICE_URL = "https://open.spotify.com"
-
-
-class MyKKBox(KKBox, BaseOverride):
-    """Custom KKBox class to override the `save_access_token` and `load_access_token` methods."""
-
-    SERVICE_NAME = "KKBox"
-    SERVICE_URL = "https://www.kkbox.com"
-    IS_PRIVATE = True
 
 
 class YutifySearch(Resource):
@@ -163,7 +193,8 @@ class YutifySearch(Resource):
                     result = apple_music.search(artist, song, limit=3)
             case "kkbox":
                 try:
-                    with MyKKBox() as kkbox_music:
+                    with MyKKBox(defer_load=True) as kkbox_music:
+                        kkbox_music.load_token_after_init()
                         result = kkbox_music.search(artist, song, limit=3)
                 except KKBoxException as e:
                     logger.warning(
@@ -172,7 +203,8 @@ class YutifySearch(Resource):
                     result = None
             case "spotify":
                 try:
-                    with MySpotify() as spotify_music:
+                    with MySpotify(defer_load=True) as spotify_music:
+                        spotify_music.load_token_after_init()
                         result = spotify_music.search(artist, song, limit=3)
                 except SpotifyException as e:
                     logger.warning(
