@@ -122,9 +122,8 @@ def get_spotify_auth(user=None):
 
 def handle_spotify_auth():
     try:
-        with get_spotify_auth() as spotify_auth:
-            spotify_auth.user = current_user
-            spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
+        with get_spotify_auth(user=current_user) as spotify_auth:
+            spotify_auth.load_token_after_init()
 
             # Fetch the service dynamically by name
             service = db.session.scalar(
@@ -164,9 +163,8 @@ def handle_spotify_auth():
 def handle_spotify_callback(request):
     """Handle the Spotify OAuth callback."""
     try:
-        with get_spotify_auth() as spotify_auth:
-            spotify_auth.user = current_user
-            spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
+        with get_spotify_auth(user=current_user) as spotify_auth:
+            spotify_auth.load_token_after_init()
 
             code = request.args.get("code")
             state = request.args.get("state")
@@ -208,9 +206,10 @@ def handle_spotify_callback(request):
 
 def get_spotify_activity(user=None):
     """Fetch the user's listening activity from Spotify."""
+    user = user or current_user
     try:
         with get_spotify_auth(user=user) as spotify_auth:
-            user = user or current_user
+            spotify_auth.load_token_after_init()
             spotify_service = db.session.scalar(
                 sa.select(UserService)
                 .join(Service)
@@ -223,8 +222,6 @@ def get_spotify_activity(user=None):
             if not spotify_service:
                 return None
 
-            spotify_auth.user = user
-            spotify_auth.load_token_after_init()  # Explicitly load the token after initialization
             activity = spotify_auth.get_currently_playing()
             if activity:
                 activity = asdict(activity)
