@@ -216,7 +216,7 @@ class YutifySearch(Resource):
                     result = youtube_music.search(artist, song, limit=3)
             case _:
                 with yutipy_music.YutipyMusic(
-                    ccustom_kkbox_class=lambda *a, **kw: MyKKBox(
+                    custom_kkbox_class=lambda *a, **kw: MyKKBox(
                         *a, app=current_app._get_current_object(), **kw
                     ),
                     custom_spotify_class=lambda *a, **kw: MySpotify(
