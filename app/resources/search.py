@@ -6,11 +6,12 @@ from typing import Union
 
 import sqlalchemy as sa
 from flask import current_app, make_response, render_template, request
-from flask_restful import Resource
+from flask_restful import Resource, fields, marshal
 from yutipy import deezer, itunes, musicyt, yutipy_music
 from yutipy.exceptions import KKBoxException, SpotifyException
 from yutipy.kkbox import KKBox
 from yutipy.logger import enable_logging
+from yutipy.lrclib import LrcLib
 from yutipy.spotify import Spotify
 
 from app import cache, db
@@ -23,6 +24,15 @@ logger = logging.getLogger(__name__)
 enable_logging()
 
 RATELIMIT = os.environ.get("RATELIMIT")
+
+
+lyrics_fields = {
+    "instrumental": fields.Boolean,
+    "artistName": fields.String,
+    "trackName": fields.String,
+    "plainLyrics": fields.String,
+    "syncedLyrics": fields.String,
+}
 
 
 class MySpotify(Spotify):
@@ -119,7 +129,7 @@ class MyKKBox(KKBox):
 
 
 class YutifySearch(Resource):
-    """API resource to search & fetch the song details."""
+    """API resource to search & fetch the song details or lyrics only."""
 
     @limiter.limit(RATELIMIT if RATELIMIT else "")
     @cache.cached(
@@ -130,6 +140,16 @@ class YutifySearch(Resource):
         artist = artist.strip()
         song = song.strip()
         platform = "".join(list(request.args.keys())).lower() if request.args else "all"
+
+        # If only lyrics are requested
+        if "lyrics" in request.args:
+            with LrcLib() as lrclib:
+                lyrics_info = lrclib.get_lyrics(artist, song)
+            if lyrics_info:
+                return marshal(lyrics_info, lyrics_fields), 200
+            return {
+                "error": f"Lyrics not found for '{song}' by '{artist}'! You might have to guess the lyrics for this one..."
+            }, 404
 
         # Check for ?embed param (any value)
         if "embed" in request.args:

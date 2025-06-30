@@ -88,6 +88,27 @@
     <div>
         <div class="req-para-info">
             <div>
+                <kbd>lyrics</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            If provided, the API will <strong>only</strong> return the lyrics of the requested song.
+        </p>
+        <p>
+            <b>Note</b>: The query parameter for <code>lyrics</code> is NOT key-value pair!
+            You only need to provide the query parameter itself.
+            Also, if this query parameter is provided, all the other query parameters will be ignored. <br>
+            <b>Example</b>: <code>/api/search/Madeon:Shelter<ins>?lyrics</ins></code>
+        </p>
+    </div>
+
+    <div>
+        <div class="req-para-info">
+            <div>
                 <kbd>embed</kbd> <code>string</code>
             </div>
             <div class="flex-row">
@@ -106,7 +127,8 @@
         <pre
             class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/search/Madeon:Shelter?embed" frameborder="0" width="100%" height="380" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
         </p>
-        <img class="screenshot medium" src="{{ url_for('static', filename='docs/search-embed-example.png') }}" alt="Search embed example" />
+        <img class="screenshot medium" src="{{ url_for('static', filename='docs/search-embed-example.png') }}"
+            alt="Search embed example" />
     </div>
 
     <div class="flex-row left">
@@ -176,13 +198,20 @@
   "upc": null,
   "url": "https://www.deezer.com/track/6663629"
 }</code></pre>
+                            <header class="flex-column"><code>/api/search/Artist:Song<ins>?lyrics</ins></code></header>
+                            <pre class="codeblock"><code>{
+  "instrumental": false,
+  "trackName": "Song",
+  "artistName": "Artist",
+  "plainLyrics": "These are the lyrics of the song... New lines are indicated by \n (backslash n).",
+  "syncedLyrics": "[00:15.96] These are the synced lyrics of the song with timestamps for each line (idk how to exaplain..)."
+}</code></pre>
                         </details>
                     </article>
                     <blockquote>
-                        Note that URL(s) and such information shown in the response examples here does NOT reflect the
-                        actual response sent
-                        by {{ config["SERVICE"] }} API. These are just for demonstration purposes. In short, those are
-                        fake!
+                        Note if <code>lyrics</code> query parameter was provided, none of the fields below (even marked
+                        with <mark>Always Present</mark>) will be included in the response. Only the ones with
+                        <mark>With Lyrics</mark> will be included. See the response example above.
                     </blockquote>
                     <div>
                         <div class="req-para-info">
@@ -268,6 +297,24 @@
                         </p>
                         <p>
                             <b>Example</b>: <code>"Ahrix"</code>, <code>"花譜, Hoshimachi Suisei"</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>artistName</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>With Lyrics</mark>
+                            </div>
+                        </div>
+                        <p>
+                            A semi-colon (<code>;</code>) separated string of artist name(s) for the requested music.
+                        </p>
+                        <p>
+                            <b>Example</b>: <code>"Ahrix"</code>, <code>"花譜; Hoshimachi Suisei"</code>
                         </p>
                     </div>
 
@@ -362,6 +409,21 @@
                     <div>
                         <div class="req-para-info">
                             <div>
+                                <kbd>instrumental</kbd> <code>boolean</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>With Lyrics</mark>
+                            </div>
+                        </div>
+                        <p>
+                            Indicates whether the requested music is an instrumental and might not have lyrics or not.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
                                 <kbd>lyrics</kbd> <code>string</code> <code class="null">null</code>
                             </div>
                             <div class="flex-row">
@@ -372,6 +434,28 @@
                         <p>
                             The lyrics of the requested music.
                         </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>plainLyrics</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>With Lyrics</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The plain lyrics of the requested music without any formatting.
+                            New lines are indicated by <code>\n</code> (backslash n).
+                        </p>
+                        <p>
+                            <b>Example</b>:
+                        </p>
+                        <pre class="codeblock"><code>{
+  "plainLyrics": "Never gonna give you up\nNever gonna let you down...",
+}</code></pre>
                     </div>
 
                     <div>
@@ -390,6 +474,28 @@
                         <P>
                             <b>Example</b>: <code>"2025-05-14"</code>
                         </P>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>syncedLyrics</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>With Lyrics</mark>
+                            </div>
+                        </div>
+                        <p>
+                            Time-synchronized lyrics with timestamps for each line.
+                            New lines are indicated by <code>\n</code> (backslash n) and
+                            each line starts with a timestamp indicating when it should
+                        <p>
+                            <b>Example</b>:
+                        </p>
+                        <pre class="codeblock"><code>{
+  "syncedLyrics": "[00:43.08] Never gonna give you up\n[00:45.03] Never gonna let you down...",
+}</code></pre>
                     </div>
 
                     <div>
@@ -419,6 +525,21 @@
                             <div class="flex-row">
                                 <span class="line"></span>
                                 <mark>Always Present</mark>
+                            </div>
+                        </div>
+                        <p>
+                            The title / name of the requested music.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="req-para-info">
+                            <div>
+                                <kbd>trackName</kbd> <code>string</code>
+                            </div>
+                            <div class="flex-row">
+                                <span class="line"></span>
+                                <mark>With Lyrics</mark>
                             </div>
                         </div>
                         <p>
