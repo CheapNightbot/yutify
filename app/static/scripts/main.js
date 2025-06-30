@@ -1,22 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.querySelector('#search-form');
-    const lyricsModal = document.querySelector("#lyrics");
     const themeBtn = document.querySelector('#themeBtn');
     const themeBtnIcon = document.querySelector('#theme-btn');
     const navTitle = document.querySelector('#nav-title');
     const headerTitle = document.querySelector('#header-title');
     const loginForm = document.querySelector('#login_user_form');
-    const registerForm = document.querySelector('#register_user_form');
     const usernameInput = document.querySelector('#username');
     const usernameHelper = document.querySelector('#username-helper');
-    const emailInput = document.querySelector('#email');
     const passwordInput = document.querySelector('#password');
     const passwordHelper = document.querySelector('#password-helper');
     const passwordConfirmInput = document.querySelector('#password_confirm');
     const passwordConfirm = document.querySelector('#password-confirm');
-    const authKey = document.querySelector('#auth-key');
     const editProfileModal = document.querySelector('#edit-profile-modal');
-    const passResetForm = document.querySelector('#reset_password');
     const lastfmLinkModal = document.querySelector('#lastfm-link-modal')
     const accountDelBtm = document.querySelector('.delete-account');
     const editRoleForm = document.querySelector('[name="edit_role_form"]');
@@ -25,8 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabControl = document.querySelector('[role="tab-control"]');
     const togglePasswordContainer = document.querySelector(".password-toggle-icon");
     const togglePassword = document.querySelector(".password-toggle-icon i");
-    const verifyForm = document.querySelector('[name="verify_form"]');
     const addURIBtn = document.querySelector('#add-redirect-uri');
+
+    // Accordion: only one <details> open at a time
+    document.querySelectorAll('.faq-section details').forEach((detail) => {
+        detail.addEventListener('toggle', function () {
+            if (this.open) {
+                document.querySelectorAll('.faq-section details').forEach((otherDetail) => {
+                    if (otherDetail !== this) otherDetail.removeAttribute('open');
+                });
+            }
+        });
+    });
 
     function convertToUserTimezone(datetimeString) {
         // Get the parts

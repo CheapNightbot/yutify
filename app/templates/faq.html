@@ -104,18 +104,3 @@ FAQ
     </blockquote>
 </main>
 {% endblock %}
-
-{% block script %}
-<script>
-    // Accordion: only one <details> open at a time
-    document.querySelectorAll('.faq-section details').forEach((detail) => {
-        detail.addEventListener('toggle', function () {
-            if (this.open) {
-                document.querySelectorAll('.faq-section details').forEach((otherDetail) => {
-                    if (otherDetail !== this) otherDetail.removeAttribute('open');
-                });
-            }
-        });
-    });
-</script>
-{% endblock %}
