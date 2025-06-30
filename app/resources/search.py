@@ -21,7 +21,7 @@ from app.resources.docs_demo import ALL, DEEZER, ITUNES, KKBOX, SPOTIFY, YTMUSIC
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
-enable_logging()
+enable_logging(level=logging.ERROR)
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
