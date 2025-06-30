@@ -5,7 +5,7 @@ from dataclasses import asdict
 from typing import Union
 
 import sqlalchemy as sa
-from flask import request, render_template, make_response
+from flask import current_app, make_response, render_template, request
 from flask_restful import Resource
 from yutipy import deezer, itunes, musicyt, yutipy_music
 from yutipy.exceptions import KKBoxException, SpotifyException
@@ -31,43 +31,43 @@ class MySpotify(Spotify):
     SERVICE_NAME = "Spotify"
     SERVICE_URL = "https://open.spotify.com"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, app=None, **kwargs):
+        self.app = app or current_app._get_current_object()
         super().__init__(*args, **kwargs)
 
     def save_access_token(self, token_info: dict) -> None:
-        logger.info("Custom save_access_token called for %s", self.SERVICE_NAME)
-        service = db.session.scalar(
-            sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
-        )
-        if not service:
-            service = Service(
-                name=self.SERVICE_NAME,
-                url=self.SERVICE_URL,
-                is_private=False,
+        with self.app.app_context():
+            service = db.session.scalar(
+                sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
             )
-            db.session.add(service)  # Add the new service to the session
+            if not service:
+                service = Service(
+                    name=self.SERVICE_NAME,
+                    url=self.SERVICE_URL,
+                    is_private=False,
+                )
+                db.session.add(service)  # Add the new service to the session
 
-        # Set the access token values
-        service.access_token = token_info.get("access_token")
-        service.expires_in = token_info.get("expires_in")
-        service.requested_at = token_info.get("requested_at")
+            # Set the access token values
+            service.access_token = token_info.get("access_token")
+            service.expires_in = token_info.get("expires_in")
+            service.requested_at = token_info.get("requested_at")
 
-        # Commit the changes to the database
-        db.session.commit()
+            # Commit the changes to the database
+            db.session.commit()
 
     def load_access_token(self) -> Union[dict, None]:
-        logger.info("Custom load_access_token called for %s", self.SERVICE_NAME)
-        service = db.session.scalar(
-            sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
-        )
+        with self.app.app_context():
+            service = db.session.scalar(
+                sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
+            )
 
-        if service:
-            return {
-                "access_token": service.access_token,
-                "expires_in": service.expires_in,
-                "requested_at": service.requested_at,
-            }
-
+            if service:
+                return {
+                    "access_token": service.access_token,
+                    "expires_in": service.expires_in,
+                    "requested_at": service.requested_at,
+                }
         return None
 
 
@@ -78,43 +78,43 @@ class MyKKBox(KKBox):
     SERVICE_URL = "https://www.kkbox.com"
     IS_PRIVATE = True
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, app=None, **kwargs):
+        self.app = app or current_app._get_current_object()
         super().__init__(*args, **kwargs)
 
     def save_access_token(self, token_info: dict) -> None:
-        logger.info("Custom save_access_token called for %s", self.SERVICE_NAME)
-        service = db.session.scalar(
-            sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
-        )
-        if not service:
-            service = Service(
-                name=self.SERVICE_NAME,
-                url=self.SERVICE_URL,
-                is_private=self.IS_PRIVATE,
+        with self.app.app_context():
+            service = db.session.scalar(
+                sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
             )
-            db.session.add(service)  # Add the new service to the session
+            if not service:
+                service = Service(
+                    name=self.SERVICE_NAME,
+                    url=self.SERVICE_URL,
+                    is_private=self.IS_PRIVATE,
+                )
+                db.session.add(service)  # Add the new service to the session
 
-        # Set the access token values
-        service.access_token = token_info.get("access_token")
-        service.expires_in = token_info.get("expires_in")
-        service.requested_at = token_info.get("requested_at")
+            # Set the access token values
+            service.access_token = token_info.get("access_token")
+            service.expires_in = token_info.get("expires_in")
+            service.requested_at = token_info.get("requested_at")
 
-        # Commit the changes to the database
-        db.session.commit()
+            # Commit the changes to the database
+            db.session.commit()
 
     def load_access_token(self) -> Union[dict, None]:
-        logger.info("Custom load_access_token called for %s", self.SERVICE_NAME)
-        service = db.session.scalar(
-            sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
-        )
+        with self.app.app_context():
+            service = db.session.scalar(
+                sa.select(Service).where(Service.name.ilike(self.SERVICE_NAME.lower()))
+            )
 
-        if service:
-            return {
-                "access_token": service.access_token,
-                "expires_in": service.expires_in,
-                "requested_at": service.requested_at,
-            }
-
+            if service:
+                return {
+                    "access_token": service.access_token,
+                    "expires_in": service.expires_in,
+                    "requested_at": service.requested_at,
+                }
         return None
 
 
@@ -216,8 +216,15 @@ class YutifySearch(Resource):
                     result = youtube_music.search(artist, song, limit=3)
             case _:
                 with yutipy_music.YutipyMusic(
-                    custom_kkbox_class=MyKKBox, custom_spotify_class=MySpotify
+                    ccustom_kkbox_class=lambda *a, **kw: MyKKBox(
+                        *a, app=current_app._get_current_object(), **kw
+                    ),
+                    custom_spotify_class=lambda *a, **kw: MySpotify(
+                        *a, app=current_app._get_current_object(), **kw
+                    ),
                 ) as py_music:
+                    py_music.services["kkbox"].load_token_after_init()
+                    py_music.services["spotify"].load_token_after_init()
                     result = py_music.search(artist, song, limit=3)
 
         if not result:
