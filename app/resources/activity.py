@@ -54,6 +54,7 @@ class UserActivityResource(Resource):
         response_type = request.args.get("type", "json").lower()
         service = "".join(list(request.args.keys())).lower() if request.args else "all"
         is_embed = "embed" in request.args
+        is_svg = "svg" in request.args
 
         # Fetch user services from the database
         user_services = db.session.scalars(
@@ -74,6 +75,20 @@ class UserActivityResource(Resource):
                     200,
                     {"Content-Type": "text/html"},
                 )
+
+            if is_svg:
+                style = request.args.get("style", "vertical").lower()
+                return make_response(
+                    render_template(
+                        "embed/activity_card.svg.j2",
+                        error=error_msg,
+                        user=user,
+                        style=style,
+                    ),
+                    200,
+                    {"Content-Type": "image/svg+xml"},
+                )
+
             return {"error": error_msg}, 404
 
         # Determine which services are linked
@@ -116,17 +131,42 @@ class UserActivityResource(Resource):
                     200,
                     {"Content-Type": "text/html"},
                 )
+
+            if is_svg:
+                style = request.args.get("style", "vertical").lower()
+                return make_response(
+                    render_template(
+                        "embed/activity_card.svg.j2",
+                        error=error_msg,
+                        user=user,
+                        style=style,
+                    ),
+                    200,
+                    {"Content-Type": "image/svg+xml"},
+                )
+
             return {"error": error_msg}, 404
 
         if is_embed:
-            # Render a standalone HTML card for embedding
-            # Pass activity and user info for header
             return make_response(
                 render_template(
                     "embed/activity_card.html", activity=activity, user=user
                 ),
                 200,
                 {"Content-Type": "text/html"},
+            )
+
+        if is_svg:
+            style = request.args.get("style", "vertical").lower()
+            return make_response(
+                render_template(
+                    "embed/activity_card.svg.j2",
+                    activity=activity,
+                    user=user,
+                    style=style,
+                ),
+                200,
+                {"Content-Type": "image/svg+xml"},
             )
 
         return self._format_response(activity, response_type)

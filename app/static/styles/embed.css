@@ -1,6 +1,6 @@
 body {
     background: transparent;
-    color: #c2c7d0;
+    color: #ebeef5;
     font-family: system-ui, sans-serif;
     margin: 0;
 }
@@ -21,7 +21,7 @@ h3,
 }
 
 .profile-url {
-    color: #c2c7d0;
+    color: #ebeef5;
     text-decoration: none;
 }
 
@@ -71,20 +71,15 @@ h3,
 }
 
 .music-info.title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 600;
 }
 
-.music-info.album-title {
-    font-size: 1.125rem;
-}
-
-.music-info.artists {
-    font-size: 1.25rem;
-}
-
+.music-info.album-title,
+.music-info.artists,
 .music-info.genre {
-    font-size: 1rem;
+    color: #b3b3b3;
+    font-size: 0.94rem;
 }
 
 .ellipsis {

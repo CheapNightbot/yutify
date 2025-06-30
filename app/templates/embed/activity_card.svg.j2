@@ -1,0 +1,204 @@
+{% if style == "vertical" %}
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="400"
+   height="612"
+   viewBox="0 0 400 612"
+   fill="none"
+   font-family="Inter, Arial, sans-serif"
+   version="1.1"
+   id="svg6"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <rect
+     width="400"
+     height="612"
+     rx="8"
+     fill="#181c25"
+     id="rect1"
+     x="0"
+     y="0"
+     style="display:inline" />
+  <g
+     id="g6"
+     style="display:inline"
+     transform="translate(0,8)">
+    <text
+       x="200.63071"
+       y="48"
+       font-size="18.72px"
+       font-weight="bold"
+       fill="#ebeef5"
+       text-anchor="middle"
+       id="text1">
+       {% if activity %}
+       {% if activity.activity_info.is_playing %}
+       {{ user.name }} is Listening:
+       {% else %}
+       {{ user.name }} Last Played:
+       {% endif %}
+       {% else %}
+       Activity Not Found!
+       {% endif %}
+       </text>
+
+   {% if activity and not activity.activity_info.is_playing %}
+    <text
+       x="199.94189"
+       y="74"
+       font-size="14px"
+       fill="#a1a6b0"
+       text-anchor="middle"
+       id="text2">
+       {{ activity.activity_info.timestamp | int | relative_timestamp }}
+    </text>
+   {% elif not activity %}
+    <text
+       x="199.94189"
+       y="74"
+       font-size="14px"
+       fill="#a1a6b0"
+       text-anchor="middle"
+       id="text2">
+       {{ error }}
+    </text>
+   {% endif %}
+  </g>
+
+  {% if activity %}
+  {% if activity.music_info.album_art %}
+  <image
+     href="{{ activity.music_info.album_art }}"
+     x="100"
+     y="100"
+     width="224"
+     height="256"
+     clip-path="url(#albumArtClipV)"
+     preserveAspectRatio="xMidYMid slice"
+     id="image2"
+     transform="translate(-12,36.065)" />
+  <clipPath
+     id="albumArtClipV">
+    <rect
+       x="100"
+       y="100"
+       width="224"
+       height="256"
+       rx="18"
+       id="rect2" />
+  </clipPath>
+  {% else %}
+  <image
+     href="{{ url_for('static', filename='favicon.svg') }}"
+     x="100"
+     y="100"
+     width="224"
+     height="256"
+     clip-path="url(#albumArtClipV)"
+     preserveAspectRatio="xMidYMid slice"
+     id="image2"
+     transform="translate(-12,36.065)" />
+  <clipPath
+     id="albumArtClipV">
+    <rect
+       x="100"
+       y="100"
+       width="224"
+       height="256"
+       rx="18"
+       id="rect2" />
+  </clipPath>
+  {% endif %}
+
+  <g
+     id="g7">
+    <text
+       x="200"
+       y="465.33499"
+       font-size="20px"
+       font-weight="bold"
+       fill="#ebeef5"
+       text-anchor="middle"
+       id="text3">
+       {% if activity.music_info.title %}
+       {{ activity.music_info.title }}
+       {% else %}
+       Title
+       {% endif %}
+    </text>
+    <text
+       x="200"
+       y="495.33499"
+       font-size="15px"
+       fill="#b3b3b3"
+       text-anchor="middle"
+       id="text4">
+       {% if activity.music_info.album_title %}
+       {{ activity.music_info.album_title }}{% if activity.music_info.album_type %} ({{ activity.music_info.album_type }}){% endif %}
+       {% elif activity.music_info.title %}
+       {{ activity.music_info.title }}{% if activity.music_info.album_type %} ({{ activity.music_info.album_type }}){% endif %}
+       {% else %}
+       Album Title (Album Type)
+       {% endif %}
+    </text>
+    <text
+       x="200"
+       y="525.33502"
+       font-size="15px"
+       fill="#b3b3b3"
+       text-anchor="middle"
+       id="text5">
+       {% if activity.music_info.artists %}
+       {{ activity.music_info.artists }}
+       {% elif activity.music_info.title %}
+       Unknown
+       {% else %}
+       Artists
+       {% endif %}
+    </text>
+    <text
+       x="200"
+       y="559.33502"
+       font-size="15px"
+       fill="#b3b3b3"
+       text-anchor="middle"
+       id="text6">
+       {% if activity.music_info.genre %}
+       {{ activity.music_info.genre }}
+       {% elif activity.music_info.title %}
+       Unknown
+       {% else %}
+       Genre
+       {% endif %}
+    </text>
+  </g>
+  {% else %}
+  <image
+     href="{{ url_for('static', filename='errors/no.gif') }}"
+     x="100"
+     y="100"
+     width="224"
+     height="256"
+     clip-path="url(#albumArtClipV)"
+     preserveAspectRatio="xMidYMid slice"
+     id="image2"
+     transform="translate(-12,36.065)" />
+  <clipPath
+     id="albumArtClipV">
+    <rect
+       x="100"
+       y="100"
+       width="224"
+       height="256"
+       rx="18"
+       id="rect2" />
+  </clipPath>
+  {% endif %}
+</svg>
+
+{% elif style == "horizontal" %}
+
+{% endif %}
