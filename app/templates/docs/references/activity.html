@@ -52,6 +52,30 @@
 
         <div class="req-para-info">
             <div>
+                <kbd>svg</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            If provided, the API will return an SVG image representing the user's currently playing music activity
+            instead of JSON. This is useful for embedding a dynamic "Now Playing" badge or card in places that support
+            SVG images, such as GitHub READMEs or personal websites.
+        </p>
+        <p>
+            <br>
+            <b>Note</b>: When using this query parameter, the API will ignore the <code>service</code> query parameter
+            and always return the activity information for the service where you are currently listening to music.<br>
+            <b>Example</b>:
+        <pre class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?svg" alt="Now Playing" /&gt;</code></pre>
+        <pre
+            class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?username=potato&amp;svg" alt="Now Playing" /&gt;</code></pre>
+        </p>
+
+        <div class="req-para-info">
+            <div>
                 <kbd>service</kbd> <code>string</code>
             </div>
             <div class="flex-row">
