@@ -116,7 +116,7 @@ def manage_roles():
 @roles_required("admin")
 def manage_services():
     security: Security = current_app.security
-    services = Service.query.all()
+    services = Service.query.order_by(Service.id).all()
     add_service_form = AddServiceForm()
     edit_service_form = EditServiceForm()
 
