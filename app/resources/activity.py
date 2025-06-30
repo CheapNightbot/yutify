@@ -77,13 +77,11 @@ class UserActivityResource(Resource):
                 )
 
             if is_svg:
-                style = request.args.get("style", "vertical").lower()
                 return make_response(
                     render_template(
                         "embed/activity_card.svg.j2",
                         error=error_msg,
                         user=user,
-                        style=style,
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
@@ -133,13 +131,12 @@ class UserActivityResource(Resource):
                 )
 
             if is_svg:
-                style = request.args.get("style", "vertical").lower()
+
                 return make_response(
                     render_template(
                         "embed/activity_card.svg.j2",
                         error=error_msg,
                         user=user,
-                        style=style,
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
@@ -157,13 +154,11 @@ class UserActivityResource(Resource):
             )
 
         if is_svg:
-            style = request.args.get("style", "vertical").lower()
             return make_response(
                 render_template(
                     "embed/activity_card.svg.j2",
                     activity=activity,
                     user=user,
-                    style=style,
                 ),
                 200,
                 {"Content-Type": "image/svg+xml"},
