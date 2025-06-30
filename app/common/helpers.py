@@ -1,5 +1,10 @@
+import base64
+import os
 import re
 from datetime import datetime, timezone
+
+import requests
+from flask import current_app as app
 
 
 def is_valid_string(string: str) -> bool:
@@ -165,3 +170,21 @@ if __name__ == "__main__":
             exclude_bounds=True,
         )
     )
+
+
+def get_album_art_data_uri(url):
+    try:
+        resp = requests.get(url, timeout=5)
+        if resp.ok:
+            mime = resp.headers.get("Content-Type", "image/jpeg")
+            b64 = base64.b64encode(resp.content).decode("utf-8")
+            return f"data:{mime};base64,{b64}"
+    except Exception:
+        pass
+    return None
+
+
+def get_static_file_data_uri(filename, mimetype):
+    with open(os.path.join(app.static_folder, filename), "rb") as f:
+        b64 = base64.b64encode(f.read()).decode("utf-8")
+        return f"data:{mimetype};base64,{b64}"

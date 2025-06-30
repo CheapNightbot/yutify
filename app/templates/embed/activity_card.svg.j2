@@ -54,20 +54,48 @@
        {{ activity.activity_info.timestamp | int | relative_timestamp }}
     </text>
    {% elif not activity %}
+    {% set y_start = 74 %}
+    {% set line_height = 18 %}
+    {% for sentence in error.split('.') %}
+    {% if sentence.strip() %}
     <text
        x="199.94189"
-       y="74"
+       y="{{ y_start + loop.index0 * line_height }}"
        font-size="14px"
        fill="#a1a6b0"
        text-anchor="middle"
        id="text2">
-       {{ error }}
+            {{ sentence.strip() }}.
     </text>
+    {% endif %}
+    {% endfor %}
    {% endif %}
   </g>
 
+  <clipPath
+     id="albumArtClipV">
+    <rect
+       x="100"
+       y="100"
+       width="224"
+       height="256"
+       rx="18"
+       id="rect2" />
+  </clipPath>
+
   {% if activity %}
-  {% if activity.music_info.album_art %}
+  {% if album_art_data_uri %}
+  <image
+     href="{{ album_art_data_uri }}"
+     x="100"
+     y="100"
+     width="224"
+     height="256"
+     clip-path="url(#albumArtClipV)"
+     preserveAspectRatio="xMidYMid slice"
+     id="image2"
+     transform="translate(-12,36.065)" />
+  {% elif activity and activity.music_info.album_art %}
   <image
      href="{{ activity.music_info.album_art }}"
      x="100"
@@ -78,19 +106,9 @@
      preserveAspectRatio="xMidYMid slice"
      id="image2"
      transform="translate(-12,36.065)" />
-  <clipPath
-     id="albumArtClipV">
-    <rect
-       x="100"
-       y="100"
-       width="224"
-       height="256"
-       rx="18"
-       id="rect2" />
-  </clipPath>
   {% else %}
   <image
-     href="{{ url_for('static', filename='favicon.svg') }}"
+     href="{{ favicon_data_uri }}"
      x="100"
      y="100"
      width="224"
@@ -99,16 +117,6 @@
      preserveAspectRatio="xMidYMid slice"
      id="image2"
      transform="translate(-12,36.065)" />
-  <clipPath
-     id="albumArtClipV">
-    <rect
-       x="100"
-       y="100"
-       width="224"
-       height="256"
-       rx="18"
-       id="rect2" />
-  </clipPath>
   {% endif %}
 
   <g
@@ -175,7 +183,7 @@
   </g>
   {% else %}
   <image
-     href="{{ url_for('static', filename='errors/no.gif') }}"
+     href="{{ no_gif_data_uri }}"
      x="100"
      y="100"
      width="224"
@@ -184,15 +192,5 @@
      preserveAspectRatio="xMidYMid slice"
      id="image2"
      transform="translate(-12,36.065)" />
-  <clipPath
-     id="albumArtClipV">
-    <rect
-       x="100"
-       y="100"
-       width="224"
-       height="256"
-       rx="18"
-       id="rect2" />
-  </clipPath>
   {% endif %}
 </svg>

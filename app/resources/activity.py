@@ -10,6 +10,7 @@ from flask_security import Security, SQLAlchemyUserDatastore, current_user
 from app import db
 from app.auth_services.lastfm import get_lastfm_activity
 from app.auth_services.spotify import get_spotify_activity
+from app.common.helpers import get_album_art_data_uri, get_static_file_data_uri
 from app.limiter import limiter
 from app.models import UserService
 
@@ -55,6 +56,9 @@ class UserActivityResource(Resource):
         service = "".join(list(request.args.keys())).lower() if request.args else "all"
         is_embed = "embed" in request.args
         is_svg = "svg" in request.args
+        if is_svg:
+            favicon_data_uri = get_static_file_data_uri("favicon.svg", "image/svg+xml")
+            no_gif_data_uri = get_static_file_data_uri("errors/no.gif", "image/gif")
 
         # Fetch user services from the database
         user_services = db.session.scalars(
@@ -82,6 +86,7 @@ class UserActivityResource(Resource):
                         "embed/activity_card.svg.j2",
                         error=error_msg,
                         user=user,
+                        no_gif_data_uri=no_gif_data_uri,
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
@@ -131,12 +136,12 @@ class UserActivityResource(Resource):
                 )
 
             if is_svg:
-
                 return make_response(
                     render_template(
                         "embed/activity_card.svg.j2",
                         error=error_msg,
                         user=user,
+                        no_gif_data_uri=no_gif_data_uri,
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
@@ -154,11 +159,18 @@ class UserActivityResource(Resource):
             )
 
         if is_svg:
+            album_art_data_uri = None
+            if activity and "album_art" in activity.get("music_info", {}):
+                album_art_data_uri = get_album_art_data_uri(
+                    activity["music_info"]["album_art"]
+                )
             return make_response(
                 render_template(
                     "embed/activity_card.svg.j2",
                     activity=activity,
                     user=user,
+                    album_art_data_uri=album_art_data_uri,
+                    favicon_data_uri=favicon_data_uri,
                 ),
                 200,
                 {"Content-Type": "image/svg+xml"},
