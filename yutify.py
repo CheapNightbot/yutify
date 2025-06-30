@@ -42,7 +42,7 @@ def redirect_onrender_to_custom_domain():
 def set_security_headers(response):
     response.headers["Strict-Transport-Security"] = "max-age=31536000"
     response.headers["Content-Security-Policy"] = (
-        "style-src-elem 'self' https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.indigo.min.css "
+        "style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.indigo.min.css "
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css "
         "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/tokyo-night-dark.min.css "
         "https://fonts.googleapis.com/ "
