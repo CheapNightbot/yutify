@@ -2,7 +2,9 @@ const copyEndpointUrl = (e) => {
     e.preventDefault();
     const endpointUrl = document.querySelector(".endpoint")?.href;
     navigator.clipboard.writeText(endpointUrl).then(() => {
-        alert('URL Copied to clipboard!');
+        showFlashMessage('URL Copied to clipboard!', 'info');
+    }).catch(() => {
+        showFlashMessage('Failed to copy!', 'error');
     });
 }
 
