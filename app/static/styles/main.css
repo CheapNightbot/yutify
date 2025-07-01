@@ -254,7 +254,6 @@ header {
     width: 0;
     position: relative;
     float: right;
-    transform: translateX(-2.4rem);
     cursor: pointer;
     transition: .3s all cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
@@ -915,6 +914,10 @@ dt::before {
 
 #activity-svg-docs {
     display: none;
+}
+
+#endpoint-hint {
+    color:#888;
 }
 
 
