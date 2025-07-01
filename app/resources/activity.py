@@ -14,7 +14,6 @@ from app.common.helpers import get_album_art_data_uri, get_static_file_data_uri
 from app.limiter import limiter
 from app.models import UserService
 import cairosvg
-import io
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
@@ -103,7 +102,9 @@ class UserActivityResource(Resource):
                     no_gif_data_uri=no_png_data_uri,
                 )
                 # Convert SVG to PNG
-                png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"))
+                png_bytes = cairosvg.svg2png(
+                    bytestring=svg_str.encode("utf-8"), scale=2
+                )
                 return make_response(
                     png_bytes,
                     200,
@@ -172,7 +173,9 @@ class UserActivityResource(Resource):
                     no_gif_data_uri=no_png_data_uri,
                 )
                 # Convert SVG to PNG
-                png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"))
+                png_bytes = cairosvg.svg2png(
+                    bytestring=svg_str.encode("utf-8"), scale=2
+                )
                 return make_response(
                     png_bytes,
                     200,
@@ -223,7 +226,7 @@ class UserActivityResource(Resource):
                 favicon_data_uri=favicon_data_uri,
             )
             # Convert SVG to PNG
-            png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"))
+            png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"), scale=2)
             return make_response(
                 png_bytes,
                 200,
@@ -231,13 +234,6 @@ class UserActivityResource(Resource):
             )
 
         return self._format_response(activity, response_type)
-
-    def _get_static_file_bytes(self, rel_path):
-        """Helper to load a static file as bytes from the static folder."""
-        static_folder = os.path.join(current_app.root_path, "static")
-        file_path = os.path.join(static_folder, rel_path)
-        with open(file_path, "rb") as f:
-            return f.read()
 
     def _format_response(self, activity, response_type):
         """Format the response based on the requested type."""
