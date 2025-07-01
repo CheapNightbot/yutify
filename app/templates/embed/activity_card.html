@@ -5,23 +5,23 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% if activity %}
-        <title>yutify: {{ user.username }} listening to "{{ activity.music_info.title }}"</title>
-        <meta property="og:title" content="{{ user.username }}'s music activity on yutify" />
-        <meta property="og:description" content="{{ user.username }} is listening to '{{ activity.music_info.title }}' by {{ activity.music_info.artists }}." />
-        <meta property="og:image" content="{{ url_for('api.useractivityresource', _external=True) }}?username={{ user.username }}&svg" />
+        <title>yutify: {{ user.name }} listening to "{{ activity.music_info.title }}"</title>
+        <meta property="og:title" content="{{ user.name }}'s music activity on yutify" />
+        <meta property="og:description" content="{{ user.name }} is listening to '{{ activity.music_info.title }}' by {{ activity.music_info.artists }}." />
+        <meta property="og:image" content="{{ url_for('api.activity_png', _external=True) }}?username={{ user.username }}" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="{{ user.username }}'s music activity on yutify" />
-        <meta name="twitter:description" content="{{ user.username }} is listening to '{{ activity.music_info.title }}' by {{ activity.music_info.artists }}." />
-        <meta name="twitter:image" content="{{ url_for('api.useractivityresource', _external=True) }}?username={{ user.username }}&svg" />
+        <meta name="twitter:title" content="{{ user.name }}'s music activity on yutify" />
+        <meta name="twitter:description" content="{{ user.name }} is listening to '{{ activity.music_info.title }}' by {{ activity.music_info.artists }}." />
+        <meta name="twitter:image" content="{{ url_for('api.activity_png', _external=True) }}?username={{ user.username }}" />
         {% else %}
-        <title>yutify: {{ user.username }} not listening to any music...</title>
-        <meta property="og:title" content="{{ user.username }}'s music activity on yutify" />
-        <meta property="og:description" content="{{ user.username }} is not listening to any music right now." />
-        <meta property="og:image" content="{{ url_for('api.useractivityresource', _external=True) }}?username={{ user.username }}&svg" />
+        <title>yutify: {{ user.name }} not listening to any music...</title>
+        <meta property="og:title" content="{{ user.name }}'s music activity on yutify" />
+        <meta property="og:description" content="{{ user.name }} is not listening to any music right now." />
+        <meta property="og:image" content="{{ url_for('api.activity_png', _external=True) }}?username={{ user.username }}" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="{{ user.username }}'s music activity on yutify" />
-        <meta name="twitter:description" content="{{ user.username }} is not listening to any music right now." />
-        <meta name="twitter:image" content="{{ url_for('api.useractivityresource', _external=True) }}?username={{ user.username }}&svg" />
+        <meta name="twitter:title" content="{{ user.name }}'s music activity on yutify" />
+        <meta name="twitter:description" content="{{ user.name }} is not listening to any music right now." />
+        <meta name="twitter:image" content="{{ url_for('api.activity_png', _external=True) }}?username={{ user.username }}" />
         {% endif %}
         <link rel="stylesheet" href="{{ url_for('static', filename='styles/embed.css')}}">
     </head>
