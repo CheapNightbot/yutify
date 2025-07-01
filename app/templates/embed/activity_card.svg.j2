@@ -182,15 +182,25 @@
     </text>
   </g>
   {% else %}
+   <clipPath
+     id="errorGifClipV">
+    <rect
+       x="100"
+       y="100"
+       width="300"
+       height="256"
+       rx="18"
+       id="rect2" />
+  </clipPath>
   <image
      href="{{ no_gif_data_uri }}"
      x="100"
      y="100"
-     width="224"
+     width="300"
      height="256"
-     clip-path="url(#albumArtClipV)"
+     clip-path="url(#errorGifClipV)"
      preserveAspectRatio="xMidYMid slice"
      id="image2"
-     transform="translate(-12,36.065)" />
+     transform="translate(-55,80)" />
   {% endif %}
 </svg>
