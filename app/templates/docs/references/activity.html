@@ -9,7 +9,10 @@
         <select id="methods" name="methods">
             <option value="get">GET</option>
         </select>
-        <input class="endpoint docs" type="text" value="/api/me" readonly>
+        <select class="endpoint docs" name="endpoints" id="endpoint-select">
+            <option value="/api/me">/api/me</option>
+            <option value="/api/activity.svg">/api/activity.svg</option>
+        </select>
         <span class="endpoint-auth" data-tooltip="Authorization Code Required" data-placement="left">
             <i class="fa-solid fa-lock"></i>
         </span>
@@ -32,138 +35,148 @@
         </ul>
     </blockquote>
 
-    <h3>Request</h3>
-    <div>
-        <div class="req-para-info">
-            <div>
-                <kbd>username</kbd> <code>string</code>
-            </div>
-            <div class="flex-row">
-                <span class="line"></span>
-                <mark>Optional</mark>
-            </div>
-        </div>
-        <p>
-            The username of the user whose activity you want to retrieve.
-        </p>
-        <p>
-            <b>Example</b>: <code>/api/me<ins>?username=potato</ins></code>
-        </p>
-
-        <div class="req-para-info">
-            <div>
-                <kbd>svg</kbd> <code>string</code>
-            </div>
-            <div class="flex-row">
-                <span class="line"></span>
-                <mark>Optional</mark>
-            </div>
-        </div>
-        <p>
-            If provided, the API will return an SVG image representing the user's currently playing music activity
-            instead of JSON. This is useful for embedding a dynamic "Now Playing" badge or card in places that support
-            SVG images, such as GitHub READMEs or personal websites.
-        </p>
-        <p>
-            <br>
-            <b>Note</b>: When using this query parameter, the API will ignore the <code>service</code> query parameter
-            and always return the activity information for the service where you are currently listening to music.<br>
-            <b>Example</b>:
-        <pre class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?svg" alt="Now Playing" /&gt;</code></pre>
-        <pre
-            class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?username=potato&amp;svg" alt="Now Playing" /&gt;</code></pre>
-        </p>
-
-        <div class="req-para-info">
-            <div>
-                <kbd>service</kbd> <code>string</code>
-            </div>
-            <div class="flex-row">
-                <span class="line"></span>
-                <mark>Optional</mark>
-            </div>
-        </div>
-        <p>
-            The music service name to retrieve listening activity metadata from. It must be linked first in your account
-            settings!
-        </p>
-        <p>
-            If provided, music information/metadata will be retrieved for the music you are currently listening to on
-            this service.
-            If it is not provided or does not contain allowed values, it will be simply ignored and music
-            information/metadata will
-            be retrieved for all the linked services.
-        </p>
-        <p>
-            If music information requested for all linked services, the one where you are currently listening to music
-            will be given priority.
-            However, if (for whatever reason), you are listening to music on all the linked services, these will be
-            given priority at random. That is, you can't be sure for which linked service you will get music information
-            returned.
-        </p>
-        <p>
-            <b>Default</b>: <code>"all"</code> <br>
-            <b>Allowed values</b>: <code>"all"</code>, <code>"lastfm"</code>, <code>"spotify"</code> <br>
-            <b>Note</b>: The query parameter for <code>service</code> is NOT <code>?service=&lt;name&gt;</code>
-            &lpar;i.e. key-value pair&rpar;! Instead, you just provide the service name directly as a key. <br>
-            <b>Example</b>: <code>/api/me<ins>?lastfm</ins></code>
-        </p>
-    </div>
-
-    <div class="req-para-info">
+    <div id="appi-me-docs">
+        <h3>Request</h3>
         <div>
-            <kbd>embed</kbd> <code>string</code>
-        </div>
-        <div class="flex-row">
-            <span class="line"></span>
-            <mark>Optional</mark>
-        </div>
-    </div>
-    <p>
-        If provided, the API will return a ready-to-embed HTML user activity card (instead of JSON) for the requested
-        user. You should use it inside an <code>&lt;iframe&gt;</code>.
-    </p>
-    <p>
-        <b>Note</b>: When using this query parameter, API will ignore the <code>service</code> query parameter and
-        will always return the activity information for the service where you are currently listening to music. <br>
-        <b>Example</b>:
-    <ul>
-        <li>
-            <pre
-                class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/me?embed" frameborder="0" width="100%" height="612" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
-        </li>
-        <li>
-            <pre
-                class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/me?username=potato&amp;embed" frameborder="0" width="100%" height="612" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
-        </li>
-    </ul>
-    </p>
-    <img class="screenshot medium" src="{{ url_for('static', filename='docs/activity-embed-example.png') }}"
-        alt="Activity embed example" />
+            <div class="req-para-info">
+                <div>
+                    <kbd>username</kbd> <code>string</code>
+                </div>
+                <div class="flex-row">
+                    <span class="line"></span>
+                    <mark>Optional</mark>
+                </div>
+            </div>
+            <p>
+                The username of the user whose activity you want to retrieve.
+            </p>
+            <p>
+                <b>Example</b>: <code>/api/me<ins>?username=potato</ins></code>
+            </p>
 
-    <div class="flex-row left">
-        <h3>Response</h3>
-        <nav role="tab-control">
-            <ul>
-                <li><label for="tab1">200</label></li>
-                <li><label for="tab2">404</label></li>
-                <li><label for="tab3">429</label></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="container">
-        <div role="tabs">
-            <section>
-                <input hidden="hidden" type="radio" name="tabs" id="tab1" checked="checked" />
-                <figure>
-                    <p>Successful response with the information about the music user is currently listening to on a
-                        linked service.</p>
-                    <article class="res-example">
-                        <details>
-                            <summary>Response Examples</summary>
-                            <header class="flex-column"><code>/api/me</code>
-                            </header>
-                            <pre class="codeblock"><code>{
+            <div class="req-para-info">
+                <div>
+                    <kbd>svg</kbd> <code>string</code>
+                </div>
+                <div class="flex-row">
+                    <span class="line"></span>
+                    <mark>Optional</mark>
+                </div>
+            </div>
+            <p>
+                If provided, the API will return a SVG image of the user's currently playing or last played music
+                activity
+                instead of JSON. This is useful for embedding a dynamic "Now Playing" badge or card in places that
+                support
+                SVG images, such as GitHub READMEs or personal websites.
+            </p>
+            <p>
+                <br>
+                <b>Note</b>: When using this query parameter, the API will ignore the <code>service</code> query
+                parameter
+                and always return the activity information for the service where you are currently listening to
+                music.<br>
+                <b>Example</b>:
+            <pre class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?svg" alt="Now Playing" /&gt;</code></pre>
+            <pre
+                class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?username=potato&amp;svg" alt="Now Playing" /&gt;</code></pre>
+            </p>
+
+            <div class="req-para-info">
+                <div>
+                    <kbd>service</kbd> <code>string</code>
+                </div>
+                <div class="flex-row">
+                    <span class="line"></span>
+                    <mark>Optional</mark>
+                </div>
+            </div>
+            <p>
+                The music service name to retrieve listening activity metadata from. It must be linked first in your
+                account
+                settings!
+            </p>
+            <p>
+                If provided, music information/metadata will be retrieved for the music you are currently listening to
+                on
+                this service.
+                If it is not provided or does not contain allowed values, it will be simply ignored and music
+                information/metadata will
+                be retrieved for all the linked services.
+            </p>
+            <p>
+                If music information requested for all linked services, the one where you are currently listening to
+                music
+                will be given priority.
+                However, if (for whatever reason), you are listening to music on all the linked services, these will be
+                given priority at random. That is, you can't be sure for which linked service you will get music
+                information
+                returned.
+            </p>
+            <p>
+                <b>Default</b>: <code>"all"</code> <br>
+                <b>Allowed values</b>: <code>"all"</code>, <code>"lastfm"</code>, <code>"spotify"</code> <br>
+                <b>Note</b>: The query parameter for <code>service</code> is NOT <code>?service=&lt;name&gt;</code>
+                &lpar;i.e. key-value pair&rpar;! Instead, you just provide the service name directly as a key. <br>
+                <b>Example</b>: <code>/api/me<ins>?lastfm</ins></code>
+            </p>
+        </div>
+
+        <div class="req-para-info">
+            <div>
+                <kbd>embed</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            If provided, the API will return a ready-to-embed HTML user activity card (instead of JSON) for the
+            requested
+            user. You should use it inside an <code>&lt;iframe&gt;</code>.
+        </p>
+        <p>
+            <b>Note</b>: When using this query parameter, API will ignore the <code>service</code> query parameter and
+            will always return the activity information for the service where you are currently listening to music. <br>
+            <b>Example</b>:
+        <ul>
+            <li>
+                <pre
+                    class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/me?embed" frameborder="0" width="100%" height="612" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+            <li>
+                <pre
+                    class="codeblock"><code>&lt;iframe src="{{ base_url }}/api/me?username=potato&amp;embed" frameborder="0" width="100%" height="612" loading="lazy"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+        </ul>
+        </p>
+        <img class="screenshot medium" src="{{ url_for('static', filename='docs/activity-embed-example.png') }}"
+            alt="Activity embed example" />
+
+        <div class="flex-row left">
+            <h3>Response</h3>
+            <nav role="tab-control">
+                <ul>
+                    <li><label for="tab1">200</label></li>
+                    <li><label for="tab2">404</label></li>
+                    <li><label for="tab3">429</label></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="container">
+            <div role="tabs">
+                <section>
+                    <input hidden="hidden" type="radio" name="tabs" id="tab1" checked="checked" />
+                    <figure>
+                        <p>Successful response with the information about the music user is currently listening to on a
+                            linked service.</p>
+                        <article class="res-example">
+                            <details>
+                                <summary>Response Examples</summary>
+                                <header class="flex-column"><code>/api/me</code>
+                                </header>
+                                <pre class="codeblock"><code>{
   "activity_info": {
     "is_playing": true,
     "service": "lastfm",
@@ -199,8 +212,8 @@
     }
   }
 }</code></pre>
-                            <header class="flex-column"><code>/api/me</code></header>
-                            <pre class="codeblock"><code>{
+                                <header class="flex-column"><code>/api/me</code></header>
+                                <pre class="codeblock"><code>{
   "activity_info": {
     "is_playing": true,
     "service": "lastfm",
@@ -223,536 +236,586 @@
     "url": "https://www.last.fm/music/Artist/Song"
   }
 }</code></pre>
-                        </details>
-                    </article>
-                    <div>
-                        <div class="req-para-info">
-                            <div>
-                                <kbd>activity_info</kbd> <code>object</code>
+                            </details>
+                        </article>
+                        <div>
+                            <div class="req-para-info">
+                                <div>
+                                    <kbd>activity_info</kbd> <code>object</code>
+                                </div>
+                                <div class="flex-row">
+                                    <span class="line"></span>
+                                    <mark>Always Present</mark>
+                                </div>
                             </div>
-                            <div class="flex-row">
-                                <span class="line"></span>
-                                <mark>Always Present</mark>
-                            </div>
+                            <p>
+                                An <code>object</code> containing information about user's currently listening activity.
+                            </p>
+                            <p>It contains the following fields:</p>
+                            <ul>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>is_playing</kbd> <code>boolean</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            Whether the user is currently listening to this music or not. <br>
+                                            It will be <code>true</code> if user is currently listening this music,
+                                            otherwise <code>false</code> indicating that user is not currently listening
+                                            to
+                                            this music, but this was the last music they were listening to that
+                                            <strong>{{ config["SERVICE"] }}</strong> fetched.
+                                        </p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>service</kbd> <code>string</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            The service name where this activity fetched from.
+                                        </p>
+                                        <p>
+                                            <b>Available values</b>: <code>"lastfm"</code>, <code>"spotify"</code><br>
+                                            <b>Example</b>: <code>"lastfm"</code>
+                                        </p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>timestamp</kbd> <code>integer</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            Unix Timestamp (in seconds) when the user started playing this music or when
+                                            the
+                                            activity first was fetched.
+                                        </p>
+                                        <p>
+                                            <b>Example</b>: <code>1747255826.41405</code>
+                                        </p>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                        <p>
-                            An <code>object</code> containing information about user's currently listening activity.
-                        </p>
-                        <p>It contains the following fields:</p>
-                        <ul>
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>is_playing</kbd> <code>boolean</code>
-                                        </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
-                                    </div>
-                                    <p>
-                                        Whether the user is currently listening to this music or not. <br>
-                                        It will be <code>true</code> if user is currently listening this music,
-                                        otherwise <code>false</code> indicating that user is not currently listening to
-                                        this music, but this was the last music they were listening to that
-                                        <strong>{{ config["SERVICE"] }}</strong> fetched.
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>service</kbd> <code>string</code>
-                                        </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
-                                    </div>
-                                    <p>
-                                        The service name where this activity fetched from.
-                                    </p>
-                                    <p>
-                                        <b>Available values</b>: <code>"lastfm"</code>, <code>"spotify"</code><br>
-                                        <b>Example</b>: <code>"lastfm"</code>
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>timestamp</kbd> <code>integer</code>
-                                        </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
-                                    </div>
-                                    <p>
-                                        Unix Timestamp (in seconds) when the user started playing this music or when the
-                                        activity first was fetched.
-                                    </p>
-                                    <p>
-                                        <b>Example</b>: <code>1747255826.41405</code>
-                                    </p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <div>
-                        <div class="req-para-info">
-                            <div>
-                                <kbd>music_info</kbd> <code>object</code>
+                        <div>
+                            <div class="req-para-info">
+                                <div>
+                                    <kbd>music_info</kbd> <code>object</code>
+                                </div>
+                                <div class="flex-row">
+                                    <span class="line"></span>
+                                    <mark>Always Present</mark>
+                                </div>
                             </div>
-                            <div class="flex-row">
-                                <span class="line"></span>
-                                <mark>Always Present</mark>
-                            </div>
-                        </div>
-                        <p>
-                            An <code>object</code> containing music information about user's currently listening
-                            activity.
-                        </p>
-                        <p>It contains the following fields:</p>
-                        <ul>
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>album_art</kbd> <code>string</code>
+                            <p>
+                                An <code>object</code> containing music information about user's currently listening
+                                activity.
+                            </p>
+                            <p>It contains the following fields:</p>
+                            <ul>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>album_art</kbd> <code>string</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The URL to the album art (image) of the requested music.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The URL to the album art (image) of the requested music.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>album_art_source</kbd> <code>string</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>album_art_source</kbd> <code>string</code>
+                                            </div>
                                         </div>
+                                        <p>The music platform name where the album art retrieved from.</p>
+                                        <p>
+                                            <b>Example</b>: <code>"spotify"</code>
+                                        </p>
                                     </div>
-                                    <p>The music platform name where the album art retrieved from.</p>
-                                    <p>
-                                        <b>Example</b>: <code>"spotify"</code>
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>album_title</kbd> <code>string</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>album_title</kbd> <code>string</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The title of the album for the requested music.
+                                        </p>
+                                        <p>
+                                            <b>Note</b>: It will be the same as the <kbd>title</kbd> if
+                                            <kbd>album_type</kbd> is
+                                            <code>"single</code>.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The title of the album for the requested music.
-                                    </p>
-                                    <p>
-                                        <b>Note</b>: It will be the same as the <kbd>title</kbd> if
-                                        <kbd>album_type</kbd> is
-                                        <code>"single</code>.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>album_type</kbd> <code>string</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>album_type</kbd> <code>string</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The type of the album for the requested music.
+                                        </p>
+                                        <p>
+                                            <b>Available values</b>: <code>"album"</code>, <code>"ep"</code>,
+                                            <code>"single"</code> <br>
+                                            <b>Example</b>: <code>"single"</code>
+                                        </p>
                                     </div>
-                                    <p>
-                                        The type of the album for the requested music.
-                                    </p>
-                                    <p>
-                                        <b>Available values</b>: <code>"album"</code>, <code>"ep"</code>,
-                                        <code>"single"</code> <br>
-                                        <b>Example</b>: <code>"single"</code>
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>artists</kbd> <code>string</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>artists</kbd> <code>string</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            A comma-separated string of artist name(s) for the requested music.
+                                        </p>
+                                        <p>
+                                            <b>Example</b>: <code>"Ahrix"</code>, <code>"花譜, Hoshimachi Suisei"</code>
+                                        </p>
                                     </div>
-                                    <p>
-                                        A comma-separated string of artist name(s) for the requested music.
-                                    </p>
-                                    <p>
-                                        <b>Example</b>: <code>"Ahrix"</code>, <code>"花譜, Hoshimachi Suisei"</code>
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>genre</kbd> <code>string</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>genre</kbd> <code>string</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The genre of the requested music.
+                                        </p>
+                                        <p>
+                                            <b>Example</b>: <code>"Electronic"</code>
+                                        </p>
                                     </div>
-                                    <p>
-                                        The genre of the requested music.
-                                    </p>
-                                    <p>
-                                        <b>Example</b>: <code>"Electronic"</code>
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>id</kbd> <code>integer</code> <code>string</code> <code>object</code>
-                                            <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>id</kbd> <code>integer</code> <code>string</code>
+                                                <code>object</code>
+                                                <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
-                                    </div>
-                                    <p>
-                                        The unique ID of the music on the respective music platform(s). <br>
-                                        The <code>"id"</code> itself can be either <code>integer</code> or
-                                        <code>string</code> based on
-                                        the music
-                                        platform. For example, <code>"id"</code> for YouTube Music will be 11 characters
-                                        long
-                                        alpha-numeric string.
-                                    </p>
-                                    <p>
-                                        <b>Note</b>: If it is an <code>object</code>, each key will be the music
-                                        platform name and value
-                                        being actual ID of the music on that platform. <br>
-                                        <b>Examples</b>:
-                                    </p>
-                                    <pre class="codeblock"><code>"id": "7e8XZUuB78uEOil4i3ONox"</code></pre>
-                                    <blockquote>
-                                        The music platform keys in this object can vary based on if that music
-                                        found
-                                        on
-                                        respective platform or not. For example, if the music was not found on
-                                        Spotify, the
-                                        <code>"id"</code> object will not have <code>"spotify"</code> key.
-                                    </blockquote>
+                                        <p>
+                                            The unique ID of the music on the respective music platform(s). <br>
+                                            The <code>"id"</code> itself can be either <code>integer</code> or
+                                            <code>string</code> based on
+                                            the music
+                                            platform. For example, <code>"id"</code> for YouTube Music will be 11
+                                            characters
+                                            long
+                                            alpha-numeric string.
+                                        </p>
+                                        <p>
+                                            <b>Note</b>: If it is an <code>object</code>, each key will be the music
+                                            platform name and value
+                                            being actual ID of the music on that platform. <br>
+                                            <b>Examples</b>:
+                                        </p>
+                                        <pre class="codeblock"><code>"id": "7e8XZUuB78uEOil4i3ONox"</code></pre>
+                                        <blockquote>
+                                            The music platform keys in this object can vary based on if that music
+                                            found
+                                            on
+                                            respective platform or not. For example, if the music was not found on
+                                            Spotify, the
+                                            <code>"id"</code> object will not have <code>"spotify"</code> key.
+                                        </blockquote>
 
-                                    <pre class="codeblock"><code>"id": {
+                                        <pre class="codeblock"><code>"id": {
   "itunes": 123456789,
   "deezer": 123456789,
   "kkbox": "XyxzETEWlclsnflt",
   "spotify": "7e8XZUuB78uEOil4i3ONox",
   "ytmusic": "AdLFtTiA8d5"
 }</code></pre>
-                                    </code>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>isrc</kbd> <code>string</code> <code class="null">null</code>
-                                        </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        </code>
                                     </div>
-                                    <p>
-                                        The ISRC code of the requested music. If the <kbd>album_type</kbd> is not
-                                        <code>"single"</code> or ISRC was not found, then it will be <code
-                                            class="null">null</code>.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>lyrics</kbd> <code>string</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>isrc</kbd> <code>string</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The ISRC code of the requested music. If the <kbd>album_type</kbd> is not
+                                            <code>"single"</code> or ISRC was not found, then it will be <code
+                                                class="null">null</code>.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The lyrics of the requested music.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>release_date</kbd> <code>string</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>lyrics</kbd> <code>string</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The lyrics of the requested music.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The date when requested music was released in ISO format:
-                                        <code>YYYY-MM-DD</code>
-                                    </p>
-                                    <P>
-                                        <b>Example</b>: <code>"2025-05-14"</code>
-                                    </P>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>tempo</kbd> <code>integer</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>release_date</kbd> <code>string</code> <code
+                                                    class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The date when requested music was released in ISO format:
+                                            <code>YYYY-MM-DD</code>
+                                        </p>
+                                        <P>
+                                            <b>Example</b>: <code>"2025-05-14"</code>
+                                        </P>
                                     </div>
-                                    <p>
-                                        The tempo of the requested music in beats per minute (BPM). <br>
-                                        Currently, it is always going to be <code class="null">null</code>. Please see
-                                        this <a href="https://github.com/CheapNightbot/yutify/issues/28" target="_blank"
-                                            rel="noopener noreferrer">issue</a>
-                                        on GitHub for more
-                                        information.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>title</kbd> <code>string</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>tempo</kbd> <code>integer</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The tempo of the requested music in beats per minute (BPM). <br>
+                                            Currently, it is always going to be <code class="null">null</code>. Please
+                                            see
+                                            this <a href="https://github.com/CheapNightbot/yutify/issues/28"
+                                                target="_blank" rel="noopener noreferrer">issue</a>
+                                            on GitHub for more
+                                            information.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The title / name of the requested music.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>type</kbd> <code>string</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>title</kbd> <code>string</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The title / name of the requested music.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The type of the requested music.
-                                    </p>
-                                    <p>
-                                        <b>Available values</b>: <code>"album"</code>, <code>"track"</code> <br>
-                                        <b>Note</b>: Don't get confused with <kbd>album_type</kbd>! This one tells you
-                                        whether you
-                                        requested a track (which can be part of an album) or an album itself.<br>
-                                        <b>Example</b>: If you requested a track <code>"Third Track"</code> which is
-                                        part of an
-                                        album <code>"Best Album"</code>, then <kbd>"type"</kbd> will be
-                                        <code>track</code>. However,
-                                        if you requested <code>"Best Album"</code>, the <kbd>"type"</kbd> will be
-                                        <code>"album"</code>.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>upc</kbd> <code>string</code> <code class="null">null</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>type</kbd> <code>string</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The type of the requested music.
+                                        </p>
+                                        <p>
+                                            <b>Available values</b>: <code>"album"</code>, <code>"track"</code> <br>
+                                            <b>Note</b>: Don't get confused with <kbd>album_type</kbd>! This one tells
+                                            you
+                                            whether you
+                                            requested a track (which can be part of an album) or an album itself.<br>
+                                            <b>Example</b>: If you requested a track <code>"Third Track"</code> which is
+                                            part of an
+                                            album <code>"Best Album"</code>, then <kbd>"type"</kbd> will be
+                                            <code>track</code>. However,
+                                            if you requested <code>"Best Album"</code>, the <kbd>"type"</kbd> will be
+                                            <code>"album"</code>.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The UPC code of the requested music. If the <kbd>album_type</kbd> is not
-                                        <code>"album"</code> or <code>"ep"</code> or if UPC was not found, then it will
-                                        be <code class="null">null</code>.
-                                    </p>
-                                </div>
-                            </li>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <div class="req-para-info">
-                                        <div>
-                                            <kbd>url</kbd> <code>string</code> <code>object</code>
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>upc</kbd> <code>string</code> <code class="null">null</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
                                         </div>
-                                        <div class="flex-row">
-                                            <span class="line"></span>
-                                            <mark>Always Present</mark>
-                                        </div>
+                                        <p>
+                                            The UPC code of the requested music. If the <kbd>album_type</kbd> is not
+                                            <code>"album"</code> or <code>"ep"</code> or if UPC was not found, then it
+                                            will
+                                            be <code class="null">null</code>.
+                                        </p>
                                     </div>
-                                    <p>
-                                        The streaming URL of the music on the requested music platform(s).
-                                    </p>
-                                    <p>
-                                        <b>Note</b>: It will be a <code>string</code>, if query parameter for
-                                        <kbd>platform</kbd>
-                                        contains a value from "<strong>Allowed values</strong>" except
-                                        <code>"all"</code>.
-                                        Otherwise, if
-                                        <code>platform="all"</code> or no query parameter provided, it will be an
-                                        <code>object</code> with each key representing the music platform name and value
-                                        being
-                                        actual streaming URL of the music on that platform. <br>
-                                        <b>Examples</b>:
-                                    </p>
-                                    <pre
-                                        class="codeblock"><code>"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code></pre>
+                                </li>
 
-                                    <blockquote>
-                                        The music platform keys in this object can vary based on if that music found
-                                        on
-                                        respective platform or not. For example, if the music was not found on
-                                        Spotify, the
-                                        <code>"url"</code> object will not have <code>"spotify"</code> key.
-                                    </blockquote>
-                                    <pre class="codeblock"><code>"url": {
+                                <li>
+                                    <div>
+                                        <div class="req-para-info">
+                                            <div>
+                                                <kbd>url</kbd> <code>string</code> <code>object</code>
+                                            </div>
+                                            <div class="flex-row">
+                                                <span class="line"></span>
+                                                <mark>Always Present</mark>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            The streaming URL of the music on the requested music platform(s).
+                                        </p>
+                                        <p>
+                                            <b>Note</b>: It will be a <code>string</code>, if query parameter for
+                                            <kbd>platform</kbd>
+                                            contains a value from "<strong>Allowed values</strong>" except
+                                            <code>"all"</code>.
+                                            Otherwise, if
+                                            <code>platform="all"</code> or no query parameter provided, it will be an
+                                            <code>object</code> with each key representing the music platform name and
+                                            value
+                                            being
+                                            actual streaming URL of the music on that platform. <br>
+                                            <b>Examples</b>:
+                                        </p>
+                                        <pre
+                                            class="codeblock"><code>"url": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox"</code></pre>
+
+                                        <blockquote>
+                                            The music platform keys in this object can vary based on if that music found
+                                            on
+                                            respective platform or not. For example, if the music was not found on
+                                            Spotify, the
+                                            <code>"url"</code> object will not have <code>"spotify"</code> key.
+                                        </blockquote>
+                                        <pre class="codeblock"><code>"url": {
   "itunes": "https://music.apple.com/album/123456789",
   "deezer": "https://www.deezer.com/track/123456789",
   "kkbox": "https://www.kkbox.com/song/XyxzETEWlclsnflt",
   "spotify": "https://open.spotify.com/track/7e8XZUuB78uEOil4i3ONox",
   "ytmusic": "https://music.youtube.com/watch?v=AdLFtTiA8d5"
 }</code></pre>
-                                    </code>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </figure>
+                                        </code>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </figure>
 
-                <input hidden="hidden" type="radio" name="tabs" id="tab2" />
-                <figure>
-                    <p>
-                        Successful response, but either user have not linked any service to their account or is not
-                        listening to any music on linked service(s).
-                    </p>
-                    <p>
-                        <b>Note</b>: The <code>404</code> response will not be sent if the user is not listening to any
-                        music, but
-                        user's recent activity was found in database. In that case, <kbd>is_playing</kbd> will be
-                        <code>false</code> and the <code>200</code> response will be sent along with the music
-                        information.
-                    </p>
-                    <article class="res-example">
-                        <details>
-                            <summary>Response Examples</summary>
-                            <header class="flex-column"><code>/api/me</code>
-                            </header>
-                            <pre class="codeblock"><code>{
+                    <input hidden="hidden" type="radio" name="tabs" id="tab2" />
+                    <figure>
+                        <p>
+                            Successful response, but either user have not linked any service to their account or is not
+                            listening to any music on linked service(s).
+                        </p>
+                        <p>
+                            <b>Note</b>: The <code>404</code> response will not be sent if the user is not listening to
+                            any
+                            music, but
+                            user's recent activity was found in database. In that case, <kbd>is_playing</kbd> will be
+                            <code>false</code> and the <code>200</code> response will be sent along with the music
+                            information.
+                        </p>
+                        <article class="res-example">
+                            <details>
+                                <summary>Response Examples</summary>
+                                <header class="flex-column"><code>/api/me</code>
+                                </header>
+                                <pre class="codeblock"><code>{
   "error": "No service is linked. Please link one in your settings."
 }</code></pre>
-                            <header class="flex-column"><code>/api/me</code></header>
-                            <pre class="codeblock"><code>{
+                                <header class="flex-column"><code>/api/me</code></header>
+                                <pre class="codeblock"><code>{
   "error": "No activity found. Listen to music on your linked service to see it here."
 }</code></pre>
-                        </details>
-                    </article>
-                    <div>
-                        <div class="req-para-info">
-                            <div>
-                                <kbd>error</kbd> <code>string</code>
+                            </details>
+                        </article>
+                        <div>
+                            <div class="req-para-info">
+                                <div>
+                                    <kbd>error</kbd> <code>string</code>
+                                </div>
+                                <div class="flex-row">
+                                    <span class="line"></span>
+                                    <mark>Always Present</mark>
+                                </div>
                             </div>
-                            <div class="flex-row">
-                                <span class="line"></span>
-                                <mark>Always Present</mark>
-                            </div>
+                            <p>The error message explaining that the listening activity was not found or user have no
+                                services linked to their account.</p>
                         </div>
-                        <p>The error message explaining that the listening activity was not found or user have no
-                            services linked to their account.</p>
-                    </div>
-                </figure>
+                    </figure>
 
-                <input hidden="hidden" type="radio" name="tabs" id="tab3" />
-                <figure>
-                    <p>Unsuccessful response explaining that you have exceeded the default ratelimit.</p>
-                    <article class="res-example">
-                        <details>
-                            <summary>Response Examples</summary>
-                            <header class="flex-column"><code>/api/me</code>
-                            </header>
-                            <pre class="codeblock"><code>{
+                    <input hidden="hidden" type="radio" name="tabs" id="tab3" />
+                    <figure>
+                        <p>Unsuccessful response explaining that you have exceeded the default ratelimit.</p>
+                        <article class="res-example">
+                            <details>
+                                <summary>Response Examples</summary>
+                                <header class="flex-column"><code>/api/me</code>
+                                </header>
+                                <pre class="codeblock"><code>{
   "error": "ratelimit exceeded! you are allowed to make 20 request(s) per 1 minute."
 }</code></pre>
-                        </details>
-                    </article>
-                    <div>
-                        <div class="req-para-info">
-                            <div>
-                                <kbd>error</kbd> <code>string</code>
+                            </details>
+                        </article>
+                        <div>
+                            <div class="req-para-info">
+                                <div>
+                                    <kbd>error</kbd> <code>string</code>
+                                </div>
+                                <div class="flex-row">
+                                    <span class="line"></span>
+                                    <mark>Always Present</mark>
+                                </div>
                             </div>
-                            <div class="flex-row">
-                                <span class="line"></span>
-                                <mark>Always Present</mark>
-                            </div>
+                            <p>
+                                The error message explaining you have exceeded the default ratelimit.
+                            </p>
+                            <p>
+                                The default ratelimit is <code>20 requests per 1 minute</code>, but might change. <br>
+                                It will always contain what default ratelimits are in this format:
+                                <code>"<ins>x</ins> requests per <ins>y</ins> <ins>timeframe</ins>"</code>.
+                            </p>
                         </div>
-                        <p>
-                            The error message explaining you have exceeded the default ratelimit.
-                        </p>
-                        <p>
-                            The default ratelimit is <code>20 requests per 1 minute</code>, but might change. <br>
-                            It will always contain what default ratelimits are in this format:
-                            <code>"<ins>x</ins> requests per <ins>y</ins> <ins>timeframe</ins>"</code>.
-                        </p>
-                    </div>
-                </figure>
-            </section>
+                    </figure>
+                </section>
+            </div>
         </div>
+    </div>
+
+    <div id="activity-svg-docs">
+        <blockquote>
+            Returns a SVG image of the user's current or last played music activity, suitable for GitHub
+            README, Discord, etc.
+        </blockquote>
+        <h3>Request</h3>
+        <div class="req-para-info">
+            <div>
+                <kbd>username</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            The username of the user whose activity you want to retrieve.
+        </p>
+        <p>
+            <b>Example</b>: <code>/api/activity.svg<ins>?username=potato</ins></code>
+        </p>
+        <h4>Example Usage</h4>
+        <dl>
+            <dt>HTML</dt>
+            <dd>
+                <pre
+                    class="codeblock"><code>&lt;img src="{{ base_url }}/api/activity.svg?username=&lt;YOUR_USERNAME&gt;" alt="Now Playing" /&gt;</code></pre>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Markdown</dt>
+            <dd>
+                <pre
+                    class="codeblock language-markdown"><code>![Yutify Activity]({{ base_url }}/api/activity.svg?username=&lt;YOUR_USERNAME&gt;)</code></pre>
+            </dd>
+        </dl>
+
     </div>
 </main>
 {% endblock %}

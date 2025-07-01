@@ -913,6 +913,10 @@ dt::before {
     font-weight: bold;
 }
 
+#activity-svg-docs {
+    display: none;
+}
+
 
 @media (max-width: 1024px) {
 

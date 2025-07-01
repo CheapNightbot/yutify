@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const togglePasswordContainer = document.querySelector(".password-toggle-icon");
     const togglePassword = document.querySelector(".password-toggle-icon i");
     const addURIBtn = document.querySelector('#add-redirect-uri');
+    const endpointSelect = document.getElementById('endpoint-select');
+    const appiMeDocs = document.getElementById('appi-me-docs');
+    const activitySvgDocs = document.getElementById('activity-svg-docs');
 
     // Accordion: only one <details> open at a time
     document.querySelectorAll('.faq-section details').forEach((detail) => {
@@ -32,6 +35,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    if (endpointSelect && appiMeDocs && activitySvgDocs) {
+        function updateDocsDisplay() {
+            if (endpointSelect.value === '/api/activity.svg') {
+                appiMeDocs.style.display = 'none';
+                activitySvgDocs.style.display = 'initial';
+            } else {
+                appiMeDocs.style.display = '';
+                activitySvgDocs.style.display = 'none';
+            }
+        }
+        endpointSelect.addEventListener('change', updateDocsDisplay);
+        // Set initial state on page load
+        updateDocsDisplay();
+    }
 
     function convertToUserTimezone(datetimeString) {
         // Get the parts
