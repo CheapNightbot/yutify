@@ -44,6 +44,28 @@
 <main class="container">
     <article class="user-activity-container" aria-busy="true"></article>
 
+    {% if user.is_profile_public %}
+    <article class="custom-article margin-top fade-in">
+        <details class="no-margin">
+            <summary>Get Activity Embeds:</summary>
+            <div class="flex-row left">
+                <button class="outline"
+                    data-value="{{ url_for('api.useractivityresource', _external=True) }}?username={{ user.username }}&embed">
+                    HTML
+                </button>
+                <button class="outline"
+                    data-value="{{ url_for('api.useractivityresource', _external=True) }}?username={{ user.username }}&svg">
+                    SVG
+                </button>
+                <button class="outline"
+                    data-value="{{ url_for('api.activity_png', _external=True) }}?username={{ user.username }}">
+                    PNG
+                </button>
+            </div>
+        </details>
+    </article>
+    {% endif %}
+
     {% if user == current_user %}
     <dialog id="edit-profile-modal">
         <article>
@@ -66,7 +88,8 @@
                     {% endfor %}
                     {{ form.about_me.label }}
                     {% if form.about_me.errors %}
-                    {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper", aria_invalid="true") }}
+                    {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper",
+                    aria_invalid="true") }}
                     {% else %}
                     {{ form.about_me(cols=50, rows=4, aria_label="About me", aria_describedby="about_me-helper") }}
                     {% endif %}

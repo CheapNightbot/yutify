@@ -1,3 +1,32 @@
+function showFlashMessage(message, category = 'info') {
+    let container = document.querySelector('.flash-msg-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'flash-msg-container';
+        document.body.appendChild(container);
+    }
+
+    const flash = document.createElement('div');
+    flash.className = `flash-message ${category}`;
+    flash.innerHTML = `
+        <span role="alert">${message}</span>
+        <button class="flash-close-btn"></button>
+    `;
+
+    flash.querySelector('.flash-close-btn').onclick = () => {
+        flash.classList.add('fade-out');
+        setTimeout(() => flash.remove(), 500);
+    };
+
+    setTimeout(() => {
+        flash.classList.add('fade-out');
+        setTimeout(() => flash.remove(), 500);
+    }, 2500);
+
+    container.appendChild(flash);
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.querySelector('#search-form');
     const themeBtn = document.querySelector('#themeBtn');
@@ -33,6 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (otherDetail !== this) otherDetail.removeAttribute('open');
                 });
             }
+        });
+    });
+
+    // --- Embed Copy Button Logic for user_profile.html ---
+    document.querySelectorAll('.custom-article [data-value]').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const value = btn.getAttribute('data-value');
+            if (!value) return;
+
+            navigator.clipboard.writeText(value).then(() => {
+                showFlashMessage('Copied to clipboard!', 'info');
+            }).catch(() => {
+                showFlashMessage('Failed to copy!', 'error');
+            });
         });
     });
 

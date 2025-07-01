@@ -56,8 +56,16 @@ a {
     margin-bottom: var(--pico-spacing) !important;
 }
 
+.margin-top {
+    margin-top: var(--pico-spacing) !important;
+}
+
 .no-margin-btm {
     margin-bottom: 0 !important;
+}
+
+.no-margin {
+    margin: 0;
 }
 
 .padding-r {
@@ -917,7 +925,12 @@ dt::before {
 }
 
 #endpoint-hint {
-    color:#888;
+    color: #888;
+}
+
+.fade-in {
+    transition: all 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    animation: fade-in 3s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
 
