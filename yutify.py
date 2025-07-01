@@ -61,16 +61,19 @@ def set_security_headers(response):
     if (
         request.path.startswith("/api/search") or request.path.startswith("/api/me")
     ) and "embed" in request.args:
-        if "X-Frame-Options" in response.headers:
-            del response.headers["X-Frame-Options"]
+        response.headers.pop("X-Frame-Options", None)
 
     # Disable caching for user profile page (excluding "Settings page") & activity API endpoints
-    if (
-        (request.path.startswith("/u/") and "settings" not in request.path)
-        or request.path.startswith("/api/me")
-        or request.path.startswith("/api//activity.svg")
-    ):
-        response.headers["Cache-Control"] = "no-store"
+    is_profile = request.path.startswith("/u/") and "settings" not in request.path
+    is_activity = request.path.startswith("/api/me") or request.path.startswith("/api/activity.png")
+
+    if is_profile or is_activity:
+        # For SVG or PNG activity endpoints, add `no-transform`
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control#directives
+        if "svg" in request.args or request.path.endswith(".png"):
+            response.headers["Cache-Control"] = "no-store, no-transform"
+        else:
+            response.headers["Cache-Control"] = "no-store"
 
     return response
 
