@@ -14,7 +14,7 @@ from yutipy.logger import enable_logging
 from yutipy.lrclib import LrcLib
 from yutipy.spotify import Spotify
 
-from app import cache, db
+from app.extensions import cache, db
 from app.limiter import limiter
 from app.models import Service
 from app.resources.docs_demo import ALL, DEEZER, ITUNES, KKBOX, SPOTIFY, YTMUSIC
