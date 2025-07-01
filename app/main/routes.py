@@ -1,10 +1,12 @@
 import io
 import os
+import re
 from datetime import datetime
 
 import cairosvg
 import requests
 from flask import abort, current_app, render_template, send_file, url_for
+from werkzeug.utils import secure_filename
 
 from app.extensions import cache, sitemapper
 from app.main import bp
@@ -21,8 +23,13 @@ def serve_svg_as_png(filename):
         svg_path = os.path.join(current_app.static_folder, "favicon.svg")
         allowed = os.path.exists(svg_path)
     elif filename.startswith("icons/"):
-        svg_path = os.path.join(current_app.static_folder, filename + ".svg")
-        allowed = os.path.exists(svg_path)
+        icon_name = filename[len("icons/") :]
+        if re.fullmatch(r"[a-zA-Z0-9_\-]+", icon_name):
+            safe_icon = secure_filename(icon_name)
+            svg_path = os.path.join(
+                current_app.static_folder, "icons", safe_icon + ".svg"
+            )
+            allowed = os.path.exists(svg_path)
 
     if not allowed or not svg_path:
         abort(404)
