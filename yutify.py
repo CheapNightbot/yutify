@@ -66,8 +66,10 @@ def set_security_headers(response):
 
     # Disable caching for user profile page (excluding "Settings page") & activity API endpoints
     if (
-        request.path.startswith("/u/") and "settings" not in request.path
-    ) or request.path.startswith("/api/me"):
+        (request.path.startswith("/u/") and "settings" not in request.path)
+        or request.path.startswith("/api/me")
+        or request.path.startswith("/api//activity.svg")
+    ):
         response.headers["Cache-Control"] = "no-store"
 
     return response

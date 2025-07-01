@@ -55,7 +55,7 @@ class UserActivityResource(Resource):
         response_type = request.args.get("type", "json").lower()
         service = "".join(list(request.args.keys())).lower() if request.args else "all"
         is_embed = "embed" in request.args
-        is_svg = "svg" in request.args
+        is_svg =  request.path.endswith(".svg") or "svg" in request.args
         if is_svg:
             favicon_data_uri = get_static_file_data_uri("favicon.svg", "image/svg+xml")
             no_gif_data_uri = get_static_file_data_uri("errors/no.gif", "image/gif")
