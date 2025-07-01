@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from flask import flash, redirect, request
+from flask import redirect, request
 from waitress import serve
 
 from app import create_app, create_services, create_users, db
