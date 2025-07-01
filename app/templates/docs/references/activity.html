@@ -11,7 +11,7 @@
         </select>
         <select class="endpoint docs" name="endpoints" id="endpoint-select">
             <option value="/api/me">/api/me</option>
-            <option value="/api/activity.svg">/api/activity.svg</option>
+            <option value="/api/activity.png">/api/activity.png</option>
         </select>
         <span class="endpoint-auth" data-tooltip="Authorization Code Required" data-placement="left">
             <i class="fa-solid fa-lock"></i>
@@ -779,10 +779,9 @@
         </div>
     </div>
 
-    <div id="activity-svg-docs">
+    <div id="activity-png-docs">
         <blockquote>
-            Returns a SVG image of the user's current or last played music activity, suitable for GitHub
-            README, Discord, etc.
+            Returns a PNG image of the user's current or last played music activity.
         </blockquote>
         <h3>Request</h3>
         <div class="req-para-info">
@@ -798,21 +797,21 @@
             The username of the user whose activity you want to retrieve.
         </p>
         <p>
-            <b>Example</b>: <code>/api/activity.svg<ins>?username=potato</ins></code>
+            <b>Example</b>: <code>/api/activity.png<ins>?username=potato</ins></code>
         </p>
         <h4>Example Usage</h4>
         <dl>
             <dt>HTML</dt>
             <dd>
                 <pre
-                    class="codeblock"><code>&lt;img src="{{ base_url }}/api/activity.svg?username=&lt;YOUR_USERNAME&gt;" alt="Now Playing" /&gt;</code></pre>
+                    class="codeblock"><code>&lt;img src="{{ base_url }}/api/activity.png?username=&lt;YOUR_USERNAME&gt;" alt="Now Playing" /&gt;</code></pre>
             </dd>
         </dl>
         <dl>
             <dt>Markdown</dt>
             <dd>
                 <pre
-                    class="codeblock language-markdown"><code>![Yutify Activity]({{ base_url }}/api/activity.svg?username=&lt;YOUR_USERNAME&gt;)</code></pre>
+                    class="codeblock language-markdown"><code>![Yutify Activity]({{ base_url }}/api/activity.png?username=&lt;YOUR_USERNAME&gt;)</code></pre>
             </dd>
         </dl>
 

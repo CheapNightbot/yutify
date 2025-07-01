@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addURIBtn = document.querySelector('#add-redirect-uri');
     const endpointSelect = document.getElementById('endpoint-select');
     const appiMeDocs = document.getElementById('appi-me-docs');
-    const activitySvgDocs = document.getElementById('activity-svg-docs');
+    const activityPngDocs = document.getElementById('activity-png-docs');
 
     // Accordion: only one <details> open at a time
     document.querySelectorAll('.faq-section details').forEach((detail) => {
@@ -36,14 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    if (endpointSelect && appiMeDocs && activitySvgDocs) {
+    if (endpointSelect && appiMeDocs && activityPngDocs) {
         function updateDocsDisplay() {
-            if (endpointSelect.value === '/api/activity.svg') {
+            if (endpointSelect.value === '/api/activity.png') {
                 appiMeDocs.style.display = 'none';
-                activitySvgDocs.style.display = 'initial';
+                activityPngDocs.style.display = 'initial';
             } else {
                 appiMeDocs.style.display = '';
-                activitySvgDocs.style.display = 'none';
+                activityPngDocs.style.display = 'none';
             }
         }
         endpointSelect.addEventListener('change', updateDocsDisplay);

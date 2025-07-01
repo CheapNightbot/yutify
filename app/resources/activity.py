@@ -13,6 +13,8 @@ from app.auth_services.spotify import get_spotify_activity
 from app.common.helpers import get_album_art_data_uri, get_static_file_data_uri
 from app.limiter import limiter
 from app.models import UserService
+import cairosvg
+import io
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
@@ -55,10 +57,12 @@ class UserActivityResource(Resource):
         response_type = request.args.get("type", "json").lower()
         service = "".join(list(request.args.keys())).lower() if request.args else "all"
         is_embed = "embed" in request.args
-        is_svg =  request.path.endswith(".svg") or "svg" in request.args
-        if is_svg:
-            favicon_data_uri = get_static_file_data_uri("favicon.svg", "image/svg+xml")
-            no_gif_data_uri = get_static_file_data_uri("errors/no.gif", "image/gif")
+        is_svg = "svg" in request.args
+        is_png = request.path.endswith(".png")
+
+        favicon_data_uri = get_static_file_data_uri("favicon.svg", "image/svg+xml")
+        no_gif_data_uri = get_static_file_data_uri("errors/no.gif", "image/gif")
+        no_png_data_uri = get_static_file_data_uri("errors/no.png", "image/png")
 
         # Fetch user services from the database
         user_services = db.session.scalars(
@@ -79,7 +83,6 @@ class UserActivityResource(Resource):
                     200,
                     {"Content-Type": "text/html"},
                 )
-
             if is_svg:
                 return make_response(
                     render_template(
@@ -90,6 +93,21 @@ class UserActivityResource(Resource):
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
+                )
+            if is_png:
+                # Render SVG first
+                svg_str = render_template(
+                    "embed/activity_card.svg.j2",
+                    error=error_msg,
+                    user=user,
+                    no_gif_data_uri=no_png_data_uri,
+                )
+                # Convert SVG to PNG
+                png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"))
+                return make_response(
+                    png_bytes,
+                    200,
+                    {"Content-Type": "image/png"},
                 )
 
             return {"error": error_msg}, 404
@@ -134,7 +152,6 @@ class UserActivityResource(Resource):
                     200,
                     {"Content-Type": "text/html"},
                 )
-
             if is_svg:
                 return make_response(
                     render_template(
@@ -145,6 +162,21 @@ class UserActivityResource(Resource):
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
+                )
+            if is_png:
+                # Render SVG first
+                svg_str = render_template(
+                    "embed/activity_card.svg.j2",
+                    error=error_msg,
+                    user=user,
+                    no_gif_data_uri=no_png_data_uri,
+                )
+                # Convert SVG to PNG
+                png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"))
+                return make_response(
+                    png_bytes,
+                    200,
+                    {"Content-Type": "image/png"},
                 )
 
             return {"error": error_msg}, 404
@@ -176,7 +208,36 @@ class UserActivityResource(Resource):
                 {"Content-Type": "image/svg+xml"},
             )
 
+        if is_png:
+            # Render SVG first
+            album_art_data_uri = None
+            if activity and "album_art" in activity.get("music_info", {}):
+                album_art_data_uri = get_album_art_data_uri(
+                    activity["music_info"]["album_art"]
+                )
+            svg_str = render_template(
+                "embed/activity_card.svg.j2",
+                activity=activity,
+                user=user,
+                album_art_data_uri=album_art_data_uri,
+                favicon_data_uri=favicon_data_uri,
+            )
+            # Convert SVG to PNG
+            png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"))
+            return make_response(
+                png_bytes,
+                200,
+                {"Content-Type": "image/png"},
+            )
+
         return self._format_response(activity, response_type)
+
+    def _get_static_file_bytes(self, rel_path):
+        """Helper to load a static file as bytes from the static folder."""
+        static_folder = os.path.join(current_app.root_path, "static")
+        file_path = os.path.join(static_folder, rel_path)
+        with open(file_path, "rb") as f:
+            return f.read()
 
     def _format_response(self, activity, response_type):
         """Format the response based on the requested type."""
