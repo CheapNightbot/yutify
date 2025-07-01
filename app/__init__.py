@@ -1,17 +1,18 @@
 import logging
 import os
-from logging.handlers import RotatingFileHandler, SMTPHandler
 from datetime import datetime, timezone
+from logging.handlers import RotatingFileHandler, SMTPHandler
 
 from dotenv import load_dotenv
 from flask import Flask, current_app
 from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 
-from app.auth.forms import RegistrationForm, MyLoginForm
-from app.common.helpers import mask_string, relative_timestamp, obfuscate_email
+from app import sitemap
+from app.auth.forms import MyLoginForm, RegistrationForm
+from app.common.helpers import mask_string, obfuscate_email, relative_timestamp
 from app.common.utils import MyUsernameUtil
 from app.email import MyMailUtil
-from app.extensions import api, cache, cors, csrf, db, mail, migrate
+from app.extensions import api, cache, cors, csrf, db, mail, migrate, sitemapper
 from app.models import Role, Service, User, WebAuthn
 from app.oauth.oauth2 import config_oauth
 from config import Config
@@ -98,6 +99,7 @@ def create_app(config_class=Config):
     config_oauth(app)
     api.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
+    sitemapper.init_app(app)
 
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix="/admin")

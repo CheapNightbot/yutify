@@ -10,4 +10,5 @@ api = Api(bp)
 csrf.exempt(bp)
 
 api.add_resource(YutifySearch, "/search/<path:artist>:<path:song>")
-api.add_resource(UserActivityResource, "/me", "/activity.png")
+api.add_resource(UserActivityResource, "/me", endpoint="useractivityresource")
+api.add_resource(UserActivityResource, "/activity.png", endpoint="activity_png")
