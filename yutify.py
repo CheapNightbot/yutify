@@ -5,6 +5,7 @@ from waitress import serve
 
 from app import create_app, create_services, create_users, db
 from app.models import Role, Service, User, UserData, UserService, WebAuthn
+from app.tasks.activity_updater import start_activity_scheduler
 
 app = create_app()
 
@@ -82,6 +83,7 @@ if __name__ == "__main__":
     with app.app_context():
         create_users()
         create_services()
+        start_activity_scheduler(app)
 
     serve(
         app,

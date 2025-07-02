@@ -1,12 +1,12 @@
 import logging
-from dataclasses import asdict
 from collections import OrderedDict
+from dataclasses import asdict
+from datetime import datetime, timezone
 
 import requests
 import sqlalchemy as sa
-from flask import flash, redirect, request, url_for
+from flask import flash, redirect, url_for
 from flask_security import current_user
-from authlib.integrations.flask_oauth2 import current_token
 from yutipy.lastfm import LastFm, LastFmException
 
 from app import db
@@ -14,6 +14,9 @@ from app.models import Service, User, UserData, UserService
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
+
+
+FRESHNESS_SECONDS = 60  # For user activity data
 
 try:
     lastfm = LastFm()
@@ -87,7 +90,7 @@ def handle_lastfm_auth(lastfm_username):
     return redirect(url_for("user.user_settings", username=current_user.username))
 
 
-def get_lastfm_activity(user=None):
+def get_lastfm_activity(user=None, force_refresh=False):
     """Fetch the user's listening activity from Last.fm."""
     if not lastfm:
         flash(
@@ -113,6 +116,21 @@ def get_lastfm_activity(user=None):
 
     if not lastfm_service:
         return None
+
+    # Check for fresh data unless force_refresh is True
+    if (
+        not force_refresh
+        and lastfm_service.user_data
+        and lastfm_service.user_data.updated_at
+    ):
+        age = (
+            datetime.now(timezone.utc) - lastfm_service.user_data.updated_at
+        ).total_seconds()
+        if age < FRESHNESS_SECONDS:
+            data = lastfm_service.user_data.data
+            if not data.get("activity_info", {}).get("is_playing", False):
+                data["activity_info"]["is_playing"] = False
+            return data
 
     activity = lastfm.get_currently_playing(username=lastfm_service.username)
     if activity:

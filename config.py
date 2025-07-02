@@ -11,6 +11,8 @@ class Config:
     SERVICE = os.getenv("SERVICE", "yutify")
     SERVICE_EMAIL = os.getenv("SERVICE_EMAIL", "hi@example.com")
     HOST_URL = os.getenv("HOST_URL", "localhost")
+    SERVER_NAME = HOST_URL
+    PREFERRED_URL_SCHEME = "https" if "localhost" not in HOST_URL else "http"
     REDIS_URI = os.getenv("REDIS_URI")
     RATELIMIT = os.getenv("RATELIMIT")
     YUTIFY_MAIL_ERROR_LOGS = bool(int(os.getenv("YUTIFY_MAIL_ERROR_LOGS", False)))

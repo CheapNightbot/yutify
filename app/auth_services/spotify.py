@@ -1,10 +1,11 @@
 import logging
 from collections import OrderedDict
 from dataclasses import asdict
+from datetime import datetime, timezone
 
 import requests
 import sqlalchemy as sa
-from flask import flash, redirect, request, session, url_for
+from flask import flash, redirect, session, url_for
 from flask_security import current_user
 from yutipy.exceptions import AuthenticationException
 from yutipy.spotify import SpotifyAuth, SpotifyAuthException
@@ -14,6 +15,9 @@ from app.models import Service, User, UserData, UserService
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
+
+
+FRESHNESS_SECONDS = 60  # For user activity data
 
 # Constants for repeated string literals
 SPOTIFY_SERVICE_NOT_FOUND = "Service 'Spotify' not found in the database."
@@ -204,7 +208,7 @@ def handle_spotify_callback(request):
         return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
 
-def get_spotify_activity(user=None):
+def get_spotify_activity(user=None, force_refresh=False):
     """Fetch the user's listening activity from Spotify."""
     user = user or current_user
     try:
@@ -221,6 +225,21 @@ def get_spotify_activity(user=None):
 
             if not spotify_service:
                 return None
+
+            # Check for fresh data unless force_refresh is True
+            if (
+                not force_refresh
+                and spotify_service.user_data
+                and spotify_service.user_data.updated_at
+            ):
+                age = (
+                    datetime.now(timezone.utc) - spotify_service.user_data.updated_at
+                ).total_seconds()
+                if age < FRESHNESS_SECONDS:
+                    data = spotify_service.user_data.data
+                    if not data.get("activity_info", {}).get("is_playing", False):
+                        data["activity_info"]["is_playing"] = False
+                    return data
 
             activity = spotify_auth.get_currently_playing()
             if activity:
