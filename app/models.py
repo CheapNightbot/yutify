@@ -65,9 +65,11 @@ class Base(db.Model):
 
     __abstract__ = True
     created_at: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
     updated_at: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc),
     )

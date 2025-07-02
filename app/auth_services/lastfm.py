@@ -123,9 +123,12 @@ def get_lastfm_activity(user=None, force_refresh=False):
         and lastfm_service.user_data
         and lastfm_service.user_data.updated_at
     ):
-        age = (
-            datetime.now(timezone.utc) - lastfm_service.user_data.updated_at
-        ).total_seconds()
+        updated_at = lastfm_service.user_data.updated_at
+        try:
+            age = (datetime.now(timezone.utc) - updated_at).total_seconds()
+        except TypeError:
+            updated_at = updated_at.replace(tzinfo=timezone.utc)
+            age = (datetime.now(timezone.utc) - updated_at).total_seconds()
         if age < FRESHNESS_SECONDS:
             data = lastfm_service.user_data.data
             if not data.get("activity_info", {}).get("is_playing", False):

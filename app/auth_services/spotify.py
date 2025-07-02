@@ -232,9 +232,12 @@ def get_spotify_activity(user=None, force_refresh=False):
                 and spotify_service.user_data
                 and spotify_service.user_data.updated_at
             ):
-                age = (
-                    datetime.now(timezone.utc) - spotify_service.user_data.updated_at
-                ).total_seconds()
+                updated_at = spotify_service.user_data.updated_at
+                try:
+                    age = (datetime.now(timezone.utc) - updated_at).total_seconds()
+                except TypeError:
+                    updated_at = updated_at.replace(tzinfo=timezone.utc)
+                    age = (datetime.now(timezone.utc) - updated_at).total_seconds()
                 if age < FRESHNESS_SECONDS:
                     data = spotify_service.user_data.data
                     if not data.get("activity_info", {}).get("is_playing", False):
