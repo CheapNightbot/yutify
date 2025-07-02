@@ -204,18 +204,19 @@ class YutifySearch(Resource):
                 result = asdict(ALL)
             return OrderedDict(sorted(result.items())), 200
 
+        RESULT_LIMIT = 20
         match platform:
             case "deezer":
                 with deezer.Deezer() as deezer_music:
-                    result = deezer_music.search(artist, song, limit=3)
+                    result = deezer_music.search(artist, song, limit=RESULT_LIMIT)
             case "itunes" | "apple-music":
                 with itunes.Itunes() as apple_music:
-                    result = apple_music.search(artist, song, limit=3)
+                    result = apple_music.search(artist, song, limit=RESULT_LIMIT)
             case "kkbox":
                 try:
                     with MyKKBox(defer_load=True) as kkbox_music:
                         kkbox_music.load_token_after_init()
-                        result = kkbox_music.search(artist, song, limit=3)
+                        result = kkbox_music.search(artist, song, limit=RESULT_LIMIT)
                 except KKBoxException as e:
                     logger.warning(
                         f"KKBox Search is disabled due to following error:\n{e}"
@@ -225,7 +226,7 @@ class YutifySearch(Resource):
                 try:
                     with MySpotify(defer_load=True) as spotify_music:
                         spotify_music.load_token_after_init()
-                        result = spotify_music.search(artist, song, limit=3)
+                        result = spotify_music.search(artist, song, limit=RESULT_LIMIT)
                 except SpotifyException as e:
                     logger.warning(
                         f"Spotify Search is disabled due to following error:\n{e}"
@@ -233,7 +234,7 @@ class YutifySearch(Resource):
                     result = None
             case "ytmusic":
                 with musicyt.MusicYT() as youtube_music:
-                    result = youtube_music.search(artist, song, limit=3)
+                    result = youtube_music.search(artist, song, limit=RESULT_LIMIT)
             case _:
                 with yutipy_music.YutipyMusic(
                     custom_kkbox_class=lambda *a, **kw: MyKKBox(
@@ -245,7 +246,7 @@ class YutifySearch(Resource):
                 ) as py_music:
                     py_music.services["kkbox"].load_token_after_init()
                     py_music.services["spotify"].load_token_after_init()
-                    result = py_music.search(artist, song, limit=3)
+                    result = py_music.search(artist, song, limit=RESULT_LIMIT)
 
         if not result:
             msg = (
