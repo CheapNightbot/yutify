@@ -69,12 +69,7 @@ def set_security_headers(response):
     is_activity = request.path.startswith("/api/me") or request.path.startswith("/api/activity.png")
 
     if is_profile or is_activity:
-        # For SVG or PNG activity endpoints, add `no-transform`
-        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control#directives
-        if "svg" in request.args or request.path.endswith(".png"):
-            response.headers["Cache-Control"] = "no-store, no-transform"
-        else:
-            response.headers["Cache-Control"] = "no-store"
+        response.headers["Cache-Control"] = "no-store"
 
     return response
 
