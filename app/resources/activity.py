@@ -1,6 +1,7 @@
 import os
 import random
 
+import cairosvg
 import sqlalchemy as sa
 from authlib.integrations.flask_oauth2 import current_token
 from flask import current_app, make_response, render_template, request
@@ -13,7 +14,6 @@ from app.auth_services.spotify import get_spotify_activity
 from app.common.helpers import get_album_art_data_uri, get_static_file_data_uri
 from app.limiter import limiter
 from app.models import UserService
-import cairosvg
 
 RATELIMIT = os.environ.get("RATELIMIT")
 
