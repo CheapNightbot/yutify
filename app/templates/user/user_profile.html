@@ -44,7 +44,7 @@
 <main class="container">
     <article class="user-activity-container" aria-busy="true"></article>
 
-    {% if user.is_profile_public %}
+    {% if user.is_profile_public and user == current_user %}
     <article class="custom-article margin-top fade-in">
         <details class="no-margin">
             <summary>Get Activity Embeds:</summary>
