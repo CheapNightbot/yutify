@@ -204,7 +204,7 @@ class YutifySearch(Resource):
                 result = asdict(ALL)
             return OrderedDict(sorted(result.items())), 200
 
-        RESULT_LIMIT = 18
+        RESULT_LIMIT = 10
         match platform:
             case "deezer":
                 with deezer.Deezer() as deezer_music:
