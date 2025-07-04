@@ -1,43 +1,11 @@
-import io
-import os
-import re
 from datetime import datetime
 
-import cairosvg
 import requests
-from flask import abort, current_app, render_template, send_file, url_for
-from werkzeug.utils import secure_filename
+from flask import render_template, url_for
 
-from app.extensions import cache, sitemapper
+from app.extensions import sitemapper
 from app.main import bp
 from app.main.forms import SearchForm
-
-
-@bp.route("/static/<path:filename>.png")
-@cache.cached(timeout=60 * 60 * 24 * 365)  # 1 year in seconds
-def serve_svg_as_png(filename):
-    allowed = False
-    svg_path = None
-
-    if filename == "favicon":
-        svg_path = os.path.join(current_app.static_folder, "favicon.svg")
-        allowed = os.path.exists(svg_path)
-    elif filename.startswith("icons/"):
-        icon_name = filename[len("icons/") :]
-        if re.fullmatch(r"[a-zA-Z0-9_\-]+", icon_name):
-            safe_icon = secure_filename(icon_name)
-            svg_path = os.path.join(
-                current_app.static_folder, "icons", safe_icon + ".svg"
-            )
-            allowed = os.path.exists(svg_path)
-
-    if not allowed or not svg_path:
-        abort(404)
-
-    with open(svg_path, "rb") as f:
-        svg_data = f.read()
-    png_bytes = cairosvg.svg2png(bytestring=svg_data)
-    return send_file(io.BytesIO(png_bytes), mimetype="image/png")
 
 
 @bp.route("/", methods=["GET", "POST"])
