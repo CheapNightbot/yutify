@@ -7,6 +7,7 @@ from authlib.integrations.flask_oauth2 import current_token
 from flask import current_app, make_response, render_template, request
 from flask_restful import Resource
 from flask_security import Security, SQLAlchemyUserDatastore, current_user
+from jinja2.exceptions import UndefinedError
 
 from app import db
 from app.auth_services.lastfm import get_lastfm_activity
@@ -254,12 +255,13 @@ class UserActivityResource(Resource):
         """Format the response based on the requested type."""
         # Only allow HTML response for authenticated users (not OAuth2) and AJAX requests
         if response_type == "html":
-            if activity.get("error"):
-                return activity, 404
             if request.headers.get("X-Requested-With") != "XMLHttpRequest":
                 # Fallback to default JSON response if not allowed
                 return activity
-            html = render_template("user/activity_embed.html", activity=activity)
+            try:
+                html = render_template("user/activity_embed.html", activity=activity)
+            except UndefinedError:
+                return activity, 404
             return make_response(html, 200, {"Content-Type": "text/html"})
         return activity  # default // json
 
