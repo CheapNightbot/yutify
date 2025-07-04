@@ -154,6 +154,24 @@
         <img class="screenshot medium" src="{{ url_for('static', filename='docs/activity-embed-example.png') }}"
             alt="Activity embed example" />
 
+        <div class="req-para-info">
+            <div>
+                <kbd>style</kbd> <code>string</code>
+            </div>
+            <div class="flex-row">
+                <span class="line"></span>
+                <mark>Optional</mark>
+            </div>
+        </div>
+        <p>
+            The style of the embed (i.e. HTML and SVG embed, <code>?embed</code> and <code>?svg</code> respectively).
+        </p>
+        <p>
+            <b>Default</b>: <code>"vertical"</code> <br>
+            <b>Allowed values</b>: <code>"horizontal"</code>, <code>"vertical"</code> <br>
+            <b>Example</b>: <code>/api/me?embed&<ins>style=horizontal</ins></code>
+        </p>
+
         <div class="flex-row left">
             <h3>Response</h3>
             <nav role="tab-control">
