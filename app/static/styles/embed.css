@@ -96,6 +96,7 @@ h3,
 .music-info.activity {
     align-items: center;
     padding-bottom: 1rem;
+    max-width: 80%;
 }
 
 .music-info.title {
