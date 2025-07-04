@@ -77,7 +77,10 @@ class UserActivityResource(Resource):
             if is_embed:
                 return make_response(
                     render_template(
-                        "embed/activity_card.html", error=error_msg, user=user
+                        "embed/activity_card.html",
+                        error=error_msg,
+                        user=user,
+                        style=request.args.get("style"),
                     ),
                     200,
                     {"Content-Type": "text/html"},
@@ -89,6 +92,7 @@ class UserActivityResource(Resource):
                         error=error_msg,
                         user=user,
                         no_gif_data_uri=no_gif_data_uri,
+                        style=request.args.get("style"),
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
@@ -100,6 +104,7 @@ class UserActivityResource(Resource):
                     error=error_msg,
                     user=user,
                     no_gif_data_uri=no_png_data_uri,
+                    style=request.args.get("style"),
                 )
                 # Convert SVG to PNG
                 png_bytes = cairosvg.svg2png(
@@ -148,7 +153,10 @@ class UserActivityResource(Resource):
             if is_embed:
                 return make_response(
                     render_template(
-                        "embed/activity_card.html", error=error_msg, user=user
+                        "embed/activity_card.html",
+                        error=error_msg,
+                        user=user,
+                        style=request.args.get("style"),
                     ),
                     200,
                     {"Content-Type": "text/html"},
@@ -160,6 +168,7 @@ class UserActivityResource(Resource):
                         error=error_msg,
                         user=user,
                         no_gif_data_uri=no_gif_data_uri,
+                        style=request.args.get("style"),
                     ),
                     200,
                     {"Content-Type": "image/svg+xml"},
@@ -171,6 +180,7 @@ class UserActivityResource(Resource):
                     error=error_msg,
                     user=user,
                     no_gif_data_uri=no_png_data_uri,
+                    style=request.args.get("style"),
                 )
                 # Convert SVG to PNG
                 png_bytes = cairosvg.svg2png(
@@ -187,7 +197,10 @@ class UserActivityResource(Resource):
         if is_embed:
             return make_response(
                 render_template(
-                    "embed/activity_card.html", activity=activity, user=user
+                    "embed/activity_card.html",
+                    activity=activity,
+                    user=user,
+                    style=request.args.get("style"),
                 ),
                 200,
                 {"Content-Type": "text/html"},
@@ -206,6 +219,7 @@ class UserActivityResource(Resource):
                     user=user,
                     album_art_data_uri=album_art_data_uri,
                     favicon_data_uri=favicon_data_uri,
+                    style=request.args.get("style"),
                 ),
                 200,
                 {"Content-Type": "image/svg+xml"},
@@ -224,6 +238,7 @@ class UserActivityResource(Resource):
                 user=user,
                 album_art_data_uri=album_art_data_uri,
                 favicon_data_uri=favicon_data_uri,
+                style=request.args.get("style"),
             )
             # Convert SVG to PNG
             png_bytes = cairosvg.svg2png(bytestring=svg_str.encode("utf-8"), scale=2)
@@ -239,6 +254,8 @@ class UserActivityResource(Resource):
         """Format the response based on the requested type."""
         # Only allow HTML response for authenticated users (not OAuth2) and AJAX requests
         if response_type == "html":
+            if not activity:
+                return activity, 404
             if request.headers.get("X-Requested-With") != "XMLHttpRequest":
                 # Fallback to default JSON response if not allowed
                 return activity
