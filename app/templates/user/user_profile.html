@@ -2,7 +2,7 @@
 {% block metadata %}
 <meta property="og:title" content="{{ config['SERVICE'] }}: {{ user.name}}'s Profile">
 <meta property="og:description" content="See what {{ user.name }} is listening to...">
-<meta property="og:image" content="{{ url_for('static', filename=(user.avatar | replace('.svg', '.png')), _external=true) }}">
+<meta property="og:image" content="{{ url_for('static', filename=('music-player.png'), _external=true) }}">
 <meta property="og:url" content="{{ url_for('user.user_profile', username=user.username, _external=true) }}">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -10,7 +10,7 @@
 <meta property="twitter:url" content="{{ url_for('user.user_profile', username=user.username, _external=true) }}">
 <meta name="twitter:title" content="{{ config['SERVICE'] }}: {{ user.name }}'s Profile">
 <meta name="twitter:description" content="See what {{ user.name}} is listening to...">
-<meta name="twitter:image" content="{{ url_for('static', filename=(user.avatar | replace('.svg', '.png')), _external=true) }}">
+<meta name="twitter:image" content="{{ url_for('static', filename=('music-player.png'), _external=true) }}">
 {% endblock %}
 
 {% block header %}
