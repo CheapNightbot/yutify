@@ -40,18 +40,45 @@ h3,
     gap: 3rem;
     align-items: center;
     justify-content: space-evenly;
-    width: 800px;
-    height: 360px;
 }
 
 .music-card.activity {
     flex-direction: column;
-    width: 512px;
-    height: 722px;
     justify-content: center;
     width: 400px;
     height: 612px;
     gap: 1rem;
+}
+
+.music-card.horizontal {
+    width: 732px;
+    height: 400px;
+}
+
+.music-card.horizontal .user-activity-header {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 36rem;
+}
+
+.music-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 42rem;
+    gap: 1rem;
+}
+
+.music-info-container.horizontal {
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 .album-art,
@@ -63,6 +90,7 @@ h3,
     height: 16rem;
     border-radius: .746rem;
     pointer-events: none;
+    user-select: none;
 }
 
 .music-info.activity {
@@ -114,7 +142,8 @@ h3,
     transition: all ease-in-out 0.2s;
 }
 
-.user-activity-header {
+.user-activity-header,
+.music-card.horizontal.error .user-activity-header {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -135,6 +164,10 @@ h3,
     height: 16rem;
     border-radius: .746rem;
     pointer-events: none;
+}
+
+.error-image.horizontal {
+    width: auto;
 }
 
 @media (max-width: 800px) {
