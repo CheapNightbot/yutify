@@ -168,7 +168,7 @@ def get_lastfm_activity(user=None, force_refresh=False):
 
         # Save the current activity to the database
         UserData.insert_or_update_user_data(lastfm_service, activity)
-        return fetched_activity
+        return activity
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(
