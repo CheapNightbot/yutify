@@ -135,15 +135,15 @@ def get_lastfm_activity(user=None, force_refresh=False):
                 data["activity_info"]["is_playing"] = False
             return data
 
-    activity = lastfm.get_currently_playing(username=lastfm_service.username)
-    if activity:
-        activity = asdict(activity)
-        is_playing = activity.pop("is_playing")
-        timestamp = activity.pop("timestamp")
+    fetched_activity = lastfm.get_currently_playing(username=lastfm_service.username)
+    if fetched_activity:
+        fetched_activity = asdict(fetched_activity)
+        is_playing = fetched_activity.pop("is_playing")
+        timestamp = fetched_activity.pop("timestamp")
 
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = url_for("main.index", _external=True).rstrip("/")
-        search_url = f"{base_url}/api/search/{activity['artists']}:{activity['title']}"
+        search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}"
 
         # Call the /api/search endpoint using requests
         try:
@@ -151,7 +151,10 @@ def get_lastfm_activity(user=None, force_refresh=False):
             activity = {"music_info": response.json()}
         except requests.RequestException as e:
             logger.warning(e)
-            activity = {"music_info": activity}
+            activity = {"music_info": fetched_activity}
+
+        if activity.get("music_info").get("error"):
+            activity = {"music_info": fetched_activity}
 
         # Add activity info
         activity["activity_info"] = {
@@ -165,7 +168,7 @@ def get_lastfm_activity(user=None, force_refresh=False):
 
         # Save the current activity to the database
         UserData.insert_or_update_user_data(lastfm_service, activity)
-        return activity
+        return fetched_activity
     else:
         # Fetch the last activity from the database if no current activity is found
         existing_data = db.session.scalar(

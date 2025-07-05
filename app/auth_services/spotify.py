@@ -244,11 +244,11 @@ def get_spotify_activity(user=None, force_refresh=False):
                         data["activity_info"]["is_playing"] = False
                     return data
 
-            activity = spotify_auth.get_currently_playing()
-            if activity:
-                activity = asdict(activity)
-                is_playing = activity.pop("is_playing")
-                timestamp = activity.pop("timestamp")
+            fetched_activity = spotify_auth.get_currently_playing()
+            if fetched_activity:
+                activity = asdict(fetched_activity)
+                is_playing = fetched_activity.pop("is_playing")
+                timestamp = fetched_activity.pop("timestamp")
 
                 # Dynamically determine the base URL for the /api/search endpoint
                 base_url = url_for("main.index", _external=True).rstrip("/")
@@ -262,7 +262,10 @@ def get_spotify_activity(user=None, force_refresh=False):
                     activity = {"music_info": response.json()}
                 except requests.RequestException as e:
                     logger.warning(e)
-                    activity = {"music_info": activity}
+                    activity = {"music_info": fetched_activity}
+
+                if activity.get("music_info").get("error"):
+                    activity = {"music_info": fetched_activity}
 
                 # Add activity info
                 activity["activity_info"] = {

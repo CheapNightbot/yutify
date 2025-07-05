@@ -258,10 +258,8 @@ class UserActivityResource(Resource):
             if request.headers.get("X-Requested-With") != "XMLHttpRequest":
                 # Fallback to default JSON response if not allowed
                 return activity
-            try:
-                html = render_template("user/activity_embed.html", activity=activity)
-            except UndefinedError:
-                return activity, 404
+
+            html = render_template("user/activity_embed.html", activity=activity)
             return make_response(html, 200, {"Content-Type": "text/html"})
         return activity  # default // json
 
