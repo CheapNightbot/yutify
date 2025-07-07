@@ -51,5 +51,3 @@ def start_activity_scheduler(app):
     )
     scheduler.start()
     logger.info("[ActivityUpdater] Scheduler started.")
-    # Run immediately on startup
-    update_all_user_activities(app)
