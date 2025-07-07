@@ -227,6 +227,7 @@ def get_spotify_activity(user=None, force_refresh=False):
                 return None
 
             # Check for fresh data unless force_refresh is True
+            activity_data = spotify_service.user_data.data
             if (
                 not force_refresh
                 and spotify_service.user_data
@@ -239,12 +240,18 @@ def get_spotify_activity(user=None, force_refresh=False):
                     updated_at = updated_at.replace(tzinfo=timezone.utc)
                     age = (datetime.now(timezone.utc) - updated_at).total_seconds()
                 if age < FRESHNESS_SECONDS:
-                    data = spotify_service.user_data.data
-                    if not data.get("activity_info", {}).get("is_playing", False):
-                        data["activity_info"]["is_playing"] = False
-                    return data
+                    if not activity_data.get("activity_info", {}).get(
+                        "is_playing", False
+                    ):
+                        activity_data["activity_info"]["is_playing"] = False
+                    return activity_data
 
             fetched_activity = spotify_auth.get_currently_playing()
+            if fetched_activity.title == activity_data.get("music_info").get("title"):
+                # This is just to update the `updated_at` field in database
+                UserData.insert_or_update_user_data(spotify_service, activity_data)
+                return activity_data
+
             if fetched_activity:
                 activity = asdict(fetched_activity)
                 is_playing = fetched_activity.pop("is_playing")
@@ -288,16 +295,16 @@ def get_spotify_activity(user=None, force_refresh=False):
                     )
                 )
                 if existing_data:
-                    data = existing_data.data
-                    data["activity_info"]["is_playing"] = False
-                    if not data.get("activity_info").get("timestamp"):
-                        data["activity_info"][
+                    activity_data = existing_data.data
+                    activity_data["activity_info"]["is_playing"] = False
+                    if not activity_data.get("activity_info").get("timestamp"):
+                        activity_data["activity_info"][
                             "timestamp"
                         ] = existing_data.updated_at.timestamp()
 
                     # Update the activity in the database
-                    UserData.insert_or_update_user_data(spotify_service, data)
-                    return data
+                    UserData.insert_or_update_user_data(spotify_service, activity_data)
+                    return activity_data
 
             return None
     except SpotifyAuthException:
