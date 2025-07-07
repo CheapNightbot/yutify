@@ -136,12 +136,12 @@ def get_lastfm_activity(user=None, force_refresh=False):
             return activity_data
 
     fetched_activity = lastfm.get_currently_playing(username=lastfm_service.username)
-    if fetched_activity.title == activity_data.get("music_info").get("title"):
-        # For updating `updated_at` field in database
-        UserData.insert_or_update_user_data(lastfm_service, activity_data)
-        return activity_data
-
     if fetched_activity:
+        if fetched_activity.title == activity_data.get("music_info").get("title"):
+            # For updating `updated_at` field in database
+            UserData.insert_or_update_user_data(lastfm_service, activity_data)
+            return activity_data
+
         fetched_activity = asdict(fetched_activity)
         is_playing = fetched_activity.pop("is_playing")
         timestamp = fetched_activity.pop("timestamp")
