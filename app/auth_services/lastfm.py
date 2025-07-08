@@ -169,7 +169,7 @@ def get_lastfm_activity(user=None, force_refresh=False):
         }
 
         # Sort the activity by keys
-        activity = OrderedDict(sorted(activity.items()))
+        activity = asdict(OrderedDict(sorted(activity.items())))
 
         # Save the current activity to the database
         UserData.insert_or_update_user_data(lastfm_service, activity)
