@@ -253,8 +253,8 @@ def get_spotify_activity(user=None, force_refresh=False):
                     UserData.insert_or_update_user_data(spotify_service, activity_data)
                     return activity_data
                 activity = asdict(fetched_activity)
-                is_playing = fetched_activity.pop("is_playing")
-                timestamp = fetched_activity.pop("timestamp")
+                is_playing = activity.pop("is_playing")
+                timestamp = activity.pop("timestamp")
 
                 # Dynamically determine the base URL for the /api/search endpoint
                 base_url = url_for("main.index", _external=True).rstrip("/")
