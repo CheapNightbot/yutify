@@ -248,19 +248,20 @@ def get_spotify_activity(user=None, force_refresh=False):
 
             fetched_activity = spotify_auth.get_currently_playing()
             if fetched_activity:
-                if fetched_activity.title == activity_data.get("music_info").get("title"):
+                if fetched_activity.title == activity_data.get("music_info").get(
+                    "title"
+                ):
                     # This is just to update the `updated_at` field in database
                     UserData.insert_or_update_user_data(spotify_service, activity_data)
                     return activity_data
-                activity = asdict(fetched_activity)
-                is_playing = activity.pop("is_playing")
-                timestamp = activity.pop("timestamp")
+
+                fetched_activity = asdict(fetched_activity)
+                is_playing = fetched_activity.pop("is_playing")
+                timestamp = fetched_activity.pop("timestamp")
 
                 # Dynamically determine the base URL for the /api/search endpoint
                 base_url = url_for("main.index", _external=True).rstrip("/")
-                search_url = (
-                    f"{base_url}/api/search/{activity['artists']}:{activity['title']}"
-                )
+                search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}"
 
                 # Call the /api/search endpoint using requests
                 try:
@@ -281,7 +282,7 @@ def get_spotify_activity(user=None, force_refresh=False):
                 }
 
                 # Sort the activity by keys
-                activity = asdict(OrderedDict(sorted(activity.items())))
+                activity = OrderedDict(sorted(activity.items()))
 
                 # Save the current activity to the database
                 UserData.insert_or_update_user_data(spotify_service, activity)
