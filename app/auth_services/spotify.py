@@ -251,7 +251,9 @@ def get_spotify_activity(user=None, force_refresh=False):
                 if fetched_activity.title == activity_data.get("music_info").get(
                     "title"
                 ):
-                    activity_data["activity_info"]["is_playing"] = fetched_activity.is_playing or False
+                    activity_data["activity_info"]["is_playing"] = (
+                        fetched_activity.is_playing or False
+                    )
                     # This is just to update the `updated_at` field in database
                     UserData.insert_or_update_user_data(spotify_service, activity_data)
                     return activity_data
@@ -259,6 +261,7 @@ def get_spotify_activity(user=None, force_refresh=False):
                 fetched_activity = asdict(fetched_activity)
                 is_playing = fetched_activity.pop("is_playing")
                 timestamp = fetched_activity.pop("timestamp")
+                spotify_url = fetched_activity.pop("url")
 
                 # Dynamically determine the base URL for the /api/search endpoint
                 base_url = url_for("main.index", _external=True).rstrip("/")
@@ -271,9 +274,11 @@ def get_spotify_activity(user=None, force_refresh=False):
                 except requests.RequestException as e:
                     logger.warning(e)
                     activity = {"music_info": fetched_activity}
+                    activity["music_info"]["url"]["spotify"] = spotify_url
 
                 if activity.get("music_info").get("error"):
                     activity = {"music_info": fetched_activity}
+                    activity["music_info"]["url"]["spotify"] = spotify_url
 
                 # Add activity info
                 activity["activity_info"] = {
