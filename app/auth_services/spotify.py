@@ -251,6 +251,7 @@ def get_spotify_activity(user=None, force_refresh=False):
                 if fetched_activity.title == activity_data.get("music_info").get(
                     "title"
                 ):
+                    activity_data["activity_info"]["is_playing"] = fetched_activity.is_playing or False
                     # This is just to update the `updated_at` field in database
                     UserData.insert_or_update_user_data(spotify_service, activity_data)
                     return activity_data
