@@ -126,12 +126,14 @@ class UserActivityResource(Resource):
 
         # Fetch activity from each service
         spotify_activity = (
-            (lambda: get_spotify_activity(user))
+            (lambda: get_spotify_activity(user, force_refresh=True))
             if "spotify" in linked_services
             else None
         )
         lastfm_activity = (
-            (lambda: get_lastfm_activity(user)) if "lastfm" in linked_services else None
+            (lambda: get_lastfm_activity(user, force_refresh=True))
+            if "lastfm" in linked_services
+            else None
         )
 
         # Determine which activity to return
