@@ -274,11 +274,11 @@ def get_spotify_activity(user=None, force_refresh=False):
                 except requests.RequestException as e:
                     logger.warning(e)
                     activity = {"music_info": fetched_activity}
-                    activity["music_info"]["url"]["spotify"] = spotify_url
+                    activity["music_info"] = {"url": {"spotify": spotify_url}}
 
                 if activity.get("music_info").get("error"):
                     activity = {"music_info": fetched_activity}
-                    activity["music_info"]["url"]["spotify"] = spotify_url
+                    activity["music_info"] = {"url": {"spotify": spotify_url}}
 
                 # Add activity info
                 activity["activity_info"] = {
