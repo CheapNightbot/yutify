@@ -227,7 +227,9 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                 return None
 
             # Check for fresh data unless force_refresh is True
-            activity_data = spotify_service.user_data.data
+            activity_data = (
+                spotify_service.user_data.data if spotify_service.user_data else None
+            )
             if (
                 not force_refresh
                 and spotify_service.user_data
@@ -240,31 +242,46 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                     updated_at = updated_at.replace(tzinfo=timezone.utc)
                     age = (datetime.now(timezone.utc) - updated_at).total_seconds()
                 if age < FRESHNESS_SECONDS:
-                    if not activity_data.get("activity_info", {}).get(
+                    if activity_data and not activity_data.get("activity_info", {}).get(
                         "is_playing", False
                     ):
+                        if "activity_info" not in activity_data:
+                            activity_data["activity_info"] = {}
                         activity_data["activity_info"]["is_playing"] = False
                     return activity_data
 
             fetched_activity = spotify_auth.get_currently_playing()
             if fetched_activity:
-                if activity_data and fetched_activity.title == activity_data.get("music_info").get(
-                    "title"
+                fetched_dict = asdict(fetched_activity)
+                title = fetched_dict.get("title")
+
+                if (
+                    activity_data
+                    and activity_data.get("music_info", {}).get("title") == title
                 ):
                     try:
-                        activity_data["activity_info"] = {"is_playing": fetched_activity.is_playing or False}
+                        if "activity_info" not in activity_data:
+                            activity_data["activity_info"] = {}
+                        activity_data["activity_info"]["is_playing"] = fetched_dict.get(
+                            "is_playing", False
+                        )
                     except KeyError:
-                        activity_data = {"activity_info": {"is_playing": fetched_activity.is_playing or False}}
+                        activity_data = {
+                            "music_info": activity_data.get("music_info", {}),
+                            "activity_info": {
+                                "is_playing": fetched_dict.get("is_playing", False)
+                            },
+                        }
                     # This is just to update the `updated_at` field in database
                     UserData.insert_or_update_user_data(spotify_service, activity_data)
                     return activity_data
 
-                fetched_activity = asdict(fetched_activity)
-                is_playing = fetched_activity.pop("is_playing")
-                timestamp = fetched_activity.pop("timestamp")
-                spotify_url = fetched_activity.pop("url")
-                activity = {"music_info": fetched_activity}
-                activity["music_info"]["url"] = {"spotify": spotify_url}
+                is_playing = fetched_dict.pop("is_playing", False)
+                timestamp = fetched_dict.pop("timestamp", None)
+                spotify_url = fetched_dict.pop("url", None)
+                activity = {"music_info": fetched_dict}
+                if spotify_url:
+                    activity["music_info"]["url"] = {"spotify": spotify_url}
                 activity["activity_info"] = {
                     "is_playing": is_playing,
                     "service": "spotify",
@@ -274,20 +291,28 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                 if platform.lower() != "spotify":
                     # Dynamically determine the base URL for the /api/search endpoint
                     base_url = url_for("main.index", _external=True).rstrip("/")
-                    search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}?{platform}"
+                    search_query = f"{fetched_dict.get('artists', '')}:{fetched_dict.get('title', '')}"
+                    from urllib.parse import quote
+
+                    search_url = (
+                        f"{base_url}/api/search/{quote(search_query)}?{platform}"
+                    )
 
                     # Call the /api/search endpoint using requests
                     try:
-                        response = requests.get(search_url, params={"all": ""})
-                        activity = {"music_info": response.json()}
-                    except requests.RequestException as e:
+                        response = requests.get(
+                            search_url, params={"all": ""}, timeout=10
+                        )
+                        response.raise_for_status()
+                        data = response.json()
+                        if not data.get("error"):
+                            activity = {"music_info": data}
+                    except (requests.RequestException, ValueError) as e:
                         logger.warning(e)
-                    else:
-                        if activity.get("music_info").get("error"):
-                            activity = {"music_info": fetched_activity}
+                        # Keep original Spotify data on error
 
                 # Sort the activity by keys
-                activity = OrderedDict(sorted(activity.items()))
+                activity = dict(sorted(activity.items()))
 
                 # Save the current activity to the database
                 UserData.insert_or_update_user_data(spotify_service, activity)
@@ -300,9 +325,13 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                     )
                 )
                 if existing_data:
-                    activity_data = existing_data.data
+                    activity_data = existing_data.data or {}
+                    if "activity_info" not in activity_data:
+                        activity_data["activity_info"] = {}
                     activity_data["activity_info"]["is_playing"] = False
-                    if not activity_data.get("activity_info").get("timestamp"):
+                    if not activity_data.get("activity_info", {}).get("timestamp"):
+                        if "activity_info" not in activity_data:
+                            activity_data["activity_info"] = {}
                         activity_data["activity_info"][
                             "timestamp"
                         ] = existing_data.updated_at.timestamp()
