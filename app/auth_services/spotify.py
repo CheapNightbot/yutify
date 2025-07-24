@@ -208,7 +208,7 @@ def handle_spotify_callback(request):
         return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
 
-def get_spotify_activity(user=None, force_refresh=False):
+def get_spotify_activity(user=None, platform="all", force_refresh=False):
     """Fetch the user's listening activity from Spotify."""
     user = user or current_user
     try:
@@ -262,30 +262,28 @@ def get_spotify_activity(user=None, force_refresh=False):
                 is_playing = fetched_activity.pop("is_playing")
                 timestamp = fetched_activity.pop("timestamp")
                 spotify_url = fetched_activity.pop("url")
-
-                # Dynamically determine the base URL for the /api/search endpoint
-                base_url = url_for("main.index", _external=True).rstrip("/")
-                search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}"
-
-                # Call the /api/search endpoint using requests
-                try:
-                    response = requests.get(search_url, params={"all": ""})
-                    activity = {"music_info": response.json()}
-                except requests.RequestException as e:
-                    logger.warning(e)
-                    activity = {"music_info": fetched_activity}
-                    activity["music_info"]["url"] = {"spotify": spotify_url}
-
-                if activity.get("music_info").get("error"):
-                    activity = {"music_info": fetched_activity}
-                    activity["music_info"]["url"] = {"spotify": spotify_url}
-
-                # Add activity info
+                activity = {"music_info": fetched_activity}
+                activity["music_info"]["url"] = {"spotify": spotify_url}
                 activity["activity_info"] = {
                     "is_playing": is_playing,
                     "service": "spotify",
                     "timestamp": timestamp,
                 }
+
+                if platform.lower() != "spotify":
+                    # Dynamically determine the base URL for the /api/search endpoint
+                    base_url = url_for("main.index", _external=True).rstrip("/")
+                    search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}?{platform}"
+
+                    # Call the /api/search endpoint using requests
+                    try:
+                        response = requests.get(search_url, params={"all": ""})
+                        activity = {"music_info": response.json()}
+                    except requests.RequestException as e:
+                        logger.warning(e)
+                    else:
+                        if activity.get("music_info").get("error"):
+                            activity = {"music_info": fetched_activity}
 
                 # Sort the activity by keys
                 activity = OrderedDict(sorted(activity.items()))

@@ -90,7 +90,7 @@ def handle_lastfm_auth(lastfm_username):
     return redirect(url_for("user.user_settings", username=current_user.username))
 
 
-def get_lastfm_activity(user=None, force_refresh=False):
+def get_lastfm_activity(user=None, platform="all", force_refresh=False):
     """Fetch the user's listening activity from Last.fm."""
     if not lastfm:
         flash(
@@ -149,7 +149,7 @@ def get_lastfm_activity(user=None, force_refresh=False):
 
         # Dynamically determine the base URL for the /api/search endpoint
         base_url = url_for("main.index", _external=True).rstrip("/")
-        search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}"
+        search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}?{platform}"
 
         # Call the /api/search endpoint using requests
         try:

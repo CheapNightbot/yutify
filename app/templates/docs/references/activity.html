@@ -35,7 +35,7 @@
         </ul>
     </blockquote>
 
-    <div id="appi-me-docs">
+    <div id="api-me-docs">
         <h3>Request</h3>
         <div>
             <div class="req-para-info">
@@ -82,6 +82,8 @@
                 class="codeblock"><code>&lt;img src="{{ base_url }}/api/me?username=potato&amp;svg" alt="Now Playing" /&gt;</code></pre>
             </p>
 
+        </div>
+        <div>
             <div class="req-para-info">
                 <div>
                     <kbd>service</kbd> <code>string</code>
@@ -119,6 +121,36 @@
                 <b>Note</b>: The query parameter for <code>service</code> is NOT <code>?service=&lt;name&gt;</code>
                 &lpar;i.e. key-value pair&rpar;! Instead, you just provide the service name directly as a key. <br>
                 <b>Example</b>: <code>/api/me<ins>?lastfm</ins></code>
+            </p>
+        </div>
+
+        <div>
+            <div class="req-para-info">
+                <div>
+                    <kbd>platform</kbd> <code>string</code>
+                </div>
+                <div class="flex-row">
+                    <span class="line"></span>
+                    <mark>Optional</mark>
+                </div>
+            </div>
+            <p>
+                The music platform to retrieve music information/metadata from.
+            </p>
+            <p>
+                If provided, music information/metadata will be retrieved (only) from this music platform. If it is not
+                provided or does not contain allowed values, it will be simply ignored and music information/metadata
+                will
+                be retrieved from all the available music platforms.
+            </p>
+            <p>
+                <b>Default</b>: <code>"all"</code> <br>
+                <b>Allowed values</b>: <code>"all"</code>, <code>"deezer"</code>, <code>"itunes"</code> (or
+                <code>"apple-music"</code>),
+                <code>"kkbox"</code>, <code>"spotify"</code>, <code>"ytmusic"</code> <br>
+                <b>Note</b>: The query parameter for <code>platform</code> is NOT <code>?platform=&lt;name&gt;</code>
+                &lpar;i.e. key-value pair&rpar;! Instead, you just provide the platform name directly as a key. <br>
+                <b>Example</b>: <code>/api/search/Madeon:Shelter<ins>?spotify</ins></code>
             </p>
         </div>
 

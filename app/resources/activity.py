@@ -25,6 +25,7 @@ class UserActivityResource(Resource):
     def get(self):
         """Fetch the currently playing music for the authenticated user."""
         username = request.args.get("username", "").strip().lower()
+        platform = "".join(list(request.args.keys())).lower() if request.args else "all"
         security: Security = current_app.security
         datastore: SQLAlchemyUserDatastore = security.datastore
 
@@ -126,7 +127,7 @@ class UserActivityResource(Resource):
 
         # Fetch activity from each service
         spotify_activity = (
-            (lambda: get_spotify_activity(user, force_refresh=True))
+            (lambda: get_spotify_activity(user, platform, force_refresh=True))
             if "spotify" in linked_services
             else None
         )
