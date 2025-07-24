@@ -252,7 +252,7 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                     "title"
                 ):
                     try:
-                        activity_data["activity_info"]["is_playing"] = (fetched_activity.is_playing or False)
+                        activity_data["activity_info"] = {"is_playing": fetched_activity.is_playing or False}
                     except KeyError:
                         activity_data = {"activity_info": {"is_playing": fetched_activity.is_playing or False}}
                     # This is just to update the `updated_at` field in database
