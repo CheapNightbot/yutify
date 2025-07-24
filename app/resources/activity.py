@@ -25,7 +25,6 @@ class UserActivityResource(Resource):
     def get(self):
         """Fetch the currently playing music for the authenticated user."""
         username = request.args.get("username", "").strip().lower()
-        platform = "".join(list(request.args.keys())).lower() if request.args else "all"
         security: Security = current_app.security
         datastore: SQLAlchemyUserDatastore = security.datastore
 
@@ -56,7 +55,8 @@ class UserActivityResource(Resource):
                 }, 401
 
         response_type = request.args.get("type", "json").lower()
-        service = "".join(list(request.args.keys())).lower() if request.args else "all"
+        service = request.args.get("service", "all")
+        platform = request.args.get("platform", "all")
         is_embed = "embed" in request.args
         is_svg = "svg" in request.args
         is_png = request.path.endswith(".png")
