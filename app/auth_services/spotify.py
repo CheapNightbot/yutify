@@ -248,7 +248,7 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
 
             fetched_activity = spotify_auth.get_currently_playing()
             if fetched_activity:
-                if fetched_activity.title == activity_data.get("music_info").get(
+                if activity_data and fetched_activity.title == activity_data.get("music_info").get(
                     "title"
                 ):
                     try:
