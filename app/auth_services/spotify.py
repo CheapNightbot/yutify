@@ -282,6 +282,8 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                 activity = {"music_info": fetched_dict}
                 if spotify_url:
                     activity["music_info"]["url"] = {"spotify": spotify_url}
+
+                # Prepare activity_info with all required fields
                 activity["activity_info"] = {
                     "is_playing": is_playing,
                     "service": "spotify",
@@ -306,7 +308,8 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                         response.raise_for_status()
                         data = response.json()
                         if not data.get("error"):
-                            activity = {"music_info": data}
+                            # Preserve activity_info when replacing music_info
+                            activity["music_info"] = data
                     except (requests.RequestException, ValueError) as e:
                         logger.warning(e)
                         # Keep original Spotify data on error
@@ -335,6 +338,7 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                         activity_data["activity_info"][
                             "timestamp"
                         ] = existing_data.updated_at.timestamp()
+                        activity_data["activity_info"]["service"] = "spotify"
 
                     # Update the activity in the database
                     UserData.insert_or_update_user_data(spotify_service, activity_data)
