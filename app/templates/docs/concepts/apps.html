@@ -55,7 +55,9 @@
         It should be kept private, as it is used to authenticate your app and access protected resources.
         If someone gains access to your <i>Client Secret</i>, they can impersonate your app and access user data. Always
         treat your <i>Client Secret</i> like a password.
-        If you believe your <i>Client Secret</i> has been compromised, you can regenerate it from the dashboard.
+        If you believe your <i>Client Secret</i> has been compromised, you can regenerate it from the dashboard:
     </p>
+    <img src="{{ url_for('static', filename='docs/reset-client-secret.png') }}" alt="Reset Client Secret"
+            class="screenshot">
 </main>
 {% endblock %}
