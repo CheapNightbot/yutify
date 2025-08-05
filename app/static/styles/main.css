@@ -491,9 +491,11 @@ footer {
     color: hsl(242, 100%, 80%);
     background-color: transparent !important;
     border: none;
-    height: fit-content !important;
+    height: 1rem !important;
     padding: 0 !important;
+    margin: 0 !important;
     text-decoration: underline;
+    line-height: inherit !important;
 }
 
 .delete-user-account,
@@ -1038,5 +1040,16 @@ dt::before {
         display: block;
         width: 100%;
         margin-bottom: 1rem;
+    }
+
+    footer {
+        font-size: 0.8rem;
+    }
+}
+
+
+@media (max-width: 860px) {
+    footer {
+        font-size: 0.6rem;
     }
 }
