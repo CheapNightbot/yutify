@@ -1,3 +1,8 @@
+html,
+body {
+    scroll-behavior: smooth;
+}
+
 body {
     min-height: 100dvh;
     display: flex;
@@ -812,6 +817,10 @@ dt::before {
     transition: all 0.1s ease-in;
 }
 
+.client-card.info > div {
+    flex-wrap: wrap;
+}
+
 .client-info {
     padding: 0rem 0.5rem;
     align-items: center;
@@ -828,6 +837,7 @@ dt::before {
     height: 4rem;
     font-size: 2.2rem;
     font-weight: bold;
+    text-align: center;
     color: #fff;
     background: linear-gradient(#655CD6, #BD9FDF);
     border: 1.5px solid;
@@ -840,6 +850,7 @@ dt::before {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    opacity: 0.8;
 }
 
 .client-container-btn {
