@@ -2,21 +2,21 @@ from datetime import datetime
 from time import time
 
 from authlib.oauth2 import OAuth2Error
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import abort, flash, redirect, render_template, request, session, url_for
 from flask_security import auth_required, current_user, url_for_security
 from werkzeug.security import gen_salt
 
-from app.extensions import db
+from app.extensions import csrf, db
 from app.models import OAuth2Client, User
 from app.oauth import bp
 from app.oauth.forms import (
+    AuthorizeConsentForm,
     CreateClientForm,
     DeleteClientForm,
     EditClientForm,
-    AuthorizeConsentForm,
+    ResetClientSecretFrom,
 )
 from app.oauth.oauth2 import authorization
-from app.extensions import csrf
 
 
 @bp.route("/dashboard", methods=["GET", "POST"])
@@ -34,8 +34,27 @@ def dashboard(client_id=None):
         client = [client for client in clients if client.client_id == client_id]
         if not client:
             abort(404)
+
+        is_new_client = session.pop("is_new_client", False)
+        if not is_new_client:
+            client[0].secret_seen = True
+            db.session.commit()
+
+        reset_secret_form = ResetClientSecretFrom()
         edit_req_form = EditClientForm()
         delete_req_form = DeleteClientForm()
+
+        if reset_secret_form.validate_on_submit() and "reset_secret" in request.form:
+            client[0].client_secret = gen_salt(48)
+            client[0].secret_seen = False
+            db.session.commit()
+            session["is_new_client"] = True
+
+            flash(
+                "Client secret reset successfully!",
+                "success",
+            )
+            return redirect(url_for("oauth.dashboard", client_id=client_id))
 
         if edit_req_form.validate_on_submit() and "edit" in request.form:
             return redirect(url_for("oauth.edit_client", client_id=client_id))
@@ -54,6 +73,12 @@ def dashboard(client_id=None):
             )
             return redirect(url_for("oauth.dashboard"))
 
+        if is_new_client:
+            flash(
+                "Make sure to save the client secret somewhere safe! It will not be shown again.",
+                "info",
+            )
+
         return render_template(
             "oauth/client_info.html",
             user=user,
@@ -61,6 +86,7 @@ def dashboard(client_id=None):
             title="Developer Dashboard",
             active_page="dev_dashboard",
             year=datetime.today().year,
+            reset_secret_form=reset_secret_form,
             edit_req_form=edit_req_form,
             delete_req_form=delete_req_form,
         )
@@ -112,6 +138,8 @@ def create_client():
         flash(
             f'Successfully created "{create_client_form.client_name.data}"!', "success"
         )
+
+        session["is_new_client"] = True
         return redirect(url_for("oauth.dashboard", client_id=client_id))
 
     return render_template(

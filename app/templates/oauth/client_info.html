@@ -21,7 +21,15 @@
             </span>
             <span>
                 <h6>Client Secret</h6>
+                {% if not client.secret_seen %}
                 <code>{{ client.client_info["client_secret"] }}</code>
+                {% else %}
+                <code class="client-secret-seen">
+                    <span>Hidden for security.</span>
+                    {{ reset_secret_form.reset_secret(class="custom-fixed-width-btn", form="reset_secret_form") }}
+
+                </code>
+                {% endif %}
             </span>
         </div>
     </article>
@@ -48,6 +56,9 @@
             </code>
         </div>
     </article>
+    <form action="" method="post" id="reset_secret_form">
+        {{ reset_secret_form.csrf_token(id="reset_secret_form") }}
+    </form>
     <form action="" method="post" id="edit_client_form">
         {{ edit_req_form.csrf_token(id="csrf_token_edit") }}
     </form>

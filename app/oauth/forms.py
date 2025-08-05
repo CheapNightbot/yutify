@@ -34,6 +34,10 @@ class CreateClientForm(FlaskForm):
     submit = SubmitField("Save")
 
 
+class ResetClientSecretFrom(FlaskForm):
+    reset_secret = SubmitField("Reset Secret")
+
+
 class DeleteClientForm(FlaskForm):
     delete = SubmitField("Delete")
 

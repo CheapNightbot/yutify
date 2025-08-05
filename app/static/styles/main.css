@@ -485,6 +485,17 @@ footer {
     min-width: 6rem;
 }
 
+.client-secret-seen input {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: hsl(242, 100%, 80%);
+    background-color: transparent !important;
+    border: none;
+    height: fit-content !important;
+    padding: 0 !important;
+    text-decoration: underline;
+}
+
 .delete-user-account,
 .delete-account {
     width: 100%;
@@ -817,7 +828,7 @@ dt::before {
     transition: all 0.1s ease-in;
 }
 
-.client-card.info > div {
+.client-card.info>div {
     flex-wrap: wrap;
 }
 
@@ -855,6 +866,10 @@ dt::before {
 
 .client-container-btn {
     margin-left: auto;
+}
+
+.client-secret-seen {
+    min-width: 48ch;
 }
 
 .custom-inp-btn {
