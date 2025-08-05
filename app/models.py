@@ -65,8 +65,7 @@ class Base(db.Model):
 
     __abstract__ = True
     created_at: so.Mapped[datetime] = so.mapped_column(
-        sa.DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc)
+        sa.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
     updated_at: so.Mapped[datetime] = so.mapped_column(
         sa.DateTime(timezone=True),
@@ -278,6 +277,7 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
         sa.ForeignKey(User.id, ondelete="CASCADE"), index=True
     )
     user: so.Mapped["User"] = db.relationship("User")
+    secret_seen: so.Mapped[bool] = so.mapped_column(sa.Boolean(), default=False)
 
 
 class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
