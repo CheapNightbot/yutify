@@ -57,7 +57,6 @@ class UserActivityResource(Resource):
 
         response_type = request.args.get("type", "json").lower()
         service = request.args.get("service", "all")
-        platform = request.args.get("platform", "all")
         is_embed = "embed" in request.args
         is_svg = "svg" in request.args
         is_png = request.path.endswith(".png")
@@ -128,17 +127,17 @@ class UserActivityResource(Resource):
 
         # Fetch activity from each service
         spotify_activity = (
-            (lambda: get_spotify_activity(user, platform))
+            (lambda: get_spotify_activity(user, service))
             if "spotify" in linked_services
             else None
         )
         lastfm_activity = (
-            (lambda: get_lastfm_activity(user, platform))
+            (lambda: get_lastfm_activity(user, service))
             if "lastfm" in linked_services
             else None
         )
         listenbrainz_activity = (
-            (lambda: get_listenbrainz_activity(user, platform))
+            (lambda: get_listenbrainz_activity(user, service))
             if "listenbrainz" in linked_services
             else None
         )
