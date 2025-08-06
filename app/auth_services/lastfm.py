@@ -34,7 +34,7 @@ def handle_lastfm_auth(lastfm_username):
     if not lastfm_service:
         logger.warning(LASTFM_SERVICE_NOT_FOUND)
         flash(LASTFM_SERVICE_NOT_AVAILABLE, "error")
-        return redirect(url_for("user.user_settings", username=current_user.username))
+        return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
     user = db.session.scalar(
         sa.select(User).where(User.username == current_user.username)
