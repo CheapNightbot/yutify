@@ -5,9 +5,10 @@ from flask_security import auth_required, current_user
 from app import db
 from app.auth_services import bp
 from app.auth_services.lastfm import handle_lastfm_auth
+from app.auth_services.listenbrainz import handle_listenbrainz_auth
 from app.auth_services.spotify import handle_spotify_auth, handle_spotify_callback
 from app.models import Service, UserService
-from app.user.forms import LastfmLinkForm
+from app.user.forms import LastfmLinkForm, ListenBrainzLinkForm
 
 
 @bp.route("/<service>", methods=["POST"])
@@ -25,6 +26,15 @@ def service(service):
             return redirect(
                 url_for("user.user_settings", username=current_user.username)
             )
+        case "listenbrainz":
+            form = ListenBrainzLinkForm()
+            if form.validate_on_submit():
+                listenbrainz_username = form.listenbrainz_username.data.strip()
+                return handle_listenbrainz_auth(listenbrainz_username)
+            flash("ListenBrainz username is required.", "error")
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
         case _:
             abort(404, description="Service not supported.")
 
@@ -36,6 +46,10 @@ def callback(service):
         case "spotify":
             return handle_spotify_callback(request)
         case "lastfm":
+            return redirect(
+                url_for("user.user_settings", username=current_user.username)
+            )
+        case "listenbrainz":
             return redirect(
                 url_for("user.user_settings", username=current_user.username)
             )

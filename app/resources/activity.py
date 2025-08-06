@@ -9,10 +9,11 @@ from flask_restful import Resource
 from flask_security import Security, SQLAlchemyUserDatastore, current_user
 from jinja2.exceptions import UndefinedError
 
-from app import db
 from app.auth_services.lastfm import get_lastfm_activity
+from app.auth_services.listenbrainz import get_listenbrainz_activity
 from app.auth_services.spotify import get_spotify_activity
 from app.common.helpers import get_album_art_data_uri, get_static_file_data_uri
+from app.extensions import db
 from app.limiter import limiter
 from app.models import UserService
 
@@ -136,6 +137,11 @@ class UserActivityResource(Resource):
             if "lastfm" in linked_services
             else None
         )
+        listenbrainz_activity = (
+            (lambda: get_listenbrainz_activity(user, platform))
+            if "listenbrainz" in linked_services
+            else None
+        )
 
         # Determine which activity to return
         activity = None
@@ -145,8 +151,12 @@ class UserActivityResource(Resource):
                 activity = spotify_activity() if spotify_activity else None
             case "lastfm":
                 activity = lastfm_activity() if lastfm_activity else None
+            case "listenbrainz":
+                activity = listenbrainz_activity() if listenbrainz_activity else None
             case _:
-                activity = self._fetch_activity(spotify_activity, lastfm_activity)
+                activity = self._fetch_activity(
+                    spotify_activity, lastfm_activity, listenbrainz_activity
+                )
 
         if not activity:
             error_msg = (
@@ -266,7 +276,9 @@ class UserActivityResource(Resource):
             return make_response(html, 200, {"Content-Type": "text/html"})
         return activity  # default // json
 
-    def _fetch_activity(self, spotify_activity_func, lastfm_activity_func):
+    def _fetch_activity(
+        self, spotify_activity_func, lastfm_activity_func, listenbrainz_activity_func
+    ):
         """
         Fetch and prioritize activity from Spotify and Last.fm.
 
@@ -276,6 +288,8 @@ class UserActivityResource(Resource):
             Function to fetch Spotify activity.
         lastfm_activity_func (callable)
             Function to fetch Last.fm activity.
+        listenbrainz_activity_func (callable)
+            Function to fetch ListenBrainz activity.
 
         Returns
         -------
@@ -285,12 +299,19 @@ class UserActivityResource(Resource):
 
         spotify_activity = spotify_activity_func() if spotify_activity_func else None
         lastfm_activity = lastfm_activity_func() if lastfm_activity_func else None
+        listenbrainz_activity = (
+            listenbrainz_activity_func() if listenbrainz_activity_func else None
+        )
 
-        if spotify_activity and lastfm_activity:
-            return random.choice([spotify_activity, lastfm_activity])
+        if spotify_activity and lastfm_activity and listenbrainz_activity:
+            return random.choice(
+                [spotify_activity, lastfm_activity, listenbrainz_activity]
+            )
         elif spotify_activity:
             return spotify_activity
         elif lastfm_activity:
             return lastfm_activity
+        elif listenbrainz_activity:
+            return listenbrainz_activity
 
         return None

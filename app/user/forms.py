@@ -30,6 +30,11 @@ class LastfmLinkForm(FlaskForm):
     submit = SubmitField("Link")
 
 
+class ListenBrainzLinkForm(FlaskForm):
+    listenbrainz_username = StringField("ListenBrainz Username", validators=[DataRequired()])
+    submit = SubmitField("Link")
+
+
 class RevokeAppForm(FlaskForm):
     submit = SubmitField("Revoke")
 

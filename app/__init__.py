@@ -212,6 +212,7 @@ def create_services():
         services = [
             ("Spotify", "https://open.spotify.com", False),
             ("Lastfm", "https://last.fm", False),
+            ("ListenBrainz", "https://listenbrainz.org", False),
         ]
         service_created = set()
         for name, url, is_private in sorted(services, key=lambda service: service[0]):

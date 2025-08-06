@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordConfirmInput = document.querySelector('#password_confirm');
     const passwordConfirm = document.querySelector('#password-confirm');
     const editProfileModal = document.querySelector('#edit-profile-modal');
-    const lastfmLinkModal = document.querySelector('#lastfm-link-modal')
+    const lastfmLinkModal = document.querySelector('#lastfm-link-modal');
+    const listenbrainzLinkModal = document.querySelector('#listenbrainz-link-modal');
     const accountDelBtm = document.querySelector('.delete-account');
     const editRoleForm = document.querySelector('[name="edit_role_form"]');
     const editServicesForm = document.querySelector('[name="edit_service_form"]');
@@ -444,6 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeLastfmModal = document.querySelector('#close-lastfm-modal');
         lastfmLinkButton.addEventListener('click', toggleModal);
         closeLastfmModal.addEventListener('click', toggleModal);
+    }
+
+    if (listenbrainzLinkModal) {
+        const listenbrainzLinkButton = document.querySelector('.link[data-service="listenbrainz"]');
+        const closeListenbrainzModal = document.querySelector('#close-listenbrainz-modal');
+        listenbrainzLinkButton.addEventListener('click', toggleModal);
+        closeListenbrainzModal.addEventListener('click', toggleModal);
     }
 
     async function fetchActivity() {

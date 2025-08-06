@@ -65,15 +65,16 @@
             {% if service.id in connected_services %}
             <!-- Unlink Form -->
             <form action="{{ url_for('auth_services.unlink', service=service.name.lower()) }}" method="post">
-                {{ service_action_form.csrf_token(id="csrf_token_unlink_" +  service.name.lower() ) }}
+                {{ service_action_form.csrf_token(id="csrf_token_unlink_" + service.name.lower() ) }}
                 <button type="submit" class="secondary unlink">Unlink</button>
             </form>
             {% else %}
             <!-- Link Form -->
             <form action="{{ url_for('auth_services.service', service=service.name.lower()) }}" method="post">
-                {{ service_action_form.csrf_token(id="csrf_token_link_" +  service.name.lower() ) }}
+                {{ service_action_form.csrf_token(id="csrf_token_link_" + service.name.lower() ) }}
                 <button type="submit" class="primary link" {% if service.name.lower()=='lastfm' %} data-service="lastfm"
-                    data-target="lastfm-link-modal" {% endif %}>Link</button>
+                    data-target="lastfm-link-modal" {% elif service.name.lower()=='listenbrainz' %}
+                    data-service="listenbrainz" data-target="listenbrainz-link-modal" {% endif %}>Link</button>
             </form>
             {% endif %}
         </div>
@@ -125,7 +126,8 @@
             </div>
             <div class="service-action">
                 <small>{{ "Public" if user.is_profile_public else "Private" }}</small>
-                {{ profile_visibility_form.is_profile_public(type="checkbox", role="switch", onchange="this.form.submit()", checked=user.is_profile_public) }}
+                {{ profile_visibility_form.is_profile_public(type="checkbox", role="switch",
+                onchange="this.form.submit()", checked=user.is_profile_public) }}
             </div>
         </article>
     </form>
@@ -205,6 +207,26 @@
         </article>
     </dialog>
     {% endif %}
+    {% if service.id not in connected_services and service.name.lower() == 'listenbrainz' %}
+    <dialog id="listenbrainz-link-modal">
+        <article>
+            <header>
+                <h3>Link ListenBrainz</h3>
+                <button id="close-listenbrainz-modal" aria-label="Close" class="close"
+                    data-target="listenbrainz-link-modal"></button>
+            </header>
+            <form action="{{ url_for('auth_services.service', service='listenbrainz') }}" method="post">
+                {{ listenbrainz_link_form.csrf_token(id="csrf_token_listenbrainz") }}
+                <fieldset>
+                    {{ listenbrainz_link_form.listenbrainz_username.label }}
+                    {{ listenbrainz_link_form.listenbrainz_username(placeholder="Enter your ListenBrainz username",
+                    autofocus="") }}
+                </fieldset>
+                {{ listenbrainz_link_form.submit(id="link_listenbrainz") }}
+            </form>
+        </article>
+    </dialog>
+    {% endif %}
     {% endfor %}
     {% endif %}
 
@@ -218,9 +240,11 @@
                 {{ delete_account_form.csrf_token(id="csrf_token_account_del") }}
                 {{ delete_account_form.password.label }}
                 {% if delete_account_form.password.errors %}
-                {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper", aria_invalid="true") }}
+                {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper",
+                aria_invalid="true") }}
                 {% else %}
-                {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper password-strength") }}
+                {{ delete_account_form.password(aria_label="Password", aria_describedby="password-helper
+                password-strength") }}
                 {% endif %}
                 {% for error in delete_account_form.password.errors %}
                 <small id="password-helper">{{ error }}</small>

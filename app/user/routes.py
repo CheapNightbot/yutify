@@ -20,6 +20,7 @@ from app.user.forms import (
     EditProfileForm,
     EmptyForm,
     LastfmLinkForm,
+    ListenBrainzLinkForm,
     ProfileVisibilityForm,
 )
 
@@ -27,7 +28,9 @@ from app.user.forms import (
 @bp.route("/<username>", methods=["GET", "POST"])
 def user_profile(username):
     """Render user profile page."""
-    user = db.first_or_404(sa.select(User).where(User.username == username))
+    user = db.first_or_404(
+        sa.select(User).where(sa.func.lower(User.username) == username.lower())
+    )
 
     # Restrict access if profile is private and not the owner
     if not current_user.is_authenticated and not user.is_profile_public:
@@ -75,7 +78,7 @@ def user_settings(username):
     # Query all services that are not private.
     # Service marked as private assumed to not have user authorization.
     services = db.session.scalars(
-        sa.select(Service).where(Service.is_private.is_(False))
+        sa.select(Service).where(Service.is_private.is_(False)).order_by(Service.name)
     ).all()
     # Query user services for the current user
     user_services = db.session.scalars(
@@ -91,6 +94,9 @@ def user_settings(username):
     delete_account_form = DeleteAccountForm()
     service_action_form = EmptyForm()
     lastfm_link_form = None if "lastfm" in connected_services else LastfmLinkForm()
+    listenbrainz_link_form = (
+        None if "listenbrainz" in connected_services else ListenBrainzLinkForm()
+    )
     profile_visibility_form = ProfileVisibilityForm()
 
     # User clicked on "Change" button for username
@@ -157,6 +163,7 @@ def user_settings(username):
         delete_account_form=delete_account_form,
         service_action_form=service_action_form,
         lastfm_link_form=lastfm_link_form,
+        listenbrainz_link_form=listenbrainz_link_form,
         profile_visibility_form=profile_visibility_form,
         authorized_apps=authorized_apps,
     )
