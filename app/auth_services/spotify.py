@@ -134,7 +134,8 @@ def handle_spotify_auth():
                 sa.select(Service).where(Service.name.ilike("spotify"))
             )
             if not service:
-                flash(SPOTIFY_SERVICE_NOT_FOUND, "error")
+                logger.warning(SPOTIFY_SERVICE_NOT_FOUND)
+                flash(SPOTIFY_AUTH_NOT_AVAILABLE, "error")
                 return redirect(
                     url_for(USER_SETTINGS_ENDPOINT, username=current_user.username)
                 )
@@ -157,10 +158,7 @@ def handle_spotify_auth():
 
             return redirect(auth_url)
     except SpotifyAuthException:
-        flash(
-            SPOTIFY_AUTH_NOT_AVAILABLE,
-            "error",
-        )
+        flash(SPOTIFY_AUTH_NOT_AVAILABLE, "error")
         return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
 
