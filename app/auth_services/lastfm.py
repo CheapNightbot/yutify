@@ -98,13 +98,10 @@ def get_lastfm_activity(user=None, platform="all", force_refresh=False):
     lastfm_service = db.session.scalar(
         sa.select(UserService)
         .join(Service)
-        .where(
-            UserService.user_id == user.id,
-            Service.name.ilike("lastfm"),
-        )
+        .where(UserService.user_id == user.id, Service.name.ilike("lastfm"))
     )
 
-    if not lastfm_service:
+    if not lastfm_service or not lastfm_service.user_data:
         return None
 
     # Check for fresh data unless force_refresh is True
@@ -131,7 +128,7 @@ def get_lastfm_activity(user=None, platform="all", force_refresh=False):
                 username=lastfm_service.username
             )
             if fetched_activity:
-                if fetched_activity.title == activity_data.get("music_info").get(
+                if fetched_activity.title == activity_data.get("music_info", {}).get(
                     "title"
                 ):
                     activity_data["activity_info"]["is_playing"] = (
@@ -147,11 +144,13 @@ def get_lastfm_activity(user=None, platform="all", force_refresh=False):
 
                 # Dynamically determine the base URL for the /api/search endpoint
                 base_url = url_for("main.index", _external=True).rstrip("/")
-                search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}?{platform}"
+                search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}"
 
                 # Call the /api/search endpoint using requests
                 try:
-                    response = requests.get(search_url, params={"all": ""})
+                    response = requests.get(
+                        search_url, params={"platform": platform}, timeout=30
+                    )
                     activity = {"music_info": response.json()}
                 except requests.RequestException as e:
                     logger.warning(e)
