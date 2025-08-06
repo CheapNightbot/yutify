@@ -48,7 +48,7 @@ def handle_lastfm_auth(lastfm_username):
     )
 
     if user_service:
-        flash("You have already linked Last.fm.", "success")
+        flash("You have already linked Last.fm.", "info")
         return redirect(url_for(USER_SETTINGS_ENDPOINT, username=current_user.username))
 
     try:
