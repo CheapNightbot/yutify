@@ -144,13 +144,11 @@ def get_lastfm_activity(user=None, platform="all", force_refresh=False):
 
                 # Dynamically determine the base URL for the /api/search endpoint
                 base_url = url_for("main.index", _external=True).rstrip("/")
-                search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}"
+                search_url = f"{base_url}/api/search/{fetched_activity['artists']}:{fetched_activity['title']}?platform:{platform}"
 
                 # Call the /api/search endpoint using requests
                 try:
-                    response = requests.get(
-                        search_url, params={"platform": platform}, timeout=30
-                    )
+                    response = requests.get(search_url, timeout=30)
                     activity = {"music_info": response.json()}
                 except requests.RequestException as e:
                     logger.warning(e)
