@@ -483,7 +483,7 @@ def callback():
                 </li>
                 <li>
                     Phew! After all that checking, if everything went well, by this point we will have authorization
-                    code in <code>code</code> variable. For now, let's just show that code in the HTML body.
+                    code in <code>code</code> variable. For now, we are just showing that code in the HTML body.
                 </li>
             </ul>
         </details>
@@ -500,10 +500,18 @@ def callback():
         We need to exchange this code for an access token. That is, we will be senting this code back to <b>yutify</b>
         with our client credentials and it will return an access token along with a refresh token. We can use access
         token to access protected API endpoints (i.e. <a
-            href="{{ url_for('docs.references', reference='activity') }}"><code>/api/me</code></a>) by sending this access token
+            href="{{ url_for('docs.references', reference='activity') }}"><code>/api/me</code></a>) by sending this
+        access token
         with each API call to that endpoint. And the refresh token can be used to get a new access token after it
-        expires (which is 3600 seconds or 1 hour, see <a href="{{ url_for('docs.concepts', concept='tokens') }}">Tokens</a> for
+        expires (which is 3600 seconds or 1 hour, see <a
+            href="{{ url_for('docs.concepts', concept='tokens') }}">Tokens</a> for
         more information).
     </p>
+
+    <p>
+        Okay, before we complete our TODO of exchanging the code for an access token, let's update our template and
+        view to return HTML instead of just plain text:
+    </p>
+
 </main>
 {% endblock %}
