@@ -1,7 +1,7 @@
 APScheduler==3.11.0
 Authlib==1.6.1
 CairoSVG==2.8.2
-cryptography==45.0.5
+cryptography==45.0.6
 Flask==3.1.1
 Flask-Caching==2.3.1
 flask-cors==6.0.1
