@@ -134,6 +134,10 @@ def get_lastfm_activity(user=None, platform="all", force_refresh=False):
                     activity_data["activity_info"]["is_playing"] = (
                         fetched_activity.is_playing or False
                     )
+                    activity_data["activity_info"]["timestamp"] = (
+                        fetched_activity.timestamp
+                        or datetime.now(timezone.utc).timestamp()
+                    )
                     # For updating `updated_at` field in database
                     UserData.insert_or_update_user_data(lastfm_service, activity_data)
                     return activity_data

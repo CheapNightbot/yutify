@@ -263,11 +263,17 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                         activity_data["activity_info"]["is_playing"] = fetched_dict.get(
                             "is_playing", False
                         )
+                        activity_data["activity_info"]["timestamp"] = fetched_dict.get(
+                            "timestamp", datetime.now(timezone.utc).timestamp()
+                        )
                     except KeyError:
                         activity_data = {
                             "music_info": activity_data.get("music_info", {}),
                             "activity_info": {
-                                "is_playing": fetched_dict.get("is_playing", False)
+                                "is_playing": fetched_dict.get("is_playing", False),
+                                "timestamp": fetched_dict.get(
+                                    "timestamp", datetime.now(timezone.utc).timestamp()
+                                ),
                             },
                         }
                     # This is just to update the `updated_at` field in database
