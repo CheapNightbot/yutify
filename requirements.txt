@@ -16,5 +16,5 @@ psycopg2==2.9.10
 python-dotenv==1.1.1
 requests==2.32.5
 waitress==3.0.2
-yutipy==2.4.2
+yutipy==2.4.3
 zxcvbn==4.5.0
