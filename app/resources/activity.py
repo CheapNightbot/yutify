@@ -7,7 +7,6 @@ from authlib.integrations.flask_oauth2 import current_token
 from flask import current_app, make_response, render_template, request
 from flask_restful import Resource
 from flask_security import Security, SQLAlchemyUserDatastore, current_user
-from jinja2.exceptions import UndefinedError
 
 from app.auth_services.lastfm import get_lastfm_activity
 from app.auth_services.listenbrainz import get_listenbrainz_activity
