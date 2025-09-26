@@ -16,7 +16,7 @@ from app.models import Service, User, UserData, UserService
 logger = logging.getLogger(__name__)
 
 
-FRESHNESS_SECONDS = 180  # For user activity data
+FRESHNESS_SECONDS = 60  # For user activity data
 
 LASTFM_SERVICE_NOT_FOUND = "Service 'Last.fm' not found in the database."
 LASTFM_SERVICE_NOT_AVAILABLE = (

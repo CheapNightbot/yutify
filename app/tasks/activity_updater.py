@@ -10,7 +10,7 @@ from app.models import UserService
 
 logger = logging.getLogger(__name__)
 
-ACTIVITY_UPDATE_INTERVAL = 10  # in minutes
+ACTIVITY_UPDATE_INTERVAL = 5  # in minutes
 
 
 def update_all_user_activities(app):
