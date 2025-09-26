@@ -43,7 +43,7 @@ def handle_listenbrainz_auth(listenbrainz_username):
     user_service = db.session.scalar(
         sa.select(UserService)
         .where(UserService.user_id == user.id)
-        .where(UserService.id == listenbrainz_service.id)
+        .where(UserService.service_id == listenbrainz_service.id)
     )
 
     if user_service:

@@ -44,7 +44,7 @@ def handle_lastfm_auth(lastfm_username):
     user_service = db.session.scalar(
         sa.select(UserService)
         .where(UserService.user_id == user.id)
-        .where(UserService.id == lastfm_service.id)
+        .where(UserService.service_id == lastfm_service.id)
     )
 
     if user_service:
