@@ -24,12 +24,26 @@ from app.models import Role, Service, User
 @auth_required()
 @roles_required("admin")
 def dashboard():
+    # Gather dashboard stats
+    from app.models import User, Role, Service
+    stats = {
+        "total_users": User.query.count(),
+        "total_roles": Role.query.count(),
+        "total_services": Service.query.count(),
+        "active_admins": User.query.join(User.roles).filter(Role.name == "admin").count(),
+    }
+
+    # Recent user activity (last 5 registered users)
+    recent_users = User.query.order_by(User.create_datetime.desc()).limit(5).all()
+
     return render_template(
         "admin/dashboard.html",
         title="Admin Dashboard",
         active_page="dashboard",
         aside_active="dashboard",
         year=datetime.today().year,
+        stats=stats,
+        recent_users=recent_users,
     )
 
 

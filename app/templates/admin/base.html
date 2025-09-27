@@ -5,7 +5,8 @@
     <aside>
         <nav id="aside-nav">
             <ul>
-                <li>DASHBOARD</li>
+                <li class="{% if aside_active == 'dashboard'%}aside-active{% endif %}"><a
+                        href="{{ url_for('admin.dashboard')}}">DASHBOARD</a></li>
                 <li class="{% if aside_active == 'manage-roles'%}aside-active{% endif %}"><a
                         href="{{ url_for('admin.manage_roles') }}">Manage Roles</a></li>
                 <li class="{% if aside_active == 'manage-users'%}aside-active{% endif %}"><a

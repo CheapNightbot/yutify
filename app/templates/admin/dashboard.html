@@ -7,4 +7,59 @@
 
 {% block main %}
 
+<main>
+	<section>
+		<h2>Welcome, Admin!</h2>
+		<p>Here is an overview of your application's status.</p>
+	</section>
+	<section>
+		<div class="grid">
+			<article class="card">
+				<header><h3>Total Users</h3></header>
+				<p class="stat-value"><strong>{{ stats.total_users }}</strong></p>
+			</article>
+			<article class="card">
+				<header><h3>Total Roles</h3></header>
+				<p class="stat-value"><strong>{{ stats.total_roles }}</strong></p>
+			</article>
+			<article class="card">
+				<header><h3>Total Services</h3></header>
+				<p class="stat-value"><strong>{{ stats.total_services }}</strong></p>
+			</article>
+			<article class="card">
+				<header><h3>Active Admins</h3></header>
+				<p class="stat-value"><strong>{{ stats.active_admins }}</strong></p>
+			</article>
+		</div>
+	</section>
+	<section>
+		<h3>Recent User Activity</h3>
+		{% if recent_users %}
+		<table class="striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Username</th>
+					<th>Email</th>
+					<th>Registered</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in recent_users %}
+				<tr>
+					<td>{{ user.id }}</td>
+					<td>{{ user.name }}</td>
+					<td>{{ user.username }}</td>
+					<td>{{ user.email }}</td>
+					<td><span class="datetime">{{ user.create_datetime }}</span></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		<p>No recent user activity.</p>
+		{% endif %}
+	</section>
+</main>
 {% endblock %}
