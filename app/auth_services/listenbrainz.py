@@ -86,10 +86,10 @@ def get_listenbrainz_activity(user=None, platform="all", force_refresh=False):
         .where(UserService.user_id == user.id, Service.name.ilike("listenbrainz"))
     )
 
-    if not listenbrainz_service or not listenbrainz_service.user_data:
+    if not listenbrainz_service:
         return None
 
-    activity_data = listenbrainz_service.user_data.data
+    activity_data = listenbrainz_service.user_data.data if listenbrainz_service.user_data else {}
     if (
         not force_refresh
         and listenbrainz_service.user_data

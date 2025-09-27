@@ -221,12 +221,12 @@ def get_spotify_activity(user=None, platform="all", force_refresh=False):
                 )
             )
 
-            if not spotify_service or not spotify_service.user_data:
+            if not spotify_service:
                 return None
 
             # Check for fresh data unless force_refresh is True
             activity_data = (
-                spotify_service.user_data.data if spotify_service.user_data else None
+                spotify_service.user_data.data if spotify_service.user_data else {}
             )
             if (
                 not force_refresh

@@ -101,11 +101,11 @@ def get_lastfm_activity(user=None, platform="all", force_refresh=False):
         .where(UserService.user_id == user.id, Service.name.ilike("lastfm"))
     )
 
-    if not lastfm_service or not lastfm_service.user_data:
+    if not lastfm_service:
         return None
 
     # Check for fresh data unless force_refresh is True
-    activity_data = lastfm_service.user_data.data
+    activity_data = lastfm_service.user_data.data if lastfm_service.user_data else {}
     if (
         not force_refresh
         and lastfm_service.user_data
