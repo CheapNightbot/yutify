@@ -54,7 +54,6 @@ def set_security_headers(response):
         "https://hcaptcha.com https://*.hcaptcha.com;"
         "frame-src https://hcaptcha.com https://*.hcaptcha.com;"
         "connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com;"
-        "frame-ancestors 'self' https://cheapnightbot.me"
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
