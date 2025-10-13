@@ -45,9 +45,6 @@
 
 Right now, it only retrieves streaming links for [these music platforms](#available-music-platforms-). If you'd like to suggest additional platforms or metadata, feel free to open an issue. You can visit the website to explore [here](https://yutify.onrender.com/) and make sure to read the [docs](https://yutify.onrender.com/docs) as well.
 
-> 💜 **Support yutify:**
-> yutify is free and open-source! If you find it useful, you can always support development on [ko-fi](https://ko-fi.com/cheapnightbot) or by starring the repo. Thank you!
-
 ### Features ™️
 
 - 🎵 **Multi-Platform Music Search**: Retrieve streaming links and detailed metadata for songs from [Apple Music](https://music.apple.com/), [Deezer](https://deezer.com/), [KKBox](https://kkbox.com/), [Spotify](https://spotify.com/), and [YouTube Music](https://music.youtube.com/).
