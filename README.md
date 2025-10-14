@@ -63,7 +63,8 @@ Right now, it only retrieves streaming links for [these music platforms](#availa
 - [x] [Apple Music](https://music.apple.com/)
 - [x] [Deezer](https://deezer.com/)
 - [x] [KKBox](https://kkbox.com/)
-- [x] [Last.fm](https://last.fm/)
+- [x] [Lastfm](https://last.fm/)
+- [x] [ListenBrainz](https://listenbrainz.org)
 - [x] [Spotify](https://spotify.com/)
 - [x] [YouTube Music](https://music.youtube.com/)
 
