@@ -106,6 +106,10 @@ details.dropdown[open]>summary::before {
     height: 100dvh !important;
 }
 
+.dropdown {
+    text-align: left;
+}
+
 header {
     text-align: center;
 }
