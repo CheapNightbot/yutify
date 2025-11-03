@@ -1,4 +1,4 @@
-APScheduler==3.11.0
+APScheduler==3.11.1
 Authlib==1.6.5
 CairoSVG==2.8.2
 cryptography==46.0.3
