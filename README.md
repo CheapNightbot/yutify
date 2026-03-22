@@ -1,3 +1,9 @@
+> [!NOTE]
+> It is no longer seems a useful project. Also, since recently Spotify changed it's API TOS and for me Spotify API was the best resource of information (it's also where I mostly listen to music).
+> But honestly it was great working on this project. How just from a conversation to becoming something that was useful to not just me... I think it's finally time to archive it (the technical debt!!).
+
+***
+
 <div align=center>
 
 ![Banner](https://github.com/user-attachments/assets/ce43c4c7-5716-472d-b834-588f6559048d)
